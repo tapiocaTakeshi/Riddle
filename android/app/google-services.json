@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "556400821331",
+    "project_id": "riddle-6c51d",
+    "storage_bucket": "riddle-6c51d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:556400821331:android:3c2cebcda6bbe2788432a6",
+        "android_client_info": {
+          "package_name": "com.riddle"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "556400821331-dajbn9bp42f394la0abiqf5bectd1595.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCFXTlSr1wYwDVJbuQi2vR_jxElYfKxfLU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "556400821331-dajbn9bp42f394la0abiqf5bectd1595.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "556400821331-n1r4fbschp5m666cf36kgdv8fankdc56.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.riddle"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
