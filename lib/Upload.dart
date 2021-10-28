@@ -1,6 +1,4 @@
 import 'dart:typed_data';
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:pdf_image_renderer/pdf_image_renderer.dart';
@@ -56,18 +54,4 @@ Future<String> JpgUpload() async {
   return Future<String>.value(path);
 }
 
-// class Slides{
-//   final String slideImageURL;
-//   final String answer;
-//   final int limit;
-//
-//   Slides({@required this.slideImageURL,@required this.answer,@required this.limit});
-//
-//   Map<String, dynamic> toJson() =>
-//     {
-//       'slideImageURL':slideImageURL,
-//       'answer':answer,
-//       'limit':limit
-//     };
-// }
 

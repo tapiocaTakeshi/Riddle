@@ -1,5 +1,7 @@
+import 'package:Riddle/GoogleSignInModel.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:provider/provider.dart';
 import 'screens/SearchScreen.dart';
 import 'screens/UploadScreen.dart';
 import 'screens/AccountScreen.dart';
@@ -15,20 +17,23 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: ThemeData(
-        textTheme: TextTheme().apply(bodyColor: Colors.black),
-        appBarTheme: AppBarTheme(
-          backgroundColor: Colors.white,
-          iconTheme: IconThemeData(color: Colors.black)
+    return ChangeNotifierProvider(
+      create: (context) => GoogleSignInModel(),
+      child: MaterialApp(
+        theme: ThemeData(
+          textTheme: TextTheme().apply(bodyColor: Colors.black),
+          appBarTheme: AppBarTheme(
+            backgroundColor: Colors.white,
+            iconTheme: IconThemeData(color: Colors.black)
+          ),
+          iconTheme: IconThemeData(color: Colors.black),
+          primaryColor: Colors.white
         ),
-        iconTheme: IconThemeData(color: Colors.black),
-        primaryColor: Colors.white
+        home: MyHomePage(),
+        // routes: <String, WidgetBuilder> {
+        //   '/uploadpage': (BuildContext context) => new UploadPage(),
+        // },
       ),
-      home: MyHomePage(),
-      // routes: <String, WidgetBuilder> {
-      //   '/uploadpage': (BuildContext context) => new UploadPage(),
-      // },
     );
   }
 }
@@ -62,11 +67,11 @@ class MyHomePageState extends State<MyHomePage>{
         ),
 
         floatingActionButton: Container(
-          margin: EdgeInsets.only(top:52),
-          width: 48,
+          margin: EdgeInsets.only(top:45),
+          width: 40,
           child: FloatingActionButton(
               child: Icon(Icons.add),
-              backgroundColor: Colors.orangeAccent,
+              backgroundColor: Colors.orange,
               elevation: 1,
               onPressed: () =>  Navigator.push(context, MaterialPageRoute(
                 builder: (context) => UploadScreen(),
@@ -77,26 +82,34 @@ class MyHomePageState extends State<MyHomePage>{
 
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
 
-        bottomNavigationBar: BottomNavigationBar(
-          items: [
-            BottomNavigationBarItem(
-                icon: Icon(Icons.search),
-                // ignore: deprecated_member_use
-                title:Text('Search')
-            ),
+        bottomNavigationBar: SizedBox(
+          height: 86,
+          child: BottomNavigationBar(
+            items: [
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.home_sharp),
+                  // ignore: deprecated_member_use
+                  title:Text('ホーム')
+              ),
 
-            BottomNavigationBarItem(
-                icon: Icon(Icons.account_circle_outlined),
-                // ignore: deprecated_member_use
-                title: Text('Account')
-            )
-          ],
-          currentIndex: _selectedIndex,
-          selectedItemColor: Colors.orange,
-          onTap: _onItemTap,
-          elevation: 0,
-          backgroundColor: Colors.white,
 
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.account_circle_outlined),
+                  // ignore: deprecated_member_use
+                  title: Text('アカウント')
+              )
+            ],
+            currentIndex: _selectedIndex,
+            unselectedItemColor: Colors.grey,
+            selectedItemColor: Colors.black,
+            iconSize: 24,
+            selectedFontSize: 11,
+            unselectedFontSize: 11,
+            onTap: _onItemTap,
+            elevation: 0,
+            backgroundColor: Colors.white,
+
+          ),
         )
     );
   }
