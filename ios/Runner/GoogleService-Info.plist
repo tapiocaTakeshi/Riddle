@@ -3,21 +3,21 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>556400821331-n1r4fbschp5m666cf36kgdv8fankdc56.apps.googleusercontent.com</string>
+	<string>788794383607-h68s00965popobsn68popeckmb59b3if.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.556400821331-n1r4fbschp5m666cf36kgdv8fankdc56</string>
+	<string>com.googleusercontent.apps.788794383607-h68s00965popobsn68popeckmb59b3if</string>
 	<key>API_KEY</key>
-	<string>AIzaSyCbJyZIBN3NrsfZuziXL-1iPSMxQe2DPxw</string>
+	<string>AIzaSyDnu9Nf--hTr0yGw5VfsPK7DHFNkVwdipU</string>
 	<key>GCM_SENDER_ID</key>
-	<string>556400821331</string>
+	<string>788794383607</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
 	<string>com.riddle</string>
 	<key>PROJECT_ID</key>
-	<string>riddle-6c51d</string>
+	<string>riddle-b4b7b</string>
 	<key>STORAGE_BUCKET</key>
-	<string>riddle-6c51d.appspot.com</string>
+	<string>riddle-b4b7b.appspot.com</string>
 	<key>IS_ADS_ENABLED</key>
 	<false></false>
 	<key>IS_ANALYTICS_ENABLED</key>
@@ -29,6 +29,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:556400821331:ios:c167874a2a84d4718432a6</string>
+	<string>1:788794383607:ios:3ede3d97d6a89eefa487f2</string>
 </dict>
 </plist>

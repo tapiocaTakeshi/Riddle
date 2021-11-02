@@ -1,10 +1,16 @@
+import 'dart:io';
+
 import 'package:Riddle/GoogleSignInModel.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
-import 'screens/SearchScreen.dart';
-import 'screens/UploadScreen.dart';
 import 'screens/AccountScreen.dart';
+import 'screens/SearchScreen.dart';
+import 'screens/SignUpPage.dart';
+import 'screens/UploadScreen.dart';
+
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -29,11 +35,39 @@ class MyApp extends StatelessWidget {
           iconTheme: IconThemeData(color: Colors.black),
           primaryColor: Colors.white
         ),
-        home: MyHomePage(),
+        home: Branch(),
         // routes: <String, WidgetBuilder> {
         //   '/uploadpage': (BuildContext context) => new UploadPage(),
         // },
       ),
+    );
+  }
+}
+
+class Branch extends StatefulWidget{
+  @override
+  State<StatefulWidget> createState()=>BranchState();
+}
+
+class BranchState extends State<Branch> {
+
+  @override
+  Widget build(BuildContext context) {
+
+    // TODO: implement build
+    return StreamBuilder<User>(
+      stream: FirebaseAuth.instance.authStateChanges(),
+      builder: (context,snapshot){
+        if(snapshot.connectionState == ConnectionState.waiting){
+          return Center(child: CircularProgressIndicator());
+        }else if(snapshot.hasData){
+          return MyHomePage();
+        }else if(snapshot.hasError){
+          return Center(child: Text("ログインできませんでした"));
+        }else{
+          return SignUpPage();
+        }
+      },
     );
   }
 }
@@ -66,24 +100,24 @@ class MyHomePageState extends State<MyHomePage>{
           child: _contents.elementAt(_selectedIndex),
         ),
 
-        floatingActionButton: Container(
-          margin: EdgeInsets.only(top:45),
-          width: 40,
-          child: FloatingActionButton(
-              child: Icon(Icons.add),
-              backgroundColor: Colors.orange,
-              elevation: 1,
-              onPressed: () =>  Navigator.push(context, MaterialPageRoute(
-                builder: (context) => UploadScreen(),
-                    fullscreenDialog: true
-              )),
-            ),
+        floatingActionButton: Padding(
+        padding: EdgeInsets.only(top: Platform.isAndroid?65:50),
+        child:FloatingActionButton(
+          child: Icon(Icons.add_box_outlined,size: 38,),
+          backgroundColor: Colors.white10,
+          foregroundColor: Colors.black,
+          elevation: 0,
+          onPressed: () =>  Navigator.push(context, MaterialPageRoute(
+              builder: (context) => UploadScreen(),
+              fullscreenDialog: true
+          )),
         ),
+      ),
 
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
 
         bottomNavigationBar: SizedBox(
-          height: 86,
+          height: Platform.isAndroid?70:86,
           child: BottomNavigationBar(
             items: [
               BottomNavigationBarItem(

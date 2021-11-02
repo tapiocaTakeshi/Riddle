@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:typed_data';
 import 'package:Riddle/ThumbnailModel.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -22,6 +23,7 @@ class UploadScreen2State extends State<UploadScreen2> {
   final _formkey = GlobalKey<FormState>();
   String _title = '';
   Color thumbnailTextColor = Colors.black45;
+  final user = FirebaseAuth.instance.currentUser;
 
   @override
   Widget build(BuildContext context) {
@@ -146,7 +148,13 @@ class UploadScreen2State extends State<UploadScreen2> {
                                   'explanation': '',
                                   'date': DateTime.now()
                                 });
-                                print('a');
+
+                                //作成したユーザーと紐付ける
+                                await FirebaseFirestore.instance.collection('Users').doc(user.uid).update(
+                                    {
+                                      'MyRiddleList':FieldValue.arrayUnion([snapshotRiddle.id])
+                                    });
+                                
 
                                 //サムネイルをアップロード
                                 String thumbnailURL = await uploadImage(
@@ -198,7 +206,7 @@ class UploadScreen2State extends State<UploadScreen2> {
                                 });
                                 Navigator.of(context)
                                     .popUntil((route) => route.isFirst);
-                              }else{
+                              }else if (model.thumbnailImage == null){
                                 setState(() {
                                   thumbnailTextColor = Colors.red;
                                 });

@@ -19,19 +19,13 @@ class SettingPage extends StatelessWidget{
          Padding(
            padding: const EdgeInsets.all(1.0),
            child: ListTile(
-             title: Text('アカウント追加'),
+             title: Text('ログアウト'),
              tileColor: Colors.white,
              onTap: (){
                final provider = Provider.of<GoogleSignInModel>(context,listen: false);
-               provider.signInWithGoogle();
+               provider.signOut();
+               Navigator.of(context).pop();
              },
-           ),
-         ),
-         Padding(
-           padding: const EdgeInsets.all(1.0),
-           child: ListTile(
-             title: Text('アカウント追加'),
-             tileColor: Colors.white,
            ),
          ),
        ],

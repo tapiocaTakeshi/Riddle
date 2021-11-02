@@ -77,6 +77,18 @@ class SearchScreenState extends State<SearchScreen> {
                         width: double.infinity,
                         height: double.infinity,
                       ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Container(
+                          child: Icon(Icons.check,color: Colors.white,),
+                          width: 30,
+                          height: 30,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Colors.orange
+                          ),
+                        ),
+                      ),
                       Material(
                         type: MaterialType.transparency,
                         child: InkWell(

@@ -16,3 +16,9 @@ Future<String> uploadImage( File imageFile, String path ) async {
 
   return url;
 }
+Future<Map<String, dynamic>> getData(String collection, String documentId) async {
+  DocumentSnapshot docSnapshot =
+  await FirebaseFirestore.instance.collection(collection).doc(documentId).get();
+
+  return docSnapshot.data();
+}
