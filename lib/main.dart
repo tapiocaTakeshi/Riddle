@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'screens/AccountScreen.dart';
 import 'screens/SearchScreen.dart';
@@ -15,6 +16,9 @@ import 'screens/UploadScreen.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp
+  ]);
   runApp(MyApp());
 }
 
@@ -27,13 +31,32 @@ class MyApp extends StatelessWidget {
       create: (context) => GoogleSignInModel(),
       child: MaterialApp(
         theme: ThemeData(
+          brightness: Brightness.light,
           textTheme: TextTheme().apply(bodyColor: Colors.black),
           appBarTheme: AppBarTheme(
-            backgroundColor: Colors.white,
+            elevation: 2,
+            backgroundColor: Colors.grey[100],
             iconTheme: IconThemeData(color: Colors.black)
           ),
           iconTheme: IconThemeData(color: Colors.black),
-          primaryColor: Colors.white
+          primaryColor: Colors.grey[100],
+            backgroundColor: Colors.grey[100],
+          accentColor: Colors.white,
+        ),
+
+
+        darkTheme: ThemeData(
+          brightness: Brightness.dark,
+            textTheme: TextTheme().apply(bodyColor: Colors.white),
+            appBarTheme: AppBarTheme(
+              elevation: 2,
+                backgroundColor: Colors.grey[900],
+                iconTheme: IconThemeData(color: Colors.white)
+            ),
+            iconTheme: IconThemeData(color: Colors.white),
+            primaryColor: Colors.grey[900],
+            backgroundColor: Colors.grey[900],
+          accentColor: Colors.black,
         ),
         home: Branch(),
         // routes: <String, WidgetBuilder> {
@@ -96,23 +119,19 @@ class MyHomePageState extends State<MyHomePage>{
     // TODO: implement build
     return Scaffold(
 
+      resizeToAvoidBottomInset: false,
         body: Center(
           child: _contents.elementAt(_selectedIndex),
         ),
 
-        floatingActionButton: Padding(
-        padding: EdgeInsets.only(top: Platform.isAndroid?65:50),
-        child:FloatingActionButton(
-          child: Icon(Icons.add_box_outlined,size: 38,),
-          backgroundColor: Colors.white10,
-          foregroundColor: Colors.black,
-          elevation: 0,
+        floatingActionButton: FloatingActionButton(
+          child: Icon(Icons.add_outlined,size: 38,color: Colors.orange,),
+          elevation: 2,
           onPressed: () =>  Navigator.push(context, MaterialPageRoute(
               builder: (context) => UploadScreen(),
               fullscreenDialog: true
           )),
         ),
-      ),
 
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
 
@@ -134,15 +153,12 @@ class MyHomePageState extends State<MyHomePage>{
               )
             ],
             currentIndex: _selectedIndex,
-            unselectedItemColor: Colors.grey,
-            selectedItemColor: Colors.black,
+            selectedItemColor: Colors.orange,
             iconSize: 24,
             selectedFontSize: 11,
             unselectedFontSize: 11,
             onTap: _onItemTap,
-            elevation: 0,
-            backgroundColor: Colors.white,
-
+            elevation: 20,
           ),
         )
     );

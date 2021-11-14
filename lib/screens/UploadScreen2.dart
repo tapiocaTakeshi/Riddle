@@ -36,7 +36,6 @@ class UploadScreen2State extends State<UploadScreen2> {
             onTap: () =>
                 FocusScope.of(context).requestFocus(FocusNode()),
             child: Scaffold(
-              backgroundColor: Colors.grey[100],
               appBar: AppBar(),
               body: Form(
                 key: _formkey,
@@ -53,9 +52,9 @@ class UploadScreen2State extends State<UploadScreen2> {
                                 child:
                                 InkWell(
                                   onTap: () => model.setThumbnail(),
-                                  child: Container(
-                                    child: model.thumbnailImage == null ?
-                                    Center(
+                                  child: model.thumbnailImage == null ?
+                                  Container(
+                                    child: Center(
                                         child: Column(
                                           crossAxisAlignment: CrossAxisAlignment.center,
                                           mainAxisAlignment: MainAxisAlignment.center,
@@ -68,12 +67,12 @@ class UploadScreen2State extends State<UploadScreen2> {
                                             ),
                                           ],
                                         )
-                                    )
-                                        : model.thumbnailImage,
+                                    ),
                                     height: 135,
                                     width: 240,
                                     color: Colors.grey,
-                                  ),
+                                  )
+                                      :model.thumbnailImage
                                 ),
                               ),
                               Padding(
@@ -146,7 +145,8 @@ class UploadScreen2State extends State<UploadScreen2> {
                                     .add({
                                   'title': _title,
                                   'explanation': '',
-                                  'date': DateTime.now()
+                                  'date': DateTime.now(),
+                                  'answerCount':0
                                 });
 
                                 //作成したユーザーと紐付ける
@@ -154,7 +154,6 @@ class UploadScreen2State extends State<UploadScreen2> {
                                     {
                                       'MyRiddleList':FieldValue.arrayUnion([snapshotRiddle.id])
                                     });
-                                
 
                                 //サムネイルをアップロード
                                 String thumbnailURL = await uploadImage(
@@ -165,7 +164,11 @@ class UploadScreen2State extends State<UploadScreen2> {
                                 await FirebaseFirestore.instance
                                     .collection('Riddles')
                                     .doc(snapshotRiddle.id)
-                                    .update({'thumbnailURL': thumbnailURL});
+                                    .update({
+                                  'thumbnailURL': thumbnailURL,
+                                  'id' : snapshotRiddle.id.toString(),
+                                  'uid' :user.uid
+                                    });
 
 
                                 //slide: images->jpgs

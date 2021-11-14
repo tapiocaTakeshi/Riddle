@@ -22,7 +22,7 @@ class SlideModel extends ChangeNotifier{
     slideImageBytes = await SplitPdf(slidePath);
     slideImageBytes.asMap().forEach((index, value) {
       slideImages.add(
-          Image.memory(value, filterQuality: FilterQuality.high,));
+          Image.memory(value,fit: BoxFit.cover, filterQuality: FilterQuality.high,));
     });
 
     answers = List.generate(

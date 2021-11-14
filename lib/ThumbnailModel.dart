@@ -18,6 +18,9 @@ class ThumbnailModel extends ChangeNotifier{
     thumbnailImageFile = File(thumbnailPath);
     thumbnailImage = Image.memory(
         await thumbnailImageFile.readAsBytes(),
+      height: 135,
+      width: 240,
+    fit: BoxFit.cover,
     filterQuality: FilterQuality.high,
     );
     visible = false;

@@ -27,14 +27,17 @@ dependencies:
   pdf_image_renderer: ^0.6.1
   image: ^3.0.8
   pdf: ^3.6.1
-  firebase_core: ^1.8.0
-  cloud_firestore: ^2.5.4
+  firebase_core: ^1.7.0
+  cloud_firestore: ^3.1.0
   firebase_analytics: ^8.3.0
   firebase_auth: ^3.1.4
   firebase_storage: ^10.0.6
   google_sign_in: ^5.2.0
   provider: ^6.0.1
   settings_ui: ^1.0.0
+  material_floating_search_bar: ^0.3.6
+  modal_bottom_sheet: ^2.0.0
+  comment_box: ^0.0.16
 
   flutter:
     sdk: flutter
@@ -44,7 +47,6 @@ dependencies:
   cupertino_icons: ^1.0.2
   animations: ^2.0.0
   flutter_gradients: ^1.0.0+3
-  like_button: ^2.0.2
 
 dev_dependencies:
   flutter_test:

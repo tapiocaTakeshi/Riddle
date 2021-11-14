@@ -30,6 +30,7 @@ class GoogleSignInModel extends ChangeNotifier{
         await FirebaseFirestore.instance.collection('Users').doc(result.user.uid).set({
           'name':result.user.displayName,
           'email':result.user.email,
+          'photoURL':result.user.photoURL,
           'MyRiddleList':[],
           'FavoriteRiddleList':[],
           'History':[]
