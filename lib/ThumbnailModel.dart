@@ -23,7 +23,7 @@ class ThumbnailModel extends ChangeNotifier {
         filterQuality: FilterQuality.high,
       );
       visible = false;
+      notifyListeners();
     }
-    notifyListeners();
   }
 }

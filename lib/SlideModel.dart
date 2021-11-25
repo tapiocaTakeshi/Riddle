@@ -12,6 +12,7 @@ class SlideModel extends ChangeNotifier {
   List<Uint8List> slideImageBytes = [];
   List<String> answers;
   List<Duration> durations;
+  List<bool> isOpeneds = [false];
   bool visible = false;
 
   void setSlide() async {
@@ -33,10 +34,11 @@ class SlideModel extends ChangeNotifier {
       durations = List.generate(slideImages.length, (index) => Duration.zero);
       visible = false;
       print(slidePath);
-      expPaths = ['']..length = slideImageBytes.length;
+      expPaths = List.generate(slideImageBytes.length, (index) => '');
       expImages = []..length = slideImageBytes.length;
       expImageFiles = []..length = slideImageBytes.length;
-      expTextColors = [Colors.black]..length = slideImageBytes.length;
+
+      isOpeneds = List.generate(slideImageBytes.length, (index) => false);
     }
     notifyListeners();
   }
@@ -44,11 +46,10 @@ class SlideModel extends ChangeNotifier {
   List<String> expPaths;
   List<File> expImageFiles;
   List<Image> expImages;
-  List<Color> expTextColors;
 
   void setExp(int index) async {
     expPaths[index] = await JpgUpload();
-    if (expPaths[index] != null) {
+    if (expPaths[index] != '') {
       visible = true;
       expImageFiles[index] = File(expPaths[index]);
       expImages[index] = Image.memory(
