@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../GoogleSignInModel.dart';
+import '../models/GoogleSignInModel.dart';
 
 
 class SignUpPage extends StatelessWidget {

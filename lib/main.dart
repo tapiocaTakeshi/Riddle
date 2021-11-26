@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:Riddle/GoogleSignInModel.dart';
+import 'package:Riddle/models/GoogleSignInModel.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

@@ -1,4 +1,5 @@
 import 'package:Riddle/screens/Chat.dart';
+import 'package:Riddle/screens/RiddlePage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -144,9 +145,9 @@ class DetailPageState extends State<DetailPage> {
                                   builder: (context,
                                       AsyncSnapshot<DocumentSnapshot>
                                           snapshot) {
-                                    if(snapshot.hasData){
+                                    if (snapshot.hasData) {
                                       return InkWell(
-                                        onTap: (){},
+                                        onTap: () {},
                                         child: Row(
                                           children: <Widget>[
                                             CircleAvatar(
@@ -154,13 +155,20 @@ class DetailPageState extends State<DetailPage> {
                                                   snapshot.data['photoURL']),
                                             ),
                                             Padding(
-                                              padding: const EdgeInsets.symmetric(horizontal: 5.0),
-                                              child: Text(snapshot.data['name'],style: TextStyle(fontWeight: FontWeight.bold),),
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 5.0),
+                                              child: Text(
+                                                snapshot.data['name'],
+                                                style: TextStyle(
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              ),
                                             )
                                           ],
                                         ),
                                       );
-                                    }else{
+                                    } else {
                                       return Container();
                                     }
                                   });
@@ -185,17 +193,28 @@ class DetailPageState extends State<DetailPage> {
                                   .update({
                                 'History': FieldValue.arrayUnion([widget.id])
                               });
+                              final snapshotRiddles = FirebaseFirestore.instance
+                                  .collection('Riddles')
+                                  .doc(widget.id);
+
                               final Map<String, dynamic> data =
-                                  (await FirebaseFirestore.instance
-                                          .collection('Riddles')
-                                          .doc(widget.id)
-                                          .get())
-                                      .data();
+                                  (await snapshotRiddles.get()).data();
                               await FirebaseFirestore.instance
                                   .collection('Riddles')
                                   .doc(widget.id)
                                   .update(
                                       {'answerCount': data['answerCount'] + 1});
+                              List<DocumentSnapshot> Slides =
+                                  await snapshotRiddles
+                                      .collection('Slides')
+                                      .get()
+                                      .then((value) => value.docs);
+                              var index = 0;
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (_) => RiddlePage(
+                                      Slides: Slides,
+                                      index: index,
+                                      length: Slides.length)));
                             }),
                       )
                     ],
@@ -227,7 +246,9 @@ class DetailPageState extends State<DetailPage> {
 
   Widget CommentButton() {
     return IconButton(
-        onPressed: () {showChat(context,widget.id);},
+        onPressed: () {
+          showChat(context, widget.id);
+        },
         icon: Icon(
           Icons.chat_bubble_outline_rounded,
           color: Theme.of(context).iconTheme.color,

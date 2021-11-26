@@ -47,7 +47,6 @@ Future<String> JpgUpload() async {
     type: FileType.custom,
     allowedExtensions: ['jpg'],
   );
-
   if (result != null) {
     String path = result.files.single.path.toString();
     return Future<String>.value(path);

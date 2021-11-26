@@ -5,11 +5,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import '../SlideModel.dart';
-import '../Upload.dart';
-import '../Loading.dart';
+import '../models/SlideModel.dart';
+import '../functions/Upload.dart';
+import '../functions/Loading.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import '../functions/Firebase.dart';
 
 class UploadScreen extends StatefulWidget {
   @override
@@ -19,7 +20,8 @@ class UploadScreen extends StatefulWidget {
 class UploadScreenState extends State<UploadScreen> {
   @override
   Widget build(BuildContext context) {
-    Size defaultSize = MediaQuery.of(context).size;
+    // List<Widget> _slideWidgets=[];
+    // List<Widget> _thumbnailWidgets=[];
     // TODO: implement build
     return ChangeNotifierProvider<SlideModel>(
       create: (_) => SlideModel(),
@@ -72,22 +74,23 @@ class UploadScreenState extends State<UploadScreen> {
                         children: List.generate(
                             model.slideImages.length,
                             (index) => Card(
-                                  child: InkWell(
-                                      highlightColor:
-                                          Colors.grey.withOpacity(0.3),
-                                      splashColor: Colors.grey.withOpacity(0.3),
-                                      onTap: () {
-                                        final _formkey = GlobalKey<FormState>();
-                                        var expTextColor = Colors.black;
-                                        setState(() {
-                                          model.isOpeneds[index] = true;
-                                        });
-                                        showModalBottomSheet(
-                                          isDismissible: false,
-                                          enableDrag: false,
-                                          clipBehavior: Clip.antiAlias,
-                                          context: context,
-                                          builder: (context) => Container(
+                                child: InkWell(
+                                    highlightColor:
+                                        Colors.grey.withOpacity(0.3),
+                                    splashColor: Colors.grey.withOpacity(0.3),
+                                    child: model.slideImages[index],
+                                    onTap: () {
+                                      final _formkey = GlobalKey<FormState>();
+                                      var expTextColor = Colors.black;
+                                      setState(() {
+                                        model.isOpeneds[index] = true;
+                                      });
+                                      showModalBottomSheet(
+                                        isDismissible: false,
+                                        enableDrag: false,
+                                        clipBehavior: Clip.antiAlias,
+                                        context: context,
+                                        builder: (context) => Container(
                                             height: 500,
                                             decoration: BoxDecoration(
                                                 borderRadius:
@@ -102,32 +105,46 @@ class UploadScreenState extends State<UploadScreen> {
                                                     .requestFocus(FocusNode()),
                                                 child: Column(
                                                   children: [
-                                                    ListTile(
-                                                      leading: IconButton(
-                                                        icon: Icon(Icons.clear),
-                                                        onPressed: () {
-                                                          if (_formkey
-                                                              .currentState
-                                                              .validate()) if (model
-                                                                      .expPaths[
-                                                                  index] !=
-                                                              '') {
-                                                            _formkey
-                                                                .currentState
-                                                                .save();
-                                                            Navigator.of(
-                                                                    context)
-                                                                .pop();
-                                                          } else {
-                                                            setState(() {
-                                                              expTextColor =
-                                                                  Colors.red;
-                                                            });
-                                                          }
-                                                        },
-                                                      ),
-                                                      title: Text('DETAIL'),
-                                                    ),
+                                                    Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .center,
+                                                        children: [
+                                                          Spacer(),
+                                                          Expanded(
+                                                              flex: 3,
+                                                              child: Center(
+                                                                child: Text(
+                                                                    'DETAIL'),
+                                                              )),
+                                                          Expanded(
+                                                            child: IconButton(
+                                                              icon: Icon(Icons
+                                                                  .arrow_forward),
+                                                              onPressed: () {
+                                                                if (_formkey
+                                                                    .currentState
+                                                                    .validate()) if (model
+                                                                            .expPaths[
+                                                                        index] !=
+                                                                    '') {
+                                                                  _formkey
+                                                                      .currentState
+                                                                      .save();
+                                                                  Navigator.of(
+                                                                          context)
+                                                                      .pop();
+                                                                } else {
+                                                                  setState(() {
+                                                                    expTextColor =
+                                                                        Colors
+                                                                            .red;
+                                                                  });
+                                                                }
+                                                              },
+                                                            ),
+                                                          ),
+                                                        ]),
                                                     ListView(
                                                       shrinkWrap: true,
                                                       padding:
@@ -259,12 +276,8 @@ class UploadScreenState extends State<UploadScreen> {
                                                         Center(
                                                           child: InkWell(
                                                               onTap: () async {
-                                                                await model
-                                                                    .setExp(
-                                                                        index);
-                                                                print(model
-                                                                        .expImages[
-                                                                    index]);
+                                                                model.setExp(
+                                                                    index);
                                                               },
                                                               child: model.expPaths[
                                                                           index] ==
@@ -308,12 +321,9 @@ class UploadScreenState extends State<UploadScreen> {
                                                   ],
                                                 ),
                                               ),
-                                            ),
-                                          ),
-                                        );
-                                      },
-                                      child: model.slideImages[index]),
-                                )),
+                                            )),
+                                      );
+                                    }))),
                       )),
           ),
           OverlayLoadingMolecules(visible: model.visible),

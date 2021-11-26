@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../GoogleSignInModel.dart';
+import '../models/GoogleSignInModel.dart';
 
 class SettingPage extends StatelessWidget{
   @override

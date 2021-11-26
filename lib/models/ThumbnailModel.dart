@@ -12,16 +12,18 @@ class ThumbnailModel extends ChangeNotifier {
 
   void setThumbnail() async {
     thumbnailPath = await JpgUpload();
-    visible = true;
-    thumbnailImageFile = File(thumbnailPath);
-    thumbnailImage = Image.memory(
-      await thumbnailImageFile.readAsBytes(),
-      height: 135,
-      width: 240,
-      fit: BoxFit.cover,
-      filterQuality: FilterQuality.high,
-    );
-    visible = false;
-    notifyListeners();
+    if (thumbnailPath != null) {
+      visible = true;
+      thumbnailImageFile = File(thumbnailPath);
+      thumbnailImage = Image.memory(
+        await thumbnailImageFile.readAsBytes(),
+        height: 135,
+        width: 240,
+        fit: BoxFit.cover,
+        filterQuality: FilterQuality.high,
+      );
+      visible = false;
+      notifyListeners();
+    }
   }
 }

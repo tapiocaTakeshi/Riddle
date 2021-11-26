@@ -1,13 +1,13 @@
 import 'dart:io';
 import 'dart:typed_data';
-import 'package:Riddle/ThumbnailModel.dart';
+import 'package:Riddle/models/ThumbnailModel.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../Firebase.dart';
-import '../Loading.dart';
+import '../functions/Firebase.dart';
+import '../functions/Loading.dart';
 
 class UploadScreen2 extends StatefulWidget {
   @override
@@ -33,8 +33,7 @@ class UploadScreen2State extends State<UploadScreen2> {
       child: Consumer<ThumbnailModel>(builder: (context, model, child) {
         return Stack(fit: StackFit.expand, children: [
           GestureDetector(
-            onTap: () =>
-                FocusScope.of(context).requestFocus(FocusNode()),
+            onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
             child: Scaffold(
               appBar: AppBar(),
               body: Form(
@@ -49,31 +48,44 @@ class UploadScreen2State extends State<UploadScreen2> {
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               Center(
-                                child:
-                                InkWell(
-                                  onTap: () => model.setThumbnail(),
-                                  child: model.thumbnailImage == null ?
-                                  Container(
-                                    child: Center(
-                                        child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.center,
-                                          mainAxisAlignment: MainAxisAlignment.center,
-                                          children: [
-                                            Text('サムネイル画像（JPG）を選択',
-                                              style: TextStyle(color: thumbnailTextColor,fontSize: 15),
+                                child: InkWell(
+                                    onTap: () async {
+                                      model.setThumbnail();
+                                    },
+                                    child: model.thumbnailPath == ''
+                                        ? Container(
+                                            decoration: BoxDecoration(
+                                                border: Border.all(
+                                                    color: Colors.grey[300])),
+                                            child: Container(
+                                              child: Center(
+                                                  child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.center,
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: [
+                                                  Text(
+                                                    '問題用画像（JPG）を選択',
+                                                    style: TextStyle(
+                                                        color:
+                                                            thumbnailTextColor,
+                                                        fontSize: 15),
+                                                  ),
+                                                  Text(
+                                                    '縦横比　9:16',
+                                                    style: TextStyle(
+                                                        color: Colors.grey,
+                                                        fontSize: 10),
+                                                  ),
+                                                ],
+                                              )),
+                                              height: 135,
+                                              width: 240,
+                                              color: Colors.grey[100],
                                             ),
-                                            Text('縦横比　9:16',
-                                              style: TextStyle(color: Colors.blueAccent,fontSize: 10),
-                                            ),
-                                          ],
-                                        )
-                                    ),
-                                    height: 135,
-                                    width: 240,
-                                    color: Colors.grey,
-                                  )
-                                      :model.thumbnailImage
-                                ),
+                                          )
+                                        : model.thumbnailImage),
                               ),
                               Padding(
                                 padding: EdgeInsets.all(10),
@@ -101,15 +113,14 @@ class UploadScreen2State extends State<UploadScreen2> {
                                     cursorColor: Colors.blueAccent,
                                     decoration: InputDecoration(
                                         enabledBorder: OutlineInputBorder(
-                                            borderSide: BorderSide(
-                                                color: Colors.grey)),
+                                            borderSide:
+                                                BorderSide(color: Colors.grey)),
                                         focusedBorder: OutlineInputBorder(
                                             borderSide: BorderSide(
                                                 color: Colors.blueAccent)),
-                                        focusedErrorBorder:
-                                            OutlineInputBorder(
-                                                borderSide: BorderSide(
-                                                    color: Colors.red)))),
+                                        focusedErrorBorder: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                                color: Colors.red)))),
                                 width: 300,
                               ),
                             ],
@@ -146,30 +157,31 @@ class UploadScreen2State extends State<UploadScreen2> {
                                   'title': _title,
                                   'explanation': '',
                                   'date': DateTime.now(),
-                                  'answerCount':0
+                                  'answerCount': 0
                                 });
 
                                 //作成したユーザーと紐付ける
-                                await FirebaseFirestore.instance.collection('Users').doc(user.uid).update(
-                                    {
-                                      'MyRiddleList':FieldValue.arrayUnion([snapshotRiddle.id])
-                                    });
+                                await FirebaseFirestore.instance
+                                    .collection('Users')
+                                    .doc(user.uid)
+                                    .update({
+                                  'MyRiddleList':
+                                      FieldValue.arrayUnion([snapshotRiddle.id])
+                                });
 
                                 //サムネイルをアップロード
                                 String thumbnailURL = await uploadImage(
                                     model.thumbnailImageFile,
                                     'Riddles/${snapshotRiddle.id}/thumbnailImageFile.jpg');
 
-
                                 await FirebaseFirestore.instance
                                     .collection('Riddles')
                                     .doc(snapshotRiddle.id)
                                     .update({
                                   'thumbnailURL': thumbnailURL,
-                                  'id' : snapshotRiddle.id.toString(),
-                                  'uid' :user.uid
-                                    });
-
+                                  'id': snapshotRiddle.id.toString(),
+                                  'uid': user.uid
+                                });
 
                                 //slide: images->jpgs
                                 final Directory systemTempDir =
@@ -209,7 +221,7 @@ class UploadScreen2State extends State<UploadScreen2> {
                                 });
                                 Navigator.of(context)
                                     .popUntil((route) => route.isFirst);
-                              }else if (model.thumbnailImage == null){
+                              } else if (model.thumbnailImage == null) {
                                 setState(() {
                                   thumbnailTextColor = Colors.red;
                                 });
