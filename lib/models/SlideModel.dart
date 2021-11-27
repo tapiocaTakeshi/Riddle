@@ -13,6 +13,7 @@ class SlideModel extends ChangeNotifier {
   List<String> answers;
   List<Duration> durations;
   List<bool> isOpeneds = [false];
+  final Directory systemTempDir = Directory.systemTemp;
   bool visible = false;
 
   void setSlide() async {
@@ -30,6 +31,17 @@ class SlideModel extends ChangeNotifier {
         ));
       });
 
+      //slide: images->jpgs
+
+      slideImageFiles = List.generate(
+          slideImageBytes.length,
+          (index) =>
+              File('${systemTempDir.path}/slideImage${index.toString()}.jpg'));
+
+      slideImageFiles.asMap().forEach((index, value) {
+        value..writeAsBytesSync(slideImageBytes[index]);
+      });
+
       answers = List.generate(slideImages.length, (index) => '');
       durations = List.generate(slideImages.length, (index) => Duration.zero);
       visible = false;
@@ -37,7 +49,7 @@ class SlideModel extends ChangeNotifier {
       expPaths = List.generate(slideImageBytes.length, (index) => '');
       expImages = []..length = slideImageBytes.length;
       expImageFiles = []..length = slideImageBytes.length;
-
+      expImageBytes = []..length = slideImageBytes.length;
       isOpeneds = List.generate(slideImageBytes.length, (index) => false);
     }
     notifyListeners();
@@ -46,14 +58,18 @@ class SlideModel extends ChangeNotifier {
   List<String> expPaths;
   List<File> expImageFiles;
   List<Image> expImages;
+  List<Uint8List> expImageBytes;
 
   void setExp(int index) async {
     expPaths[index] = await JpgUpload();
     if (expPaths[index] != '') {
       visible = true;
-      expImageFiles[index] = File(expPaths[index]);
+      expImageBytes[index] = File(expPaths[index]).readAsBytesSync();
+      expImageFiles[index] =
+          File('${systemTempDir.path}/expImage${index.toString()}.jpg');
+      expImageFiles[index].writeAsBytesSync(expImageBytes[index]);
       expImages[index] = Image.memory(
-        await expImageFiles[index].readAsBytes(),
+        expImageBytes[index],
         height: 135,
         width: 240,
         fit: BoxFit.cover,

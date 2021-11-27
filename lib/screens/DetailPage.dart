@@ -25,6 +25,7 @@ class DetailPageState extends State<DetailPage> {
   final user = FirebaseAuth.instance.currentUser;
   var isLiked = false;
   var textAnswerCount = '';
+  List<bool> CoOrIn = [];
 
   @override
   void initState() {
@@ -212,9 +213,11 @@ class DetailPageState extends State<DetailPage> {
                               var index = 0;
                               Navigator.of(context).push(MaterialPageRoute(
                                   builder: (_) => RiddlePage(
-                                      Slides: Slides,
-                                      index: index,
-                                      length: Slides.length)));
+                                        Slides: Slides,
+                                        index: index,
+                                        length: Slides.length,
+                                        CoOrIn: CoOrIn,
+                                      )));
                             }),
                       )
                     ],

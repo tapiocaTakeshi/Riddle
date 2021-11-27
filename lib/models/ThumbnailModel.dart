@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 
@@ -8,15 +9,19 @@ class ThumbnailModel extends ChangeNotifier {
   String thumbnailPath = '';
   File thumbnailImageFile;
   Image thumbnailImage;
+  Uint8List thumbnailImageByte;
+  final Directory systemTempDir = Directory.systemTemp;
   bool visible = false;
 
   void setThumbnail() async {
     thumbnailPath = await JpgUpload();
     if (thumbnailPath != null) {
       visible = true;
-      thumbnailImageFile = File(thumbnailPath);
+      thumbnailImageByte = File(thumbnailPath).readAsBytesSync();
+      thumbnailImageFile = File('${systemTempDir.path}/thumbnailImage.jpg');
+      thumbnailImageFile.writeAsBytesSync(thumbnailImageByte);
       thumbnailImage = Image.memory(
-        await thumbnailImageFile.readAsBytes(),
+        thumbnailImageByte,
         height: 135,
         width: 240,
         fit: BoxFit.cover,

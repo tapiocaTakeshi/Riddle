@@ -43,7 +43,8 @@ class UploadScreenState extends State<UploadScreen> {
                                     builder: (context) => UploadScreen2(
                                         model.answers,
                                         model.durations,
-                                        model.slideImageBytes)));
+                                        model.slideImageFiles,
+                                        model.expImageFiles)));
                           },
                           icon: Icon(Icons.arrow_forward_ios))
                   ],

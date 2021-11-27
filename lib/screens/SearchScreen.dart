@@ -56,6 +56,7 @@ class SearchScreenState extends State<SearchScreen> {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
         appBar: AppBar(
+          elevation: 1,
           actions: [
             IconButton(
                 onPressed: () async {

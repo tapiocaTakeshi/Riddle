@@ -14,9 +14,11 @@ class UploadScreen2 extends StatefulWidget {
   State<StatefulWidget> createState() => UploadScreen2State();
   List<String> answers;
   List<Duration> durations;
-  List<Uint8List> slideImageBytes;
+  List<File> slideImageFiles;
+  List<File> expImageFiles;
 
-  UploadScreen2(this.answers, this.durations, this.slideImageBytes);
+  UploadScreen2(
+      this.answers, this.durations, this.slideImageFiles, this.expImageFiles);
 }
 
 class UploadScreen2State extends State<UploadScreen2> {
@@ -169,11 +171,36 @@ class UploadScreen2State extends State<UploadScreen2> {
                                       FieldValue.arrayUnion([snapshotRiddle.id])
                                 });
 
+                                //スライドをアップロード
+                                widget.slideImageFiles
+                                    .asMap()
+                                    .forEach((index, value) async {
+                                  var slideurl = await uploadImage(value,
+                                      'Riddles/${snapshotRiddle.id}/Slides/${value.path.split('/').last}');
+                                  var expurl = await uploadImage(
+                                      widget.expImageFiles[index],
+                                      'Riddles/${snapshotRiddle.id}/Slides/${widget.expImageFiles[index].path.split('/').last}');
+                                  print(slideurl);
+                                  print(expurl);
+                                  await FirebaseFirestore.instance
+                                      .collection('Riddles')
+                                      .doc(snapshotRiddle.id)
+                                      .collection('Slides')
+                                      .doc(index.toString())
+                                      .set({
+                                    'slideImageURL': slideurl,
+                                    'expImageURL': expurl,
+                                    'answer': widget.answers[index],
+                                    'limit': widget.durations[index].inSeconds,
+                                  });
+                                });
+
                                 //サムネイルをアップロード
                                 String thumbnailURL = await uploadImage(
                                     model.thumbnailImageFile,
                                     'Riddles/${snapshotRiddle.id}/thumbnailImageFile.jpg');
 
+                                if (thumbnailURL == '') return;
                                 await FirebaseFirestore.instance
                                     .collection('Riddles')
                                     .doc(snapshotRiddle.id)
@@ -183,39 +210,6 @@ class UploadScreen2State extends State<UploadScreen2> {
                                   'uid': user.uid
                                 });
 
-                                //slide: images->jpgs
-                                final Directory systemTempDir =
-                                    Directory.systemTemp;
-
-                                List<File> slideImageFiles = List.generate(
-                                    widget.slideImageBytes.length,
-                                    (index) => File(
-                                        '${systemTempDir.path}/slideImage${index.toString()}.jpg'));
-
-                                slideImageFiles.asMap().forEach((index, value) {
-                                  value
-                                    ..writeAsBytesSync(
-                                        widget.slideImageBytes[index]);
-                                });
-
-                                //スライドをアップロード
-                                slideImageFiles
-                                    .asMap()
-                                    .forEach((index, value) async {
-                                  var url = await uploadImage(value,
-                                      'Riddles/${snapshotRiddle.id}/Slides/${value.path.split('/').last}');
-                                  print(url);
-                                  await FirebaseFirestore.instance
-                                      .collection('Riddles')
-                                      .doc(snapshotRiddle.id)
-                                      .collection('Slides')
-                                      .doc(index.toString())
-                                      .set({
-                                    'slideImageURL': url,
-                                    'answer': widget.answers[index],
-                                    'limit': widget.durations[index].inSeconds,
-                                  });
-                                });
                                 setState(() {
                                   model.visible = false;
                                 });
