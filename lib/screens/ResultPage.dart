@@ -7,35 +7,34 @@ class ResultPage extends StatefulWidget {
 
   List<bool> CoOrIn;
   List<DocumentSnapshot> Slides;
-  ResultPage({@required this.CoOrIn, @required this.Slides});
+  String id;
+  ResultPage({@required this.CoOrIn, @required this.Slides, @required this.id});
 }
 
 class _ResultPageState extends State<ResultPage> {
+  double CAR;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    widget.CoOrIn = [];
+    CAR = widget.CoOrIn.fold(
+            0, (previousValue, element) => previousValue + (element ? 1 : 0)) /
+        widget.Slides.length *
+        100;
+    print(CAR);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         elevation: 1,
+        automaticallyImplyLeading: false,
       ),
-      body: ListView(
+      body: Column(
         children: [
-          ListView.builder(
-              shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(),
-              itemCount: widget.CoOrIn.length,
-              itemBuilder: (context, index) => Column(
-                    children: [
-                      Text('問題${(index + 1).toString()}'),
-                      Text(widget.CoOrIn[index] ? '正解' : '不正解'),
-                      Image.network(
-                        widget.Slides[index]['expImageURL'],
-                        height: 225,
-                        width: 400,
-                        fit: BoxFit.cover,
-                        filterQuality: FilterQuality.high,
-                      )
-                    ],
-                  )),
+          Text(CAR.toString()),
           SizedBox(
             width: 300,
             child: RaisedButton(
@@ -46,8 +45,17 @@ class _ResultPageState extends State<ResultPage> {
                   '終了',
                   style: TextStyle(fontSize: 13),
                 ),
-                onPressed: () {
+                onPressed: () async {
                   Navigator.of(context).pop();
+
+                  await FirebaseFirestore.instance
+                      .collection('Riddles')
+                      .doc(widget.id)
+                      .update({'answerCount': FieldValue.increment(1)});
+                  await FirebaseFirestore.instance
+                      .collection('Riddles')
+                      .doc(widget.id)
+                      .update({'CARsum': FieldValue.increment(CAR)});
                 }),
           )
         ],

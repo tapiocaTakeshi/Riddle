@@ -24,7 +24,8 @@ class DetailPage extends StatefulWidget {
 class DetailPageState extends State<DetailPage> {
   final user = FirebaseAuth.instance.currentUser;
   var isLiked = false;
-  var textAnswerCount = '';
+  var AnswerCountText = '';
+  var CARText = '';
   List<bool> CoOrIn = [];
 
   @override
@@ -45,15 +46,19 @@ class DetailPageState extends State<DetailPage> {
           .data();
       setState(() {
         if (data2['answerCount'] >= 100000000) {
-          textAnswerCount =
+          AnswerCountText =
               '${(data2['answerCount'] / 100000000).toStringAsFixed(1)}億回解答';
         } else if (data2['answerCount'] >= 10000) {
-          textAnswerCount =
+          AnswerCountText =
               '${(data2['answerCount'] / 10000).toStringAsFixed(1)}万回解答';
         } else {
-          textAnswerCount = '${data2['answerCount']}回解答';
+          AnswerCountText = '${data2['answerCount']}回解答';
         }
       });
+      if (data2['answerCount'] != null && data2['CARsum'] != null) {
+        CARText =
+            '　正答率${(data2['CARsum'] / data2['answerCount']).toStringAsFixed(1)}%';
+      }
     });
   }
 
@@ -115,7 +120,7 @@ class DetailPageState extends State<DetailPage> {
                                       fontWeight: FontWeight.bold,
                                       fontSize: 18),
                                 ),
-                                Text('${textAnswerCount} 正答率10%')
+                                Text(AnswerCountText + CARText)
                               ],
                             ),
                             width: double.infinity),
@@ -188,25 +193,10 @@ class DetailPageState extends State<DetailPage> {
                               style: TextStyle(fontSize: 13),
                             ),
                             onPressed: () async {
-                              await FirebaseFirestore.instance
-                                  .collection('Users')
-                                  .doc(user.uid)
-                                  .update({
-                                'History': FieldValue.arrayUnion([widget.id])
-                              });
-                              final snapshotRiddles = FirebaseFirestore.instance
-                                  .collection('Riddles')
-                                  .doc(widget.id);
-
-                              final Map<String, dynamic> data =
-                                  (await snapshotRiddles.get()).data();
-                              await FirebaseFirestore.instance
-                                  .collection('Riddles')
-                                  .doc(widget.id)
-                                  .update(
-                                      {'answerCount': data['answerCount'] + 1});
                               List<DocumentSnapshot> Slides =
-                                  await snapshotRiddles
+                                  await FirebaseFirestore.instance
+                                      .collection('Riddles')
+                                      .doc(widget.id)
                                       .collection('Slides')
                                       .get()
                                       .then((value) => value.docs);
@@ -217,6 +207,7 @@ class DetailPageState extends State<DetailPage> {
                                         index: index,
                                         length: Slides.length,
                                         CoOrIn: CoOrIn,
+                                        id: widget.id,
                                       )));
                             }),
                       )

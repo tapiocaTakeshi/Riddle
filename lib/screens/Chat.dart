@@ -56,7 +56,7 @@ class _ChatPageState extends State<ChatPage> {
                 if (snapshot.hasError) return Text('エラー');
                 switch (snapshot.connectionState) {
                   case ConnectionState.waiting:
-                    return CircularProgressIndicator();
+                    return Center(child: CircularProgressIndicator());
                   default:
                     return ListView(
                       children: snapshot.data.docs
