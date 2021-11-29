@@ -12,17 +12,16 @@ class ResultPage extends StatefulWidget {
 }
 
 class _ResultPageState extends State<ResultPage> {
-  double CAR;
+  int CorrectAnswer;
+  double CorrectAnswerRate;
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    widget.CoOrIn = [];
-    CAR = widget.CoOrIn.fold(
-            0, (previousValue, element) => previousValue + (element ? 1 : 0)) /
-        widget.Slides.length *
-        100;
-    print(CAR);
+    CorrectAnswer = widget.CoOrIn.fold(
+        0, (previousValue, element) => previousValue + (element ? 1 : 0));
+    CorrectAnswerRate = CorrectAnswer / widget.Slides.length * 100;
+    print(CorrectAnswerRate);
   }
 
   @override
@@ -32,33 +31,47 @@ class _ResultPageState extends State<ResultPage> {
         elevation: 1,
         automaticallyImplyLeading: false,
       ),
-      body: Column(
-        children: [
-          Text(CAR.toString()),
-          SizedBox(
-            width: 300,
-            child: RaisedButton(
-                elevation: 1,
-                textColor: Colors.white,
-                color: Colors.blueAccent.withOpacity(0.9),
-                child: Text(
-                  '終了',
-                  style: TextStyle(fontSize: 13),
-                ),
-                onPressed: () async {
-                  Navigator.of(context).pop();
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Text(
+              '採点結果',
+              style: Theme.of(context).textTheme.headline3,
+            ),
+            Text(
+              CorrectAnswer.toString() + '/' + widget.Slides.length.toString(),
+              style: Theme.of(context).textTheme.headline2,
+            ),
+            SizedBox(
+              width: 300,
+              child: RaisedButton(
+                  elevation: 1,
+                  textColor: Colors.white,
+                  color: Colors.blueAccent.withOpacity(0.9),
+                  child: Text(
+                    '終了',
+                    style: TextStyle(fontSize: 13),
+                  ),
+                  onPressed: () async {
+                    Navigator.of(context).pop();
 
-                  await FirebaseFirestore.instance
-                      .collection('Riddles')
-                      .doc(widget.id)
-                      .update({'answerCount': FieldValue.increment(1)});
-                  await FirebaseFirestore.instance
-                      .collection('Riddles')
-                      .doc(widget.id)
-                      .update({'CARsum': FieldValue.increment(CAR)});
-                }),
-          )
-        ],
+                    await FirebaseFirestore.instance
+                        .collection('Riddles')
+                        .doc(widget.id)
+                        .update({'answerCount': FieldValue.increment(1)});
+                    await FirebaseFirestore.instance
+                        .collection('Riddles')
+                        .doc(widget.id)
+                        .update({
+                      'CorrectAnswerRatesum':
+                          FieldValue.increment(CorrectAnswerRate)
+                    });
+                  }),
+            )
+          ],
+        ),
       ),
     );
   }

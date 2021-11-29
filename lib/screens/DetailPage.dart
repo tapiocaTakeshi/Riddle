@@ -25,8 +25,8 @@ class DetailPageState extends State<DetailPage> {
   final user = FirebaseAuth.instance.currentUser;
   var isLiked = false;
   var AnswerCountText = '';
-  var CARText = '';
-  List<bool> CoOrIn = [];
+  var CorrectAnswerRateText = '';
+  List<bool> CoOrIn;
 
   @override
   void initState() {
@@ -55,9 +55,10 @@ class DetailPageState extends State<DetailPage> {
           AnswerCountText = '${data2['answerCount']}回解答';
         }
       });
-      if (data2['answerCount'] != null && data2['CARsum'] != null) {
-        CARText =
-            '　正答率${(data2['CARsum'] / data2['answerCount']).toStringAsFixed(1)}%';
+      if (data2['answerCount'] != null &&
+          data2['CorrectAnswerRatesum'] != null) {
+        CorrectAnswerRateText =
+            '　正答率${(data2['CorrectAnswerRatesum'] / data2['answerCount']).toStringAsFixed(1)}%';
       }
     });
   }
@@ -120,7 +121,7 @@ class DetailPageState extends State<DetailPage> {
                                       fontWeight: FontWeight.bold,
                                       fontSize: 18),
                                 ),
-                                Text(AnswerCountText + CARText)
+                                Text(AnswerCountText + CorrectAnswerRateText)
                               ],
                             ),
                             width: double.infinity),
@@ -200,15 +201,19 @@ class DetailPageState extends State<DetailPage> {
                                       .collection('Slides')
                                       .get()
                                       .then((value) => value.docs);
+                              CoOrIn = [];
+
                               var index = 0;
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (_) => RiddlePage(
-                                        Slides: Slides,
-                                        index: index,
-                                        length: Slides.length,
-                                        CoOrIn: CoOrIn,
-                                        id: widget.id,
-                                      )));
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                    builder: (_) => RiddlePage(
+                                          Slides: Slides,
+                                          index: index,
+                                          length: Slides.length,
+                                          CoOrIn: CoOrIn,
+                                          id: widget.id,
+                                        )),
+                              );
                             }),
                       )
                     ],

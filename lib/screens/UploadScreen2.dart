@@ -68,7 +68,7 @@ class UploadScreen2State extends State<UploadScreen2> {
                                                     MainAxisAlignment.center,
                                                 children: [
                                                   Text(
-                                                    '問題用画像（JPG）を選択',
+                                                    'サムネイル用画像（JPG）を選択',
                                                     style: TextStyle(
                                                         color:
                                                             thumbnailTextColor,
