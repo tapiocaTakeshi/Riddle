@@ -201,7 +201,9 @@ class DetailPageState extends State<DetailPage> {
                                       .collection('Slides')
                                       .get()
                                       .then((value) => value.docs);
-                              CoOrIn = [];
+                              setState(() {
+                                CoOrIn = [];
+                              });
 
                               var index = 0;
                               Navigator.of(context).push(
