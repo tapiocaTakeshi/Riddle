@@ -1,8 +1,13 @@
+import 'package:Riddle/data/AdState.dart';
 import 'package:Riddle/screens/Chat.dart';
 import 'package:Riddle/screens/RiddlePage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:provider/provider.dart';
+
+const int maxFailedLoadAttempts = 3;
 
 class DetailPage extends StatefulWidget {
   @override
@@ -28,11 +33,48 @@ class DetailPageState extends State<DetailPage> {
   var CorrectAnswerRateText = '';
   List<bool> CoOrIn;
 
+  InterstitialAd interstitial;
+  int _interstitialLoadAttempts = 0;
+
+  void interCreate() {
+    AdState adState = Provider.of<AdState>(context, listen: false);
+    adState.initialization;
+    InterstitialAd.load(
+        adUnitId: adState.InterstitialAdId,
+        request: AdRequest(),
+        adLoadCallback:
+            InterstitialAdLoadCallback(onAdLoaded: (InterstitialAd ad) {
+          interstitial = ad;
+          _interstitialLoadAttempts = 0;
+          print('ok');
+        }, onAdFailedToLoad: (LoadAdError error) {
+          _interstitialLoadAttempts += 1;
+          interstitial = null;
+          if (_interstitialLoadAttempts >= maxFailedLoadAttempts) interCreate();
+          print('not ok');
+        }));
+  }
+
+  void interShow() {
+    if (interstitial != null) {
+      interstitial.fullScreenContentCallback = FullScreenContentCallback(
+          onAdDismissedFullScreenContent: (InterstitialAd ad) {
+        ad.dispose();
+        interCreate();
+      }, onAdFailedToShowFullScreenContent: (InterstitialAd ad, AdError error) {
+        ad.dispose();
+        interCreate();
+      });
+      interstitial.show();
+    }
+  }
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     Future(() async {
+      interCreate();
       Map<String, dynamic> data1 = (await FirebaseFirestore.instance
               .collection('Users')
               .doc(user.uid)
@@ -61,6 +103,13 @@ class DetailPageState extends State<DetailPage> {
             '　正答率${(data2['CorrectAnswerRatesum'] / data2['answerCount']).toStringAsFixed(1)}%';
       }
     });
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    interstitial?.dispose();
   }
 
   void updateLike() async {
@@ -206,6 +255,7 @@ class DetailPageState extends State<DetailPage> {
                               });
 
                               var index = 0;
+                              interShow();
                               Navigator.of(context).push(
                                 MaterialPageRoute(
                                     builder: (_) => RiddlePage(
