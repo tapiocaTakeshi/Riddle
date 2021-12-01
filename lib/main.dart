@@ -77,7 +77,7 @@ class BranchState extends State<Branch> {
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
-    return StreamBuilder<User>(
+    return StreamBuilder<User?>(
       stream: FirebaseAuth.instance.authStateChanges(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {

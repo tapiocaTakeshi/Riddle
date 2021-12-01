@@ -12,10 +12,10 @@ import '../functions/Loading.dart';
 class UploadScreen2 extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => UploadScreen2State();
-  List<String> answers;
-  List<Duration> durations;
-  List<File> slideImageFiles;
-  List<File> expImageFiles;
+  List<String>? answers;
+  List<Duration>? durations;
+  List<File>? slideImageFiles;
+  List<File>? expImageFiles;
 
   UploadScreen2(
       this.answers, this.durations, this.slideImageFiles, this.expImageFiles);
@@ -58,7 +58,8 @@ class UploadScreen2State extends State<UploadScreen2> {
                                         ? Container(
                                             decoration: BoxDecoration(
                                                 border: Border.all(
-                                                    color: Colors.grey[300])),
+                                                    color:
+                                                        Colors.grey.shade300)),
                                             child: Container(
                                               child: Center(
                                                   child: Column(
@@ -100,8 +101,8 @@ class UploadScreen2State extends State<UploadScreen2> {
                               Container(
                                 child: TextFormField(
                                     initialValue: _title,
-                                    validator: (value) {
-                                      if (value.isNotEmpty) {
+                                    validator: (String? value) {
+                                      if (value!.isNotEmpty) {
                                         return null;
                                       } else {
                                         return 'タイトルを入力してください';
@@ -146,9 +147,9 @@ class UploadScreen2State extends State<UploadScreen2> {
                               style: TextStyle(fontSize: 13),
                             ),
                             onPressed: () async {
-                              if (_formkey.currentState.validate() &&
+                              if (_formkey.currentState!.validate() &&
                                   model.thumbnailImage != null) {
-                                _formkey.currentState.save();
+                                _formkey.currentState!.save();
                                 setState(() {
                                   model.visible = true;
                                 });
@@ -165,21 +166,21 @@ class UploadScreen2State extends State<UploadScreen2> {
                                 //作成したユーザーと紐付ける
                                 await FirebaseFirestore.instance
                                     .collection('Users')
-                                    .doc(user.uid)
+                                    .doc(user!.uid)
                                     .update({
                                   'MyRiddleList':
                                       FieldValue.arrayUnion([snapshotRiddle.id])
                                 });
 
                                 //スライドをアップロード
-                                widget.slideImageFiles
+                                widget.slideImageFiles!
                                     .asMap()
                                     .forEach((index, value) async {
                                   var slideurl = await uploadImage(value,
                                       'Riddles/${snapshotRiddle.id}/Slides/${value.path.split('/').last}');
                                   var expurl = await uploadImage(
-                                      widget.expImageFiles[index],
-                                      'Riddles/${snapshotRiddle.id}/Slides/${widget.expImageFiles[index].path.split('/').last}');
+                                      widget.expImageFiles![index],
+                                      'Riddles/${snapshotRiddle.id}/Slides/${widget.expImageFiles![index].path.split('/').last}');
                                   print(slideurl);
                                   print(expurl);
                                   await FirebaseFirestore.instance
@@ -190,14 +191,14 @@ class UploadScreen2State extends State<UploadScreen2> {
                                       .set({
                                     'slideImageURL': slideurl,
                                     'expImageURL': expurl,
-                                    'answer': widget.answers[index],
-                                    'limit': widget.durations[index].inSeconds,
+                                    'answer': widget.answers![index],
+                                    'limit': widget.durations![index].inSeconds,
                                   });
                                 });
 
                                 //サムネイルをアップロード
                                 String thumbnailURL = await uploadImage(
-                                    model.thumbnailImageFile,
+                                    model.thumbnailImageFile!,
                                     'Riddles/${snapshotRiddle.id}/thumbnailImageFile.jpg');
 
                                 if (thumbnailURL == '') return;
@@ -207,7 +208,7 @@ class UploadScreen2State extends State<UploadScreen2> {
                                     .update({
                                   'thumbnailURL': thumbnailURL,
                                   'id': snapshotRiddle.id.toString(),
-                                  'uid': user.uid
+                                  'uid': user!.uid
                                 });
 
                                 setState(() {

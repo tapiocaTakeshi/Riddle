@@ -7,9 +7,9 @@ import '../functions/Upload.dart';
 
 class ThumbnailModel extends ChangeNotifier {
   String thumbnailPath = '';
-  File thumbnailImageFile;
-  Image thumbnailImage;
-  Uint8List thumbnailImageByte;
+  File? thumbnailImageFile;
+  Image? thumbnailImage;
+  Uint8List? thumbnailImageByte;
   final Directory systemTempDir = Directory.systemTemp;
   bool visible = false;
 
@@ -19,9 +19,9 @@ class ThumbnailModel extends ChangeNotifier {
       visible = true;
       thumbnailImageByte = File(thumbnailPath).readAsBytesSync();
       thumbnailImageFile = File('${systemTempDir.path}/thumbnailImage.jpg');
-      thumbnailImageFile.writeAsBytesSync(thumbnailImageByte);
+      thumbnailImageFile!.writeAsBytesSync(thumbnailImageByte!);
       thumbnailImage = Image.memory(
-        thumbnailImageByte,
+        thumbnailImageByte!,
         height: 135,
         width: 240,
         fit: BoxFit.cover,

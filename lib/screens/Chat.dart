@@ -15,9 +15,9 @@ void showChat(BuildContext context, String id) {
 class ChatPage extends StatefulWidget {
   @override
   _ChatPageState createState() => _ChatPageState();
-  String id;
+  String? id;
 
-  ChatPage({@required this.id});
+  ChatPage({this.id});
 }
 
 class _ChatPageState extends State<ChatPage> {
@@ -29,8 +29,8 @@ class _ChatPageState extends State<ChatPage> {
       child: Scaffold(
         appBar: AppBar(),
         body: CommentBox(
-          userImage: user.photoURL,
-          textColor: Theme.of(context).textTheme.bodyText1.color,
+          userImage: user!.photoURL,
+          textColor: Theme.of(context).textTheme.bodyText1!.color,
           backgroundColor: Theme.of(context).backgroundColor,
           sendWidget: Icon(
             Icons.send_sharp,
@@ -44,7 +44,7 @@ class _ChatPageState extends State<ChatPage> {
                 .collection('Riddles')
                 .doc(widget.id)
                 .collection('Chat')
-                .add({'uid': user.uid, 'comment': _controller.text});
+                .add({'uid': user!.uid, 'comment': _controller.text});
           },
           child: StreamBuilder<QuerySnapshot>(
               stream: FirebaseFirestore.instance
@@ -59,7 +59,7 @@ class _ChatPageState extends State<ChatPage> {
                     return Center(child: CircularProgressIndicator());
                   default:
                     return ListView(
-                      children: snapshot.data.docs
+                      children: snapshot.data!.docs
                           .map((DocumentSnapshot doc) =>
                               StreamBuilder<DocumentSnapshot>(
                                   stream: FirebaseFirestore.instance
@@ -71,7 +71,7 @@ class _ChatPageState extends State<ChatPage> {
                                       return ListTile(
                                         leading: CircleAvatar(
                                           backgroundImage: NetworkImage(
-                                              snapshot.data['photoURL']),
+                                              snapshot.data!['photoURL']),
                                         ),
                                         title: Text(doc['comment']),
                                       );

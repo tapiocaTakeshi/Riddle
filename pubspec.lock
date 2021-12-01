@@ -133,7 +133,7 @@ packages:
       name: file_picker
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "4.2.4"
+    version: "4.2.6"
   firebase:
     dependency: transitive
     description:
@@ -250,7 +250,7 @@ packages:
       name: flutter_plugin_android_lifecycle
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.4"
+    version: "2.0.5"
   flutter_staggered_grid_view:
     dependency: "direct main"
     description:
@@ -386,7 +386,7 @@ packages:
       name: pdf
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.6.2"
+    version: "3.6.3"
   pdf_image_renderer:
     dependency: "direct main"
     description:

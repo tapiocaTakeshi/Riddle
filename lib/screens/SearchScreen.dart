@@ -17,7 +17,7 @@ class SearchScreenState extends State<SearchScreen> {
   final user = FirebaseAuth.instance.currentUser;
   List<Map<String, dynamic>> riddles = [];
   // List<Map<String, dynamic>> userInfos=[];
-  var keyword = '';
+  String? keyword = '';
 
   Future loadRiddles() async {
     final riddlesSnapshot =
@@ -72,8 +72,7 @@ class SearchScreenState extends State<SearchScreen> {
                           .toList();
                   keyword = await showSearch(
                       context: context,
-                      delegate: searchDelegate(
-                          Keywords: Keywords, histories: histories),
+                      delegate: searchDelegate(Keywords, histories),
                       useRootNavigator: true);
                   loadRiddles();
                 },
@@ -136,11 +135,11 @@ class SearchScreenState extends State<SearchScreen> {
 }
 
 class searchDelegate extends SearchDelegate<String> {
-  CollectionReference Keywords;
-  List<Map<String, dynamic>> histories;
-  List<Map<String, dynamic>> keywordsfilter;
+  late CollectionReference Keywords;
+  late List<Map<String, dynamic>> histories;
+  late List<Map<String, dynamic>> keywordsfilter;
 
-  searchDelegate({@required this.Keywords, @required this.histories}) {
+  searchDelegate(this.Keywords, this.histories) {
     keywordsfilter = histories;
   }
 
@@ -166,13 +165,13 @@ class searchDelegate extends SearchDelegate<String> {
           progress: transitionAnimation,
         ),
         onPressed: () {
-          close(context, null);
+          close(context, '');
         });
   }
 
   @override
   Widget buildResults(BuildContext context) {
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
+    WidgetsBinding.instance!.addPostFrameCallback((_) async {
       close(context, query);
       if (query.isNotEmpty) {
         final snapshotFilter =

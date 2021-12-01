@@ -10,8 +10,8 @@ class SlideModel extends ChangeNotifier {
   List<Image> slideImages = [];
   List<File> slideImageFiles = [];
   List<Uint8List> slideImageBytes = [];
-  List<String> answers;
-  List<Duration> durations;
+  List<String>? answers;
+  List<Duration>? durations;
   List<bool> isOpeneds = [false];
   final Directory systemTempDir = Directory.systemTemp;
   bool visible = false;
@@ -55,21 +55,21 @@ class SlideModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  List<String> expPaths;
-  List<File> expImageFiles;
-  List<Image> expImages;
-  List<Uint8List> expImageBytes;
+  List<String>? expPaths;
+  List<File>? expImageFiles;
+  List<Image>? expImages;
+  List<Uint8List>? expImageBytes;
 
   void setExp(int index) async {
-    expPaths[index] = await JpgUpload();
-    if (expPaths[index] != '') {
+    expPaths![index] = await JpgUpload();
+    if (expPaths![index] != '') {
       visible = true;
-      expImageBytes[index] = File(expPaths[index]).readAsBytesSync();
-      expImageFiles[index] =
+      expImageBytes![index] = File(expPaths![index]).readAsBytesSync();
+      expImageFiles![index] =
           File('${systemTempDir.path}/expImage${index.toString()}.jpg');
-      expImageFiles[index].writeAsBytesSync(expImageBytes[index]);
-      expImages[index] = Image.memory(
-        expImageBytes[index],
+      expImageFiles![index].writeAsBytesSync(expImageBytes![index]);
+      expImages![index] = Image.memory(
+        expImageBytes![index],
         height: 135,
         width: 240,
         fit: BoxFit.cover,

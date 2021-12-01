@@ -5,22 +5,22 @@ class ResultPage extends StatefulWidget {
   @override
   _ResultPageState createState() => _ResultPageState();
 
-  List<bool> CoOrIn;
-  List<DocumentSnapshot> Slides;
-  String id;
-  ResultPage({@required this.CoOrIn, @required this.Slides, @required this.id});
+  List<bool>? CoOrIn;
+  List<DocumentSnapshot>? Slides;
+  String? id;
+  ResultPage({this.CoOrIn, this.Slides, this.id});
 }
 
 class _ResultPageState extends State<ResultPage> {
-  int CorrectAnswer;
-  double CorrectAnswerRate;
+  int? CorrectAnswer;
+  double? CorrectAnswerRate;
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    CorrectAnswer = widget.CoOrIn.fold(
-        0, (previousValue, element) => previousValue + (element ? 1 : 0));
-    CorrectAnswerRate = CorrectAnswer / widget.Slides.length * 100;
+    CorrectAnswer = widget.CoOrIn!.fold(
+        0, (previousValue, element) => previousValue! + (element ? 1 : 0));
+    CorrectAnswerRate = CorrectAnswer! / widget.Slides!.length * 100;
     print(CorrectAnswerRate);
   }
 
@@ -41,7 +41,7 @@ class _ResultPageState extends State<ResultPage> {
               style: Theme.of(context).textTheme.headline3,
             ),
             Text(
-              CorrectAnswer.toString() + '/' + widget.Slides.length.toString(),
+              CorrectAnswer.toString() + '/' + widget.Slides!.length.toString(),
               style: Theme.of(context).textTheme.headline2,
             ),
             SizedBox(
@@ -66,7 +66,7 @@ class _ResultPageState extends State<ResultPage> {
                         .doc(widget.id)
                         .update({
                       'CorrectAnswerRatesum':
-                          FieldValue.increment(CorrectAnswerRate)
+                          FieldValue.increment(CorrectAnswerRate!)
                     });
                   }),
             )

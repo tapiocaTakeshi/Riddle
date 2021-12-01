@@ -8,26 +8,21 @@ class RiddlePage extends StatefulWidget {
   @override
   _RiddlePageState createState() => _RiddlePageState();
 
-  List<DocumentSnapshot> Slides;
-  int index;
-  int length;
-  List<bool> CoOrIn;
-  String id;
+  List<DocumentSnapshot>? Slides;
+  int? index;
+  int? length;
+  List<bool>? CoOrIn;
+  String? id;
 
-  RiddlePage(
-      {@required this.Slides,
-      @required this.index,
-      @required this.length,
-      @required this.CoOrIn,
-      @required this.id});
+  RiddlePage({this.Slides, this.index, this.length, this.CoOrIn, this.id});
 }
 
 class _RiddlePageState extends State<RiddlePage> {
-  int count;
-  Timer timer;
-  int limit;
-  String answer;
-  String slideImageURL;
+  late int count;
+  Timer? timer;
+  int? limit;
+  String? answer;
+  String? slideImageURL;
   bool isCorrect = false;
   bool isIncorrect = false;
   bool isComplete = false;
@@ -40,7 +35,7 @@ class _RiddlePageState extends State<RiddlePage> {
             timer.cancel();
             count = 0;
             setState(() {
-              widget.CoOrIn.add(false);
+              widget.CoOrIn!.add(false);
               isComplete = true;
             });
           } else {
@@ -54,10 +49,10 @@ class _RiddlePageState extends State<RiddlePage> {
   @override
   void initState() {
     super.initState();
-    limit = widget.Slides[widget.index]['limit'];
-    answer = widget.Slides[widget.index]['answer'];
-    slideImageURL = widget.Slides[widget.index]['slideImageURL'];
-    count = limit;
+    limit = widget.Slides![widget.index!]['limit'];
+    answer = widget.Slides![widget.index!]['answer'];
+    slideImageURL = widget.Slides![widget.index!]['slideImageURL'];
+    count = limit!;
     StartTimer();
   }
 
@@ -80,7 +75,7 @@ class _RiddlePageState extends State<RiddlePage> {
                                 flex: 3,
                                 child: Center(
                                   child: Image.network(
-                                    slideImageURL,
+                                    slideImageURL!,
                                     height: 225,
                                     width: 400,
                                     fit: BoxFit.cover,
@@ -132,7 +127,7 @@ class _RiddlePageState extends State<RiddlePage> {
                                                   Duration(milliseconds: 500));
 
                                               setState(() {
-                                                widget.CoOrIn.add(true);
+                                                widget.CoOrIn!.add(true);
                                                 isComplete = true;
                                               });
                                             } else {
@@ -176,12 +171,12 @@ class _RiddlePageState extends State<RiddlePage> {
                   child: Column(
                     children: [
                       Text(
-                        widget.CoOrIn[widget.index] ? '正解' : '不正解',
+                        widget.CoOrIn![widget.index!] ? '正解' : '不正解',
                         style: Theme.of(context).textTheme.headline2,
                       ),
                       Card(
                         child: Image.network(
-                          widget.Slides[widget.index]['expImageURL'],
+                          widget.Slides![widget.index!]['expImageURL'],
                           height: 225,
                           width: 400,
                           fit: BoxFit.cover,
@@ -197,13 +192,13 @@ class _RiddlePageState extends State<RiddlePage> {
                             style: TextStyle(fontSize: 13),
                           ),
                           onPressed: () {
-                            if (widget.index < widget.length - 1) {
+                            if (widget.index! < widget.length! - 1) {
                               Navigator.of(context)
                                   .pushReplacement(MaterialPageRoute(
                                       builder: (_) => RiddlePage(
                                             Slides: widget.Slides,
-                                            index: widget.index + 1,
-                                            length: widget.Slides.length,
+                                            index: widget.index! + 1,
+                                            length: widget.Slides!.length,
                                             CoOrIn: widget.CoOrIn,
                                             id: widget.id,
                                           )));
@@ -211,9 +206,9 @@ class _RiddlePageState extends State<RiddlePage> {
                               Navigator.of(context)
                                   .pushReplacement(MaterialPageRoute(
                                       builder: (_) => ResultPage(
-                                            CoOrIn: widget.CoOrIn,
-                                            Slides: widget.Slides,
-                                            id: widget.id,
+                                            CoOrIn: widget.CoOrIn!,
+                                            Slides: widget.Slides!,
+                                            id: widget.id!,
                                           )));
                               print(widget.CoOrIn);
                             }

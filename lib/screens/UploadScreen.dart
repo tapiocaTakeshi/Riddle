@@ -41,10 +41,10 @@ class UploadScreenState extends State<UploadScreen> {
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) => UploadScreen2(
-                                        model.answers,
-                                        model.durations,
+                                        model.answers!,
+                                        model.durations!,
                                         model.slideImageFiles,
-                                        model.expImageFiles)));
+                                        model.expImageFiles!)));
                           },
                           icon: Icon(Icons.arrow_forward_ios))
                   ],
@@ -124,13 +124,13 @@ class UploadScreenState extends State<UploadScreen> {
                                                                   .arrow_forward),
                                                               onPressed: () {
                                                                 if (_formkey
-                                                                    .currentState
+                                                                    .currentState!
                                                                     .validate()) if (model
-                                                                            .expPaths[
+                                                                            .expPaths![
                                                                         index] !=
                                                                     '') {
                                                                   _formkey
-                                                                      .currentState
+                                                                      .currentState!
                                                                       .save();
                                                                   Navigator.of(
                                                                           context)
@@ -173,11 +173,11 @@ class UploadScreenState extends State<UploadScreen> {
                                                                     maxLength:
                                                                         10,
                                                                     initialValue:
-                                                                        model.answers[
+                                                                        model.answers![
                                                                             index],
                                                                     validator:
                                                                         (value) {
-                                                                      if (value
+                                                                      if (value!
                                                                           .isNotEmpty) {
                                                                         return null;
                                                                       } else {
@@ -186,7 +186,7 @@ class UploadScreenState extends State<UploadScreen> {
                                                                     },
                                                                     onChanged:
                                                                         (value) {
-                                                                      model.answers[
+                                                                      model.answers![
                                                                               index] =
                                                                           value;
                                                                     },
@@ -240,7 +240,7 @@ class UploadScreenState extends State<UploadScreen> {
                                                             child:
                                                                 CupertinoDialogAction(
                                                                     child: Text(
-                                                                      '${(model.durations[index].inSeconds ~/ 60).toString().padLeft(2, '0')}:${(model.durations[index].inSeconds % 60).toString().padLeft(2, '0')}',
+                                                                      '${(model.durations![index].inSeconds ~/ 60).toString().padLeft(2, '0')}:${(model.durations![index].inSeconds % 60).toString().padLeft(2, '0')}',
                                                                       style: TextStyle(
                                                                           fontSize:
                                                                               30),
@@ -256,11 +256,11 @@ class UploadScreenState extends State<UploadScreen> {
                                                                                   SizedBox(
                                                                                     height: 200,
                                                                                     child: CupertinoTimerPicker(
-                                                                                      initialTimerDuration: model.durations[index],
+                                                                                      initialTimerDuration: model.durations![index],
                                                                                       mode: CupertinoTimerPickerMode.ms,
                                                                                       onTimerDurationChanged: (duration) {
                                                                                         setState(() {
-                                                                                          model.durations[index] = duration;
+                                                                                          model.durations![index] = duration;
                                                                                         });
                                                                                       },
                                                                                     ),
@@ -280,13 +280,13 @@ class UploadScreenState extends State<UploadScreen> {
                                                                 model.setExp(
                                                                     index);
                                                               },
-                                                              child: model.expPaths[
+                                                              child: model.expPaths![
                                                                           index] ==
                                                                       ''
                                                                   ? Container(
                                                                       decoration:
                                                                           BoxDecoration(
-                                                                              border: Border.all(color: Colors.grey[300])),
+                                                                              border: Border.all(color: Colors.grey.shade300)),
                                                                       child:
                                                                           Container(
                                                                         child: Center(
@@ -314,7 +314,7 @@ class UploadScreenState extends State<UploadScreen> {
                                                                             .grey[100],
                                                                       ),
                                                                     )
-                                                                  : model.expImages[
+                                                                  : model.expImages![
                                                                       index]),
                                                         )
                                                       ],

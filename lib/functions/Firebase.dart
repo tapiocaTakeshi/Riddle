@@ -25,5 +25,5 @@ Future<Map<String, dynamic>> getData(
       .doc(documentId)
       .get();
 
-  return docSnapshot.data();
+  return docSnapshot.data() as Map<String, dynamic>;
 }

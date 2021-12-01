@@ -18,9 +18,8 @@ class AccountScreenState extends State<AccountScreen>
   List<Map<String, dynamic>> myRiddles = [];
   List<Map<String, dynamic>> favoriteRiddles = [];
 
-
   void loadRiddles() async {
-    final data = await getData("Users", user.uid);
+    final data = await getData("Users", user!.uid);
 
     final myRiddleList = data['MyRiddleList'];
     if (myRiddleList.isNotEmpty) {
@@ -60,7 +59,7 @@ class AccountScreenState extends State<AccountScreen>
     )
   ];
 
-  TabController _tabController;
+  TabController? _tabController;
 
   @override
   void initState() {
@@ -76,7 +75,7 @@ class AccountScreenState extends State<AccountScreen>
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          user.displayName.toString(),
+          user!.displayName.toString(),
           style: TextStyle(color: Colors.black),
         ),
         actions: <Widget>[
@@ -97,7 +96,7 @@ class AccountScreenState extends State<AccountScreen>
             return [
               SliverPersistentHeader(
                   delegate: MySliverPersistentHeaderDelegate(
-                      userImage: user.photoURL,
+                      userImage: user!.photoURL,
                       subscribersCount: 100,
                       GDV: 50)),
               SliverPadding(
@@ -119,12 +118,12 @@ class AccountScreenState extends State<AccountScreen>
           body: TabBarView(controller: _tabController, children: <Widget>[
             RefreshIndicator(
                 onRefresh: () async {
-                  await loadRiddles();
+                  loadRiddles();
                 },
                 child: TabPage(contents: myRiddles)),
             RefreshIndicator(
                 onRefresh: () async {
-                  await loadRiddles();
+                  loadRiddles();
                 },
                 child: TabPage(contents: favoriteRiddles)),
           ])),
@@ -163,8 +162,7 @@ class MySliverPersistentHeaderDelegate extends SliverPersistentHeaderDelegate {
                 shape: BoxShape.circle,
               ),
             ),
-            VerticalDivider(
-            ),
+            VerticalDivider(),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),
               child: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
@@ -173,9 +171,9 @@ class MySliverPersistentHeaderDelegate extends SliverPersistentHeaderDelegate {
                   child: Text(
                     "登録者数",
                     style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold,
-                        ),
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
                 Padding(
@@ -183,16 +181,14 @@ class MySliverPersistentHeaderDelegate extends SliverPersistentHeaderDelegate {
                   child: Text(
                     subscribersCount.toString(),
                     style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        ),
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 )
               ]),
             ),
-            VerticalDivider(
-
-            ),
+            VerticalDivider(),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),
               child: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
@@ -201,9 +197,9 @@ class MySliverPersistentHeaderDelegate extends SliverPersistentHeaderDelegate {
                   child: Text(
                     "偏差値",
                     style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold,
-                        ),
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
                 Padding(
@@ -211,15 +207,14 @@ class MySliverPersistentHeaderDelegate extends SliverPersistentHeaderDelegate {
                   child: Text(
                     GDV.toString(),
                     style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        ),
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 )
               ]),
             ),
-            VerticalDivider(
-            ),
+            VerticalDivider(),
           ],
         ),
       ),
@@ -270,7 +265,7 @@ class TabPage extends StatelessWidget {
                 closedElevation: 0,
                 openBuilder: (context, closedContainer) {
                   return DetailPage(
-                    id:contents[index]['id'],
+                    id: contents[index]['id'],
                     title: contents[index]['title'],
                     image: contents[index]['thumbnailURL'],
                     onPressed: closedContainer,

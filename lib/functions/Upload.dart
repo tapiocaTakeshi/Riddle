@@ -5,17 +5,17 @@ import 'package:pdf_image_renderer/pdf_image_renderer.dart';
 
 //pdfファイルをアップロード
 Future<String> PdfUpload() async {
-  FilePickerResult result = await FilePicker.platform.pickFiles(
+  FilePickerResult? result = await FilePicker.platform.pickFiles(
     type: FileType.custom,
     allowedExtensions: ['pdf'],
   );
 
-  if (result != null) {
-    String path = result.files.single.path.toString();
-    return Future<String>.value(path);
-  } else {
-    return '';
-  }
+  // if (result != null) {
+  String path = result!.files.single.path.toString();
+  return Future<String>.value(path);
+  // } else {
+  //   return '';
+  // }
 }
 
 //pdfから複数の画像データ(Image)に変換
@@ -36,21 +36,21 @@ Future<List<Uint8List>> SplitPdf(String path) async {
       scale: 1.0,
       pageIndex: i,
     );
-    imageBytes.add(SlideByte);
+    imageBytes.add(SlideByte!);
   }
   return Future<List<Uint8List>>.value(imageBytes);
 }
 
 //pdfファイルをアップロード
 Future<String> JpgUpload() async {
-  FilePickerResult result = await FilePicker.platform.pickFiles(
+  FilePickerResult? result = await FilePicker.platform.pickFiles(
     type: FileType.custom,
     allowedExtensions: ['jpg'],
   );
-  if (result != null) {
-    String path = result.files.single.path.toString();
-    return Future<String>.value(path);
-  } else {
-    return '';
-  }
+  // if (result != null) {
+  String path = result!.files.single.path.toString();
+  return Future<String>.value(path);
+  // } else {
+  //   return '';
+  // }
 }

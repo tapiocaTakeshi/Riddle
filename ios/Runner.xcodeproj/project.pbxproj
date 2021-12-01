@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 52;
+	objectVersion = 51;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -15,36 +15,7 @@
 		97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FD1CF9000F007C117D /* Assets.xcassets */; };
 		97C147011CF9000F007C117D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FF1CF9000F007C117D /* LaunchScreen.storyboard */; };
 		FA64EF0C27245B3B0017D9DB /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = FA64EF0B27245B3B0017D9DB /* GoogleService-Info.plist */; };
-		FA9049A52755A63600988FF0 /* GoogleUtilities.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA90499D2755A63500988FF0 /* GoogleUtilities.xcframework */; };
-		FA9049A62755A63600988FF0 /* Licenses in Resources */ = {isa = PBXBuildFile; fileRef = FA90499E2755A63500988FF0 /* Licenses */; };
-		FA9049A72755A63600988FF0 /* GoogleMobileAds.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA90499F2755A63600988FF0 /* GoogleMobileAds.xcframework */; };
-		FA9049A82755A63600988FF0 /* GoogleAppMeasurement.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA9049A02755A63600988FF0 /* GoogleAppMeasurement.xcframework */; };
-		FA9049A92755A63600988FF0 /* PromisesObjC.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA9049A12755A63600988FF0 /* PromisesObjC.xcframework */; };
-		FA9049AA2755A63600988FF0 /* nanopb.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA9049A22755A63600988FF0 /* nanopb.xcframework */; };
-		FA9049AB2755A63600988FF0 /* GoogleAppMeasurementIdentitySupport.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA9049A32755A63600988FF0 /* GoogleAppMeasurementIdentitySupport.xcframework */; };
-		FA9049AC2755A63600988FF0 /* UserMessagingPlatform.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA9049A42755A63600988FF0 /* UserMessagingPlatform.xcframework */; };
-		FA9049B52755A71300988FF0 /* GoogleAppMeasurement.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA9049AD2755A71300988FF0 /* GoogleAppMeasurement.xcframework */; };
-		FA9049B62755A71300988FF0 /* GoogleAppMeasurementIdentitySupport.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA9049AE2755A71300988FF0 /* GoogleAppMeasurementIdentitySupport.xcframework */; };
-		FA9049B72755A71300988FF0 /* GoogleMobileAds.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA9049AF2755A71300988FF0 /* GoogleMobileAds.xcframework */; };
-		FA9049B82755A71300988FF0 /* GoogleUtilities.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA9049B02755A71300988FF0 /* GoogleUtilities.xcframework */; };
-		FA9049B92755A71300988FF0 /* Licenses in Resources */ = {isa = PBXBuildFile; fileRef = FA9049B12755A71300988FF0 /* Licenses */; };
-		FA9049BA2755A71300988FF0 /* nanopb.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA9049B22755A71300988FF0 /* nanopb.xcframework */; };
-		FA9049BB2755A71300988FF0 /* PromisesObjC.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA9049B32755A71300988FF0 /* PromisesObjC.xcframework */; };
-		FA9049BC2755A71300988FF0 /* UserMessagingPlatform.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA9049B42755A71300988FF0 /* UserMessagingPlatform.xcframework */; };
 /* End PBXBuildFile section */
-
-/* Begin PBXCopyFilesBuildPhase section */
-		9705A1C41CF9048500538489 /* Embed Frameworks */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-			);
-			name = "Embed Frameworks";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		0A81FA49731D120675BFA3B7 /* Pods-Runner.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.release.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.release.xcconfig"; sourceTree = "<group>"; };
@@ -64,23 +35,8 @@
 		97C147021CF9000F007C117D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		9F94210CF4C88A0A422AE218 /* Pods-Runner.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.debug.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.debug.xcconfig"; sourceTree = "<group>"; };
 		CB3A7B41199376A1981BA72F /* Pods-Runner.profile.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.profile.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.profile.xcconfig"; sourceTree = "<group>"; };
+		FA17D1852757376F0092B8F2 /* FirebaseAuth.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = FirebaseAuth.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		FA64EF0B27245B3B0017D9DB /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
-		FA90499D2755A63500988FF0 /* GoogleUtilities.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = GoogleUtilities.xcframework; path = "../../../Downloads/GoogleMobileAdsSdkiOS-8.13.0/GoogleUtilities.xcframework"; sourceTree = "<group>"; };
-		FA90499E2755A63500988FF0 /* Licenses */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Licenses; path = "../../../Downloads/GoogleMobileAdsSdkiOS-8.13.0/Licenses"; sourceTree = "<group>"; };
-		FA90499F2755A63600988FF0 /* GoogleMobileAds.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = GoogleMobileAds.xcframework; path = "../../../Downloads/GoogleMobileAdsSdkiOS-8.13.0/GoogleMobileAds.xcframework"; sourceTree = "<group>"; };
-		FA9049A02755A63600988FF0 /* GoogleAppMeasurement.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = GoogleAppMeasurement.xcframework; path = "../../../Downloads/GoogleMobileAdsSdkiOS-8.13.0/GoogleAppMeasurement.xcframework"; sourceTree = "<group>"; };
-		FA9049A12755A63600988FF0 /* PromisesObjC.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = PromisesObjC.xcframework; path = "../../../Downloads/GoogleMobileAdsSdkiOS-8.13.0/PromisesObjC.xcframework"; sourceTree = "<group>"; };
-		FA9049A22755A63600988FF0 /* nanopb.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = nanopb.xcframework; path = "../../../Downloads/GoogleMobileAdsSdkiOS-8.13.0/nanopb.xcframework"; sourceTree = "<group>"; };
-		FA9049A32755A63600988FF0 /* GoogleAppMeasurementIdentitySupport.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = GoogleAppMeasurementIdentitySupport.xcframework; path = "../../../Downloads/GoogleMobileAdsSdkiOS-8.13.0/GoogleAppMeasurementIdentitySupport.xcframework"; sourceTree = "<group>"; };
-		FA9049A42755A63600988FF0 /* UserMessagingPlatform.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = UserMessagingPlatform.xcframework; path = "../../../Downloads/GoogleMobileAdsSdkiOS-8.13.0/UserMessagingPlatform.xcframework"; sourceTree = "<group>"; };
-		FA9049AD2755A71300988FF0 /* GoogleAppMeasurement.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = GoogleAppMeasurement.xcframework; path = "../../../Downloads/GoogleMobileAdsSdkiOS-8.13.0/GoogleAppMeasurement.xcframework"; sourceTree = "<group>"; };
-		FA9049AE2755A71300988FF0 /* GoogleAppMeasurementIdentitySupport.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = GoogleAppMeasurementIdentitySupport.xcframework; path = "../../../Downloads/GoogleMobileAdsSdkiOS-8.13.0/GoogleAppMeasurementIdentitySupport.xcframework"; sourceTree = "<group>"; };
-		FA9049AF2755A71300988FF0 /* GoogleMobileAds.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = GoogleMobileAds.xcframework; path = "../../../Downloads/GoogleMobileAdsSdkiOS-8.13.0/GoogleMobileAds.xcframework"; sourceTree = "<group>"; };
-		FA9049B02755A71300988FF0 /* GoogleUtilities.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = GoogleUtilities.xcframework; path = "../../../Downloads/GoogleMobileAdsSdkiOS-8.13.0/GoogleUtilities.xcframework"; sourceTree = "<group>"; };
-		FA9049B12755A71300988FF0 /* Licenses */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Licenses; path = "../../../Downloads/GoogleMobileAdsSdkiOS-8.13.0/Licenses"; sourceTree = "<group>"; };
-		FA9049B22755A71300988FF0 /* nanopb.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = nanopb.xcframework; path = "../../../Downloads/GoogleMobileAdsSdkiOS-8.13.0/nanopb.xcframework"; sourceTree = "<group>"; };
-		FA9049B32755A71300988FF0 /* PromisesObjC.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = PromisesObjC.xcframework; path = "../../../Downloads/GoogleMobileAdsSdkiOS-8.13.0/PromisesObjC.xcframework"; sourceTree = "<group>"; };
-		FA9049B42755A71300988FF0 /* UserMessagingPlatform.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = UserMessagingPlatform.xcframework; path = "../../../Downloads/GoogleMobileAdsSdkiOS-8.13.0/UserMessagingPlatform.xcframework"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -89,20 +45,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				43DC63910F38C3E3FC0B803C /* Pods_Runner.framework in Frameworks */,
-				FA9049B62755A71300988FF0 /* GoogleAppMeasurementIdentitySupport.xcframework in Frameworks */,
-				FA9049B52755A71300988FF0 /* GoogleAppMeasurement.xcframework in Frameworks */,
-				FA9049BB2755A71300988FF0 /* PromisesObjC.xcframework in Frameworks */,
-				FA9049A72755A63600988FF0 /* GoogleMobileAds.xcframework in Frameworks */,
-				FA9049BA2755A71300988FF0 /* nanopb.xcframework in Frameworks */,
-				FA9049AB2755A63600988FF0 /* GoogleAppMeasurementIdentitySupport.xcframework in Frameworks */,
-				FA9049BC2755A71300988FF0 /* UserMessagingPlatform.xcframework in Frameworks */,
-				FA9049A82755A63600988FF0 /* GoogleAppMeasurement.xcframework in Frameworks */,
-				FA9049AA2755A63600988FF0 /* nanopb.xcframework in Frameworks */,
-				FA9049B72755A71300988FF0 /* GoogleMobileAds.xcframework in Frameworks */,
-				FA9049A52755A63600988FF0 /* GoogleUtilities.xcframework in Frameworks */,
-				FA9049AC2755A63600988FF0 /* UserMessagingPlatform.xcframework in Frameworks */,
-				FA9049A92755A63600988FF0 /* PromisesObjC.xcframework in Frameworks */,
-				FA9049B82755A71300988FF0 /* GoogleUtilities.xcframework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -112,6 +54,7 @@
 		11FBB8E23980174B8C63FD17 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				FA17D1852757376F0092B8F2 /* FirebaseAuth.framework */,
 				833AFDAB5255DF4E45120878 /* Pods_Runner.framework */,
 			);
 			name = Frameworks;
@@ -141,22 +84,6 @@
 		97C146E51CF9000F007C117D = {
 			isa = PBXGroup;
 			children = (
-				FA9049A02755A63600988FF0 /* GoogleAppMeasurement.xcframework */,
-				FA9049A32755A63600988FF0 /* GoogleAppMeasurementIdentitySupport.xcframework */,
-				FA90499F2755A63600988FF0 /* GoogleMobileAds.xcframework */,
-				FA90499D2755A63500988FF0 /* GoogleUtilities.xcframework */,
-				FA90499E2755A63500988FF0 /* Licenses */,
-				FA9049A22755A63600988FF0 /* nanopb.xcframework */,
-				FA9049A12755A63600988FF0 /* PromisesObjC.xcframework */,
-				FA9049A42755A63600988FF0 /* UserMessagingPlatform.xcframework */,
-				FA9049AD2755A71300988FF0 /* GoogleAppMeasurement.xcframework */,
-				FA9049AE2755A71300988FF0 /* GoogleAppMeasurementIdentitySupport.xcframework */,
-				FA9049AF2755A71300988FF0 /* GoogleMobileAds.xcframework */,
-				FA9049B02755A71300988FF0 /* GoogleUtilities.xcframework */,
-				FA9049B12755A71300988FF0 /* Licenses */,
-				FA9049B22755A71300988FF0 /* nanopb.xcframework */,
-				FA9049B32755A71300988FF0 /* PromisesObjC.xcframework */,
-				FA9049B42755A71300988FF0 /* UserMessagingPlatform.xcframework */,
 				9740EEB11CF90186004384FC /* Flutter */,
 				97C146F01CF9000F007C117D /* Runner */,
 				97C146EF1CF9000F007C117D /* Products */,
@@ -201,7 +128,6 @@
 				97C146EA1CF9000F007C117D /* Sources */,
 				97C146EB1CF9000F007C117D /* Frameworks */,
 				97C146EC1CF9000F007C117D /* Resources */,
-				9705A1C41CF9048500538489 /* Embed Frameworks */,
 				3B06AD1E1E4923F5004D2608 /* Thin Binary */,
 				4C31AD1CF48091F05401573D /* [CP] Embed Pods Frameworks */,
 				A5B1C5C9E946212E0EC938BE /* [CP] Copy Pods Resources */,
@@ -257,8 +183,6 @@
 				3B3967161E833CAA004F5970 /* AppFrameworkInfo.plist in Resources */,
 				FA64EF0C27245B3B0017D9DB /* GoogleService-Info.plist in Resources */,
 				97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */,
-				FA9049B92755A71300988FF0 /* Licenses in Resources */,
-				FA9049A62755A63600988FF0 /* Licenses in Resources */,
 				97C146FC1CF9000F007C117D /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -446,7 +370,7 @@
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = Runner/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
+					"@loader_path/../Frameworks/",
 					"@executable_path/Frameworks",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.riddle;
@@ -577,7 +501,7 @@
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = Runner/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
+					"@loader_path/../Frameworks/",
 					"@executable_path/Frameworks",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.riddle;
@@ -600,7 +524,7 @@
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = Runner/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
+					"@loader_path/../Frameworks/",
 					"@executable_path/Frameworks",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.riddle;

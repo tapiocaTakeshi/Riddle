@@ -13,16 +13,17 @@ class DetailPage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => DetailPageState();
 
-  final String id;
-  final String title;
-  final String image;
-  final VoidCallback onPressed;
+  final String? id;
+  final String? title;
+  final String? image;
+  final VoidCallback? onPressed;
 
   DetailPage({
-    @required this.id,
-    @required this.title,
-    @required this.image,
+    this.id,
+    this.title,
+    this.image,
     this.onPressed,
+    int? index,
   });
 }
 
@@ -30,10 +31,60 @@ class DetailPageState extends State<DetailPage> {
   final user = FirebaseAuth.instance.currentUser;
   var isLiked = false;
   var AnswerCountText = '';
-  var CorrectAnswerRateText = '';
-  List<bool> CoOrIn;
+  var CARText = '';
+  List<bool> CoOrIn = [];
 
-  InterstitialAd interstitial;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    Future(() async {
+      Map<String, dynamic> data1 = (await FirebaseFirestore.instance
+              .collection('Users')
+              .doc(user!.uid)
+              .get())
+          .data()!;
+      isLiked = (data1['FavoriteRiddleList'] as List).contains(widget.id);
+      final Map<String, dynamic> data2 = (await FirebaseFirestore.instance
+              .collection('Riddles')
+              .doc(widget.id)
+              .get())
+          .data()!;
+      setState(() {
+        if (data2['answerCount'] >= 100000000) {
+          AnswerCountText =
+              '${(data2['answerCount'] / 100000000).toStringAsFixed(1)}億回解答';
+        } else if (data2['answerCount'] >= 10000) {
+          AnswerCountText =
+              '${(data2['answerCount'] / 10000).toStringAsFixed(1)}万回解答';
+        } else {
+          AnswerCountText = '${data2['answerCount']}回解答';
+        }
+      });
+      if (data2['answerCount'] != null && data2['CARsum'] != null) {
+        CARText =
+            '　正答率${(data2['CARsum'] / data2['answerCount']).toStringAsFixed(1)}%';
+      }
+    });
+  }
+
+  void updateLike() async {
+    isLiked
+        ? await FirebaseFirestore.instance
+            .collection('Users')
+            .doc(user!.uid)
+            .update({
+            'FavoriteRiddleList': FieldValue.arrayUnion([widget.id])
+          })
+        : await FirebaseFirestore.instance
+            .collection('Users')
+            .doc(user!.uid)
+            .update({
+            'FavoriteRiddleList': FieldValue.arrayRemove([widget.id])
+          });
+  }
+
+  InterstitialAd? interstitial;
   int _interstitialLoadAttempts = 0;
 
   void interCreate() {
@@ -57,7 +108,7 @@ class DetailPageState extends State<DetailPage> {
 
   void interShow() {
     if (interstitial != null) {
-      interstitial.fullScreenContentCallback = FullScreenContentCallback(
+      interstitial!.fullScreenContentCallback = FullScreenContentCallback(
           onAdDismissedFullScreenContent: (InterstitialAd ad) {
         ad.dispose();
         interCreate();
@@ -65,67 +116,8 @@ class DetailPageState extends State<DetailPage> {
         ad.dispose();
         interCreate();
       });
-      interstitial.show();
+      interstitial!.show();
     }
-  }
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    Future(() async {
-      interCreate();
-      Map<String, dynamic> data1 = (await FirebaseFirestore.instance
-              .collection('Users')
-              .doc(user.uid)
-              .get())
-          .data();
-      isLiked = (data1['FavoriteRiddleList'] as List).contains(widget.id);
-      final Map<String, dynamic> data2 = (await FirebaseFirestore.instance
-              .collection('Riddles')
-              .doc(widget.id)
-              .get())
-          .data();
-      setState(() {
-        if (data2['answerCount'] >= 100000000) {
-          AnswerCountText =
-              '${(data2['answerCount'] / 100000000).toStringAsFixed(1)}億回解答';
-        } else if (data2['answerCount'] >= 10000) {
-          AnswerCountText =
-              '${(data2['answerCount'] / 10000).toStringAsFixed(1)}万回解答';
-        } else {
-          AnswerCountText = '${data2['answerCount']}回解答';
-        }
-      });
-      if (data2['answerCount'] != null &&
-          data2['CorrectAnswerRatesum'] != null) {
-        CorrectAnswerRateText =
-            '　正答率${(data2['CorrectAnswerRatesum'] / data2['answerCount']).toStringAsFixed(1)}%';
-      }
-    });
-  }
-
-  @override
-  void dispose() {
-    // TODO: implement dispose
-    super.dispose();
-    interstitial?.dispose();
-  }
-
-  void updateLike() async {
-    isLiked
-        ? await FirebaseFirestore.instance
-            .collection('Users')
-            .doc(user.uid)
-            .update({
-            'FavoriteRiddleList': FieldValue.arrayUnion([widget.id])
-          })
-        : await FirebaseFirestore.instance
-            .collection('Users')
-            .doc(user.uid)
-            .update({
-            'FavoriteRiddleList': FieldValue.arrayRemove([widget.id])
-          });
   }
 
   @override
@@ -148,7 +140,7 @@ class DetailPageState extends State<DetailPage> {
                     padding: EdgeInsets.symmetric(vertical: 5),
                     child: Card(
                       clipBehavior: Clip.antiAlias,
-                      child: Image.network(widget.image,
+                      child: Image.network(widget.image!,
                           width: size.width,
                           height: size.width * 9 / 16,
                           fit: BoxFit.cover),
@@ -165,12 +157,12 @@ class DetailPageState extends State<DetailPage> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  widget.title,
+                                  widget.title!,
                                   style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 18),
                                 ),
-                                Text(AnswerCountText + CorrectAnswerRateText)
+                                Text(AnswerCountText + CARText)
                               ],
                             ),
                             width: double.infinity),
@@ -196,7 +188,7 @@ class DetailPageState extends State<DetailPage> {
                               return FutureBuilder(
                                   future: FirebaseFirestore.instance
                                       .collection('Users')
-                                      .doc(snapshot.data['uid'])
+                                      .doc(snapshot.data!['uid'])
                                       .get(),
                                   builder: (context,
                                       AsyncSnapshot<DocumentSnapshot>
@@ -208,14 +200,14 @@ class DetailPageState extends State<DetailPage> {
                                           children: <Widget>[
                                             CircleAvatar(
                                               backgroundImage: NetworkImage(
-                                                  snapshot.data['photoURL']),
+                                                  snapshot.data!['photoURL']),
                                             ),
                                             Padding(
                                               padding:
                                                   const EdgeInsets.symmetric(
                                                       horizontal: 5.0),
                                               child: Text(
-                                                snapshot.data['name'],
+                                                snapshot.data!['name'],
                                                 style: TextStyle(
                                                     fontWeight:
                                                         FontWeight.bold),
@@ -250,22 +242,15 @@ class DetailPageState extends State<DetailPage> {
                                       .collection('Slides')
                                       .get()
                                       .then((value) => value.docs);
-                              setState(() {
-                                CoOrIn = [];
-                              });
-
                               var index = 0;
-                              interShow();
-                              Navigator.of(context).push(
-                                MaterialPageRoute(
-                                    builder: (_) => RiddlePage(
-                                          Slides: Slides,
-                                          index: index,
-                                          length: Slides.length,
-                                          CoOrIn: CoOrIn,
-                                          id: widget.id,
-                                        )),
-                              );
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (_) => RiddlePage(
+                                        Slides: Slides,
+                                        index: index,
+                                        length: Slides.length,
+                                        CoOrIn: CoOrIn,
+                                        id: widget.id,
+                                      )));
                             }),
                       )
                     ],
@@ -298,7 +283,7 @@ class DetailPageState extends State<DetailPage> {
   Widget CommentButton() {
     return IconButton(
         onPressed: () {
-          showChat(context, widget.id);
+          showChat(context, widget.id!);
         },
         icon: Icon(
           Icons.chat_bubble_outline_rounded,
