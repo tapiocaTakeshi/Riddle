@@ -1,3 +1,4 @@
+import 'package:Riddle/data/AdState.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -5,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:animations/animations.dart';
 import 'package:flutter/widgets.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import '../functions/Firebase.dart';
 import 'DetailPage.dart';
 
@@ -32,21 +34,21 @@ class SearchScreenState extends State<SearchScreen> {
           this.riddles = riddles
               .where((riddle) => riddle['title'].contains(keyword))
               .toList();
-        // Future((){
-        //   userInfos=[];
-        //   riddles.asMap().forEach((index, _) async {
-        //     getData('Users', riddles[index]['uid']).then((value) => this.userInfos.add(value));
-        //   });
-        // });
       });
-      // print(userInfos);
     }
   }
+
+  BannerAd? banner = BannerAd(
+      size: AdSize.banner,
+      adUnitId: AdState.BannerAdId,
+      listener: BannerAdListener(),
+      request: AdRequest());
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    banner!.load();
     loadRiddles();
   }
 
@@ -54,6 +56,7 @@ class SearchScreenState extends State<SearchScreen> {
   Widget build(BuildContext context) {
     // TODO: implement build
     Size size = MediaQuery.of(context).size;
+    final k = 3;
     return Scaffold(
         appBar: AppBar(
           elevation: 1,
@@ -92,40 +95,41 @@ class SearchScreenState extends State<SearchScreen> {
                 mainAxisSpacing: 0,
                 crossAxisSpacing: 0,
                 childAspectRatio: 16 / 9,
-                children: List.generate(riddles.length, (index) {
-                  return Card(
-                    elevation: 3,
-                    clipBehavior: Clip.antiAlias,
-                    // shape: RoundedRectangleBorder(
-                    //   borderRadius: BorderRadius.circular(5)
-                    // ),
-                    child: OpenContainer(
-                      closedElevation: 1,
-                      openBuilder: (context, closedContainer) {
-                        return DetailPage(
-                          id: riddles[index]['id'],
-                          title: riddles[index]['title'],
-                          image: riddles[index]['thumbnailURL'],
-                          onPressed: closedContainer,
-                        );
-                      },
-                      closedBuilder: (context, openContainer) {
-                        return Center(
-                          child: InkWell(
-                            child: Image.network(
-                              riddles[index]['thumbnailURL'],
-                              width: size.width,
-                              height: size.width * 9 / 16,
-                              fit: BoxFit.cover,
-                            ),
-                            highlightColor: Colors.grey.withOpacity(0.3),
-                            splashColor: Colors.grey.withOpacity(0.3),
-                            onTap: () => openContainer(),
+                children: List.generate(
+                    riddles.length + riddles.length ~/ k + 1, (index) {
+                  final index2 = index - index ~/ k - 1;
+                  return index % k == 0
+                      ? AdWidget(ad: banner!)
+                      : Card(
+                          elevation: 3,
+                          clipBehavior: Clip.antiAlias,
+                          child: OpenContainer(
+                            closedElevation: 1,
+                            openBuilder: (context, closedContainer) {
+                              return DetailPage(
+                                id: riddles[index2]['id'],
+                                title: riddles[index2]['title'],
+                                image: riddles[index2]['thumbnailURL'],
+                                onPressed: closedContainer,
+                              );
+                            },
+                            closedBuilder: (context, openContainer) {
+                              return Center(
+                                child: InkWell(
+                                  child: Image.network(
+                                    riddles[index2]['thumbnailURL'],
+                                    width: size.width,
+                                    height: size.width * 9 / 16,
+                                    fit: BoxFit.cover,
+                                  ),
+                                  highlightColor: Colors.grey.withOpacity(0.3),
+                                  splashColor: Colors.grey.withOpacity(0.3),
+                                  onTap: () => openContainer(),
+                                ),
+                              );
+                            },
                           ),
                         );
-                      },
-                    ),
-                  );
                 }),
               ),
             ),

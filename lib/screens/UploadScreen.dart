@@ -30,7 +30,6 @@ class UploadScreenState extends State<UploadScreen> {
           GestureDetector(
             onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
             child: Scaffold(
-                backgroundColor: Colors.grey[100],
                 appBar: AppBar(
                   elevation: 1,
                   actions: [

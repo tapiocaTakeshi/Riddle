@@ -10,12 +10,8 @@ Future<String> PdfUpload() async {
     allowedExtensions: ['pdf'],
   );
 
-  // if (result != null) {
-  String path = result!.files.single.path.toString();
+  String path = result?.files.single.path.toString() ?? '';
   return Future<String>.value(path);
-  // } else {
-  //   return '';
-  // }
 }
 
 //pdfから複数の画像データ(Image)に変換
@@ -47,10 +43,7 @@ Future<String> JpgUpload() async {
     type: FileType.custom,
     allowedExtensions: ['jpg'],
   );
-  // if (result != null) {
-  String path = result!.files.single.path.toString();
+
+  String path = result?.files.single.path.toString() ?? '';
   return Future<String>.value(path);
-  // } else {
-  //   return '';
-  // }
 }

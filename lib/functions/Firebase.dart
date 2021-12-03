@@ -20,10 +20,11 @@ Future<String> uploadImage(File imageFile, String path) async {
 
 Future<Map<String, dynamic>> getData(
     String collection, String documentId) async {
-  DocumentSnapshot docSnapshot = await FirebaseFirestore.instance
+  DocumentSnapshot? docSnapshot = await FirebaseFirestore.instance
       .collection(collection)
       .doc(documentId)
       .get();
+  Map<String, dynamic>? data = docSnapshot.data() as Map<String, dynamic>?;
 
-  return docSnapshot.data() as Map<String, dynamic>;
+  return data!;
 }

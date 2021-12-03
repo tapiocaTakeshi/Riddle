@@ -7,28 +7,25 @@ import 'package:flutter/material.dart';
 
 import 'DetailPage.dart';
 
-class AccountScreen extends StatefulWidget {
+class MyAccountScreen extends StatefulWidget {
   @override
-  State<StatefulWidget> createState() => AccountScreenState();
-  String uid;
-  AccountScreen(this.uid);
+  State<StatefulWidget> createState() => MyAccountScreenState();
 }
 
-class AccountScreenState extends State<AccountScreen>
+class MyAccountScreenState extends State<MyAccountScreen>
     with SingleTickerProviderStateMixin {
+  final user = FirebaseAuth.instance.currentUser;
   List<Map<String, dynamic>> myRiddles = [];
   List<Map<String, dynamic>> favoriteRiddles = [];
-  Map<String, dynamic>? user;
-  bool isSubscribed = false;
 
   void loadRiddles() async {
-    user = await getData('Users', widget.uid);
-    final myRiddleIdList = user!['MyRiddleList'];
+    final data = await getData("Users", user!.uid);
 
-    if (myRiddleIdList.isNotEmpty) {
+    final myRiddleList = data['MyRiddleList'];
+    if (myRiddleList.isNotEmpty) {
       final myRiddlesSnapshot = await FirebaseFirestore.instance
           .collection('Riddles')
-          .where('id', whereIn: myRiddleIdList)
+          .where('id', whereIn: myRiddleList)
           .get();
       setState(() {
         this.myRiddles = myRiddlesSnapshot.docs
@@ -38,12 +35,11 @@ class AccountScreenState extends State<AccountScreen>
       });
     }
 
-    final favoriteRiddleIdList = user!['FavoriteRiddleList'];
-
-    if (favoriteRiddleIdList.isNotEmpty) {
+    final favoriteRiddleList = data['FavoriteRiddleList'];
+    if (favoriteRiddleList.isNotEmpty) {
       final favoriteRiddlesSnapshot = await FirebaseFirestore.instance
           .collection('Riddles')
-          .where('id', whereIn: favoriteRiddleIdList)
+          .where('id', whereIn: favoriteRiddleList)
           .get();
       setState(() {
         this.favoriteRiddles = favoriteRiddlesSnapshot.docs
@@ -69,8 +65,6 @@ class AccountScreenState extends State<AccountScreen>
   void initState() {
     // TODO: implement initState
     super.initState();
-    // isSubscribed =
-    //     (user!['SubscribedChannelList'] as List).contains(widget.uid);
     loadRiddles();
     _tabController = TabController(length: _tab.length, vsync: this);
   }
@@ -78,67 +72,62 @@ class AccountScreenState extends State<AccountScreen>
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
-    return FutureBuilder<DocumentSnapshot>(
-        future: FirebaseFirestore.instance
-            .collection('Users')
-            .doc(widget.uid)
-            .get(),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            return Scaffold(
-              appBar: AppBar(
-                title: Text(
-                  snapshot.data!['name'].toString(),
-                  style: TextStyle(color: Colors.black),
-                ),
-                elevation: 1,
-                centerTitle: false,
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          user!.displayName.toString(),
+          style: TextStyle(color: Colors.black),
+        ),
+        actions: <Widget>[
+          IconButton(
+              icon: Icon(
+                Icons.settings_outlined,
               ),
-              body: NestedScrollView(
-                  headerSliverBuilder: (context, value) {
-                    return [
-                      SliverPersistentHeader(
-                          delegate: MySliverPersistentHeaderDelegate(
-                              userImage: snapshot.data!['photoURL'],
-                              subscribersCount: 100,
-                              GDV: 50)),
-                      SliverPadding(
-                        padding: EdgeInsets.only(bottom: 1),
-                        sliver: SliverAppBar(
-                          automaticallyImplyLeading: false,
-                          titleSpacing: 0,
-                          elevation: 5,
-                          pinned: true,
-                          title: TabBar(
-                              controller: _tabController,
-                              tabs: _tab,
-                              labelColor: Colors.orange,
-                              unselectedLabelColor: Colors.black,
-                              indicatorColor: Colors.orange),
-                        ),
-                      ),
-                    ];
-                  },
-                  body:
-                      TabBarView(controller: _tabController, children: <Widget>[
-                    RefreshIndicator(
-                        onRefresh: () async {
-                          loadRiddles();
-                        },
-                        child: TabPage(contents: myRiddles)),
-                    RefreshIndicator(
-                        onRefresh: () async {
-                          loadRiddles();
-                        },
-                        child: TabPage(contents: favoriteRiddles)),
-                  ])),
-            );
-          } else {
-            return Center(
-              child: CircularProgressIndicator(),
-            );
-          }
-        });
+              onPressed: () {
+                Navigator.of(context).push(
+                    MaterialPageRoute(builder: (context) => SettingPage()));
+              })
+        ],
+        elevation: 1,
+        centerTitle: false,
+      ),
+      body: NestedScrollView(
+          headerSliverBuilder: (context, value) {
+            return [
+              SliverPersistentHeader(
+                  delegate: MySliverPersistentHeaderDelegate(
+                      userImage: user!.photoURL,
+                      subscribersCount: 100,
+                      GDV: 50)),
+              SliverPadding(
+                padding: EdgeInsets.only(bottom: 1),
+                sliver: SliverAppBar(
+                  titleSpacing: 0,
+                  elevation: 5,
+                  pinned: true,
+                  title: TabBar(
+                      controller: _tabController,
+                      tabs: _tab,
+                      labelColor: Colors.orange,
+                      unselectedLabelColor: Colors.black,
+                      indicatorColor: Colors.orange),
+                ),
+              ),
+            ];
+          },
+          body: TabBarView(controller: _tabController, children: <Widget>[
+            RefreshIndicator(
+                onRefresh: () async {
+                  loadRiddles();
+                },
+                child: TabPage(contents: myRiddles)),
+            RefreshIndicator(
+                onRefresh: () async {
+                  loadRiddles();
+                },
+                child: TabPage(contents: favoriteRiddles)),
+          ])),
+    );
   }
 }
 

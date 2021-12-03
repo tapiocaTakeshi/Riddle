@@ -9,7 +9,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/services.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:provider/provider.dart';
-import 'screens/AccountScreen.dart';
+import 'screens/MyAccountScreen.dart';
 import 'screens/SearchScreen.dart';
 import 'screens/SignUpPage.dart';
 import 'screens/UploadScreen.dart';
@@ -17,13 +17,9 @@ import 'screens/UploadScreen.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  final initState = MobileAds.instance.initialize();
-  final adState = AdState(initState);
+  MobileAds.instance.initialize();
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-  runApp(Provider.value(
-    value: adState,
-    builder: (context, child) => MyApp(),
-  ));
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -104,7 +100,7 @@ class MyHomePageState extends State<MyHomePage> {
 
   static List<Widget> _contents = <Widget>[
     SearchScreen(),
-    AccountScreen(),
+    MyAccountScreen(),
   ];
 
   void _onItemTap(int index) {

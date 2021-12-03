@@ -43,92 +43,89 @@ class UploadScreen2State extends State<UploadScreen2> {
                 child: ListView(
                   children: [
                     Container(
-                        color: Colors.white,
                         child: Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 10.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Center(
-                                child: InkWell(
-                                    onTap: () async {
-                                      model.setThumbnail();
-                                    },
-                                    child: model.thumbnailPath == ''
-                                        ? Container(
-                                            decoration: BoxDecoration(
-                                                border: Border.all(
-                                                    color:
-                                                        Colors.grey.shade300)),
-                                            child: Container(
-                                              child: Center(
-                                                  child: Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.center,
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                children: [
-                                                  Text(
-                                                    'サムネイル用画像（JPG）を選択',
-                                                    style: TextStyle(
-                                                        color:
-                                                            thumbnailTextColor,
-                                                        fontSize: 15),
-                                                  ),
-                                                  Text(
-                                                    '縦横比　9:16',
-                                                    style: TextStyle(
-                                                        color: Colors.grey,
-                                                        fontSize: 10),
-                                                  ),
-                                                ],
-                                              )),
-                                              height: 135,
-                                              width: 240,
-                                              color: Colors.grey[100],
-                                            ),
-                                          )
-                                        : model.thumbnailImage),
-                              ),
-                              Padding(
-                                padding: EdgeInsets.all(10),
-                                child: Text(
-                                  'タイトル',
-                                  style: TextStyle(
-                                      color: Colors.blueAccent, fontSize: 20),
-                                ),
-                              ),
-                              Container(
-                                child: TextFormField(
-                                    initialValue: _title,
-                                    validator: (String? value) {
-                                      if (value!.isNotEmpty) {
-                                        return null;
-                                      } else {
-                                        return 'タイトルを入力してください';
-                                      }
-                                    },
-                                    onChanged: (value) {
-                                      this._title = value;
-                                    },
-                                    maxLength: 20,
-                                    maxLines: 2,
-                                    cursorColor: Colors.blueAccent,
-                                    decoration: InputDecoration(
-                                        enabledBorder: OutlineInputBorder(
-                                            borderSide:
-                                                BorderSide(color: Colors.grey)),
-                                        focusedBorder: OutlineInputBorder(
-                                            borderSide: BorderSide(
-                                                color: Colors.blueAccent)),
-                                        focusedErrorBorder: OutlineInputBorder(
-                                            borderSide: BorderSide(
-                                                color: Colors.red)))),
-                                width: 300,
-                              ),
-                            ],
+                      padding: const EdgeInsets.symmetric(vertical: 10.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Center(
+                            child: InkWell(
+                                onTap: () async {
+                                  model.setThumbnail();
+                                },
+                                child: model.thumbnailPath == ''
+                                    ? Container(
+                                        decoration: BoxDecoration(
+                                            border: Border.all(
+                                                color: Colors.grey.shade300)),
+                                        child: Container(
+                                          child: Center(
+                                              child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              Text(
+                                                'サムネイル用画像（JPG）を選択',
+                                                style: TextStyle(
+                                                    color: thumbnailTextColor,
+                                                    fontSize: 15),
+                                              ),
+                                              Text(
+                                                '縦横比　9:16',
+                                                style: TextStyle(
+                                                    color: Colors.grey,
+                                                    fontSize: 10),
+                                              ),
+                                            ],
+                                          )),
+                                          height: 135,
+                                          width: 240,
+                                          color: Colors.grey[100],
+                                        ),
+                                      )
+                                    : model.thumbnailImage),
                           ),
-                        )),
+                          Padding(
+                            padding: EdgeInsets.all(10),
+                            child: Text(
+                              'タイトル',
+                              style: TextStyle(
+                                  color: Colors.blueAccent, fontSize: 20),
+                            ),
+                          ),
+                          Container(
+                            child: TextFormField(
+                                initialValue: _title,
+                                validator: (String? value) {
+                                  if (value!.isNotEmpty) {
+                                    return null;
+                                  } else {
+                                    return 'タイトルを入力してください';
+                                  }
+                                },
+                                onChanged: (value) {
+                                  this._title = value;
+                                },
+                                maxLength: 20,
+                                maxLines: 2,
+                                cursorColor: Colors.blueAccent,
+                                decoration: InputDecoration(
+                                    enabledBorder: OutlineInputBorder(
+                                        borderSide:
+                                            BorderSide(color: Colors.grey)),
+                                    focusedBorder: OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                            color: Colors.blueAccent)),
+                                    focusedErrorBorder: OutlineInputBorder(
+                                        borderSide:
+                                            BorderSide(color: Colors.red)))),
+                            width: 300,
+                          ),
+                        ],
+                      ),
+                    )),
                     Container(
                         color: Colors.white,
                         child: Padding(

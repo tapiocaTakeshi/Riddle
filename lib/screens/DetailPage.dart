@@ -1,4 +1,6 @@
 import 'package:Riddle/data/AdState.dart';
+import 'package:Riddle/functions/Firebase.dart';
+import 'package:Riddle/screens/AccountScreen.dart';
 import 'package:Riddle/screens/Chat.dart';
 import 'package:Riddle/screens/RiddlePage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -6,8 +8,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:provider/provider.dart';
-
-const int maxFailedLoadAttempts = 3;
 
 class DetailPage extends StatefulWidget {
   @override
@@ -30,26 +30,25 @@ class DetailPage extends StatefulWidget {
 class DetailPageState extends State<DetailPage> {
   final user = FirebaseAuth.instance.currentUser;
   var isLiked = false;
+  var isSubscribed = false;
   var AnswerCountText = '';
   var CARText = '';
   List<bool> CoOrIn = [];
+  Map<String, dynamic> data1 = Map();
+  Map<String, dynamic> data2 = Map();
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+
     Future(() async {
-      Map<String, dynamic> data1 = (await FirebaseFirestore.instance
-              .collection('Users')
-              .doc(user!.uid)
-              .get())
-          .data()!;
+      data1 = await getData('Users', user!.uid);
+      data2 = await getData('Riddles', widget.id!);
       isLiked = (data1['FavoriteRiddleList'] as List).contains(widget.id);
-      final Map<String, dynamic> data2 = (await FirebaseFirestore.instance
-              .collection('Riddles')
-              .doc(widget.id)
-              .get())
-          .data()!;
+      isSubscribed =
+          (data1['SubscribedChannelList'] as List).contains(data2['uid']);
+
       setState(() {
         if (data2['answerCount'] >= 100000000) {
           AnswerCountText =
@@ -84,40 +83,20 @@ class DetailPageState extends State<DetailPage> {
           });
   }
 
-  InterstitialAd? interstitial;
-  int _interstitialLoadAttempts = 0;
-
-  void interCreate() {
-    AdState adState = Provider.of<AdState>(context, listen: false);
-    adState.initialization;
-    InterstitialAd.load(
-        adUnitId: adState.InterstitialAdId,
-        request: AdRequest(),
-        adLoadCallback:
-            InterstitialAdLoadCallback(onAdLoaded: (InterstitialAd ad) {
-          interstitial = ad;
-          _interstitialLoadAttempts = 0;
-          print('ok');
-        }, onAdFailedToLoad: (LoadAdError error) {
-          _interstitialLoadAttempts += 1;
-          interstitial = null;
-          if (_interstitialLoadAttempts >= maxFailedLoadAttempts) interCreate();
-          print('not ok');
-        }));
-  }
-
-  void interShow() {
-    if (interstitial != null) {
-      interstitial!.fullScreenContentCallback = FullScreenContentCallback(
-          onAdDismissedFullScreenContent: (InterstitialAd ad) {
-        ad.dispose();
-        interCreate();
-      }, onAdFailedToShowFullScreenContent: (InterstitialAd ad, AdError error) {
-        ad.dispose();
-        interCreate();
-      });
-      interstitial!.show();
-    }
+  void updateSubscribe() async {
+    isSubscribed
+        ? await FirebaseFirestore.instance
+            .collection('Users')
+            .doc(user!.uid)
+            .update({
+            'SubscribedChannelList': FieldValue.arrayUnion([data2['uid']])
+          })
+        : await FirebaseFirestore.instance
+            .collection('Users')
+            .doc(user!.uid)
+            .update({
+            'SubscribedChannelList': FieldValue.arrayRemove([data2['uid']])
+          });
   }
 
   @override
@@ -183,35 +162,57 @@ class DetailPageState extends State<DetailPage> {
                               .doc(widget.id)
                               .get(),
                           builder: (context,
-                              AsyncSnapshot<DocumentSnapshot> snapshot) {
-                            if (snapshot.hasData) {
+                              AsyncSnapshot<DocumentSnapshot> snapshot1) {
+                            if (snapshot1.hasData) {
                               return FutureBuilder(
                                   future: FirebaseFirestore.instance
                                       .collection('Users')
-                                      .doc(snapshot.data!['uid'])
+                                      .doc(snapshot1.data!['uid'])
                                       .get(),
                                   builder: (context,
                                       AsyncSnapshot<DocumentSnapshot>
-                                          snapshot) {
-                                    if (snapshot.hasData) {
+                                          snapshot2) {
+                                    if (snapshot2.hasData) {
                                       return InkWell(
-                                        onTap: () {},
+                                        onTap: () {
+                                          Navigator.of(context).push(
+                                              MaterialPageRoute(
+                                                  builder: (_) => AccountScreen(
+                                                      data2['uid'])));
+                                        },
                                         child: Row(
                                           children: <Widget>[
                                             CircleAvatar(
                                               backgroundImage: NetworkImage(
-                                                  snapshot.data!['photoURL']),
+                                                  snapshot2.data!['photoURL']),
                                             ),
                                             Padding(
                                               padding:
                                                   const EdgeInsets.symmetric(
                                                       horizontal: 5.0),
                                               child: Text(
-                                                snapshot.data!['name'],
+                                                snapshot2.data!['name'],
                                                 style: TextStyle(
                                                     fontWeight:
                                                         FontWeight.bold),
                                               ),
+                                            ),
+                                            Spacer(),
+                                            FlatButton(
+                                              child: isSubscribed
+                                                  ? Text('登録済み',
+                                                      style: TextStyle(
+                                                          color: Colors.grey))
+                                                  : Text('チャンネル登録',
+                                                      style: TextStyle(
+                                                          color: Colors.red)),
+                                              onPressed: () {
+                                                setState(() {
+                                                  this.isSubscribed =
+                                                      !isSubscribed;
+                                                });
+                                                updateSubscribe();
+                                              },
                                             )
                                           ],
                                         ),
@@ -235,6 +236,10 @@ class DetailPageState extends State<DetailPage> {
                               style: TextStyle(fontSize: 13),
                             ),
                             onPressed: () async {
+                              setState(() {
+                                CoOrIn = [];
+                              });
+
                               List<DocumentSnapshot> Slides =
                                   await FirebaseFirestore.instance
                                       .collection('Riddles')
