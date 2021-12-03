@@ -134,8 +134,8 @@ class AccountScreenState extends State<AccountScreen>
                   ])),
             );
           } else {
-            return Center(
-              child: CircularProgressIndicator(),
+            return Container(
+              color: Theme.of(context).backgroundColor,
             );
           }
         });
