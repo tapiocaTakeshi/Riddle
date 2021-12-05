@@ -1,3 +1,4 @@
+import 'package:Riddle/functions/Firebase.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
@@ -67,6 +68,15 @@ class _ResultPageState extends State<ResultPage> {
                         .update({
                       'CorrectAnswerRatesum':
                           FieldValue.increment(CorrectAnswerRate!)
+                    });
+                    final riddleData = await getData('Riddles', widget.id!);
+                    await FirebaseFirestore.instance
+                        .collection('Riddles')
+                        .doc(widget.id)
+                        .update({
+                      'CorrectAnswerRatemean':
+                          riddleData['CorrectAnswerRatesum'] /
+                              riddleData['answerCount']
                     });
                   }),
             )

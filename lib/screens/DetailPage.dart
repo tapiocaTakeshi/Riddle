@@ -2,6 +2,7 @@ import 'package:Riddle/data/AdState.dart';
 import 'package:Riddle/functions/Firebase.dart';
 import 'package:Riddle/screens/AccountScreen.dart';
 import 'package:Riddle/screens/Chat.dart';
+import 'package:Riddle/screens/MyAccountScreen.dart';
 import 'package:Riddle/screens/RiddlePage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -28,11 +29,11 @@ class DetailPage extends StatefulWidget {
 }
 
 class DetailPageState extends State<DetailPage> {
-  final user = FirebaseAuth.instance.currentUser;
+  final currentUser = FirebaseAuth.instance.currentUser;
   var isLiked = false;
   var isSubscribed = false;
   var AnswerCountText = '';
-  var CARText = '';
+  var CorrectAnswerRateText = '';
   List<bool> CoOrIn = [];
   Map<String, dynamic> data1 = Map();
   Map<String, dynamic> data2 = Map();
@@ -43,7 +44,7 @@ class DetailPageState extends State<DetailPage> {
     super.initState();
 
     Future(() async {
-      data1 = await getData('Users', user!.uid);
+      data1 = await getData('Users', currentUser!.uid);
       data2 = await getData('Riddles', widget.id!);
       isLiked = (data1['FavoriteRiddleList'] as List).contains(widget.id);
       isSubscribed =
@@ -60,9 +61,10 @@ class DetailPageState extends State<DetailPage> {
           AnswerCountText = '${data2['answerCount']}回解答';
         }
       });
-      if (data2['answerCount'] != null && data2['CARsum'] != null) {
-        CARText =
-            '　正答率${(data2['CARsum'] / data2['answerCount']).toStringAsFixed(1)}%';
+      if (data2['answerCount'] != null &&
+          data2['CorrectAnswerRatesum'] != null) {
+        CorrectAnswerRateText =
+            '　正答率${(data2['CorrectAnswerRatemean']).toStringAsFixed(1)}';
       }
     });
   }
@@ -71,13 +73,13 @@ class DetailPageState extends State<DetailPage> {
     isLiked
         ? await FirebaseFirestore.instance
             .collection('Users')
-            .doc(user!.uid)
+            .doc(currentUser!.uid)
             .update({
             'FavoriteRiddleList': FieldValue.arrayUnion([widget.id])
           })
         : await FirebaseFirestore.instance
             .collection('Users')
-            .doc(user!.uid)
+            .doc(currentUser!.uid)
             .update({
             'FavoriteRiddleList': FieldValue.arrayRemove([widget.id])
           });
@@ -87,13 +89,13 @@ class DetailPageState extends State<DetailPage> {
     isSubscribed
         ? await FirebaseFirestore.instance
             .collection('Users')
-            .doc(user!.uid)
+            .doc(currentUser!.uid)
             .update({
             'SubscribedChannelList': FieldValue.arrayUnion([data2['uid']])
           })
         : await FirebaseFirestore.instance
             .collection('Users')
-            .doc(user!.uid)
+            .doc(currentUser!.uid)
             .update({
             'SubscribedChannelList': FieldValue.arrayRemove([data2['uid']])
           });
@@ -126,140 +128,161 @@ class DetailPageState extends State<DetailPage> {
                       elevation: 0,
                     ),
                   ),
-                  Column(
-                    children: <Widget>[
-                      Padding(
-                        padding:
-                            EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-                        child: Container(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  widget.title!,
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 18),
-                                ),
-                                Text(AnswerCountText + CARText)
-                              ],
-                            ),
-                            width: double.infinity),
-                      ),
-                      Row(
-                        children: <Widget>[
-                          LikedButton(isLiked),
-                          Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 8.0),
-                            child: CommentButton(),
-                          )
-                        ],
-                      ),
-                      FutureBuilder(
-                          future: FirebaseFirestore.instance
-                              .collection('Riddles')
-                              .doc(widget.id)
-                              .get(),
-                          builder: (context,
-                              AsyncSnapshot<DocumentSnapshot> snapshot1) {
-                            if (snapshot1.hasData) {
-                              return FutureBuilder(
-                                  future: FirebaseFirestore.instance
-                                      .collection('Users')
-                                      .doc(snapshot1.data!['uid'])
-                                      .get(),
-                                  builder: (context,
-                                      AsyncSnapshot<DocumentSnapshot>
-                                          snapshot2) {
-                                    if (snapshot2.hasData) {
-                                      return InkWell(
+                  FutureBuilder<DocumentSnapshot>(
+                      future: FirebaseFirestore.instance
+                          .collection('Riddles')
+                          .doc(widget.id)
+                          .get(),
+                      builder: (context, riddle) {
+                        if (riddle.hasData) {
+                          return FutureBuilder<DocumentSnapshot>(
+                              future: FirebaseFirestore.instance
+                                  .collection('Users')
+                                  .doc(riddle.data!['uid'])
+                                  .get(),
+                              builder: (context, user) {
+                                if (user.hasData) {
+                                  return Column(
+                                    children: <Widget>[
+                                      Padding(
+                                        padding: EdgeInsets.symmetric(
+                                            vertical: 5, horizontal: 10),
+                                        child: Container(
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  widget.title!,
+                                                  style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      fontSize: 18),
+                                                ),
+                                                Text(AnswerCountText +
+                                                    CorrectAnswerRateText)
+                                              ],
+                                            ),
+                                            width: double.infinity),
+                                      ),
+                                      Row(
+                                        children: <Widget>[
+                                          LikedButton(isLiked),
+                                          Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 8.0),
+                                            child: CommentButton(),
+                                          )
+                                        ],
+                                      ),
+                                      InkWell(
                                         onTap: () {
-                                          Navigator.of(context).push(
-                                              MaterialPageRoute(
-                                                  builder: (_) => AccountScreen(
-                                                      data2['uid'])));
+                                          if (data2['uid'] ==
+                                              currentUser!.uid) {
+                                            Navigator.of(context).push(
+                                                MaterialPageRoute(
+                                                    builder: (_) =>
+                                                        MyAccountScreen()));
+                                          } else {
+                                            Navigator.of(context).push(
+                                                MaterialPageRoute(
+                                                    builder: (_) =>
+                                                        AccountScreen(riddle
+                                                            .data!['uid'])));
+                                          }
                                         },
                                         child: Row(
                                           children: <Widget>[
                                             CircleAvatar(
                                               backgroundImage: NetworkImage(
-                                                  snapshot2.data!['photoURL']),
+                                                  user.data!['photoURL']),
                                             ),
                                             Padding(
                                               padding:
                                                   const EdgeInsets.symmetric(
                                                       horizontal: 5.0),
                                               child: Text(
-                                                snapshot2.data!['name'],
+                                                user.data!['name'],
                                                 style: TextStyle(
                                                     fontWeight:
                                                         FontWeight.bold),
                                               ),
                                             ),
                                             Spacer(),
-                                            FlatButton(
-                                              child: isSubscribed
-                                                  ? Text('登録済み',
-                                                      style: TextStyle(
-                                                          color: Colors.grey))
-                                                  : Text('チャンネル登録',
-                                                      style: TextStyle(
-                                                          color: Colors.red)),
-                                              onPressed: () {
-                                                setState(() {
-                                                  this.isSubscribed =
-                                                      !isSubscribed;
-                                                });
-                                                updateSubscribe();
-                                              },
-                                            )
+                                            if (data2['uid'] !=
+                                                currentUser!.uid)
+                                              FlatButton(
+                                                child: isSubscribed
+                                                    ? Text('登録済み',
+                                                        style: TextStyle(
+                                                            color: Colors.grey))
+                                                    : Text('チャンネル登録',
+                                                        style: TextStyle(
+                                                            color: Colors.red)),
+                                                onPressed: () {
+                                                  setState(() {
+                                                    this.isSubscribed =
+                                                        !isSubscribed;
+                                                  });
+                                                  updateSubscribe();
+                                                },
+                                              )
                                           ],
                                         ),
-                                      );
-                                    } else {
-                                      return Container();
-                                    }
-                                  });
-                            } else {
-                              return Container();
-                            }
-                          }),
-                      ButtonTheme(
-                        minWidth: size.width,
-                        child: RaisedButton(
-                            elevation: 1,
-                            textColor: Colors.white,
-                            color: Colors.blueAccent.withOpacity(0.9),
-                            child: Text(
-                              '問題を解く',
-                              style: TextStyle(fontSize: 13),
-                            ),
-                            onPressed: () async {
-                              setState(() {
-                                CoOrIn = [];
-                              });
+                                      ),
+                                      ButtonTheme(
+                                        minWidth: size.width,
+                                        child: RaisedButton(
+                                            elevation: 1,
+                                            textColor: Colors.white,
+                                            color: Colors.blueAccent
+                                                .withOpacity(0.9),
+                                            child: Text(
+                                              '問題を解く',
+                                              style: TextStyle(fontSize: 13),
+                                            ),
+                                            onPressed: () async {
+                                              setState(() {
+                                                CoOrIn = [];
+                                              });
 
-                              List<DocumentSnapshot> Slides =
-                                  await FirebaseFirestore.instance
-                                      .collection('Riddles')
-                                      .doc(widget.id)
-                                      .collection('Slides')
-                                      .get()
-                                      .then((value) => value.docs);
-                              var index = 0;
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (_) => RiddlePage(
-                                        Slides: Slides,
-                                        index: index,
-                                        length: Slides.length,
-                                        CoOrIn: CoOrIn,
-                                        id: widget.id,
-                                      )));
-                            }),
-                      )
-                    ],
-                  )
+                                              List<DocumentSnapshot> Slides =
+                                                  await FirebaseFirestore
+                                                      .instance
+                                                      .collection('Riddles')
+                                                      .doc(widget.id)
+                                                      .collection('Slides')
+                                                      .get()
+                                                      .then((value) =>
+                                                          value.docs);
+                                              var index = 0;
+                                              Navigator.of(context).push(
+                                                  MaterialPageRoute(
+                                                      builder: (_) =>
+                                                          RiddlePage(
+                                                            Slides: Slides,
+                                                            index: index,
+                                                            length:
+                                                                Slides.length,
+                                                            CoOrIn: CoOrIn,
+                                                            id: widget.id,
+                                                          )));
+                                            }),
+                                      )
+                                    ],
+                                  );
+                                } else {
+                                  return Center(
+                                    child: CircularProgressIndicator(),
+                                  );
+                                }
+                              });
+                        } else {
+                          return Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        }
+                      })
                 ],
               ),
             ),

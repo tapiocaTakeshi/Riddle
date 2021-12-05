@@ -10,7 +10,7 @@ import 'package:flutter/services.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:provider/provider.dart';
 import 'screens/MyAccountScreen.dart';
-import 'screens/SearchScreen.dart';
+import 'screens/HomeScreen.dart';
 import 'screens/SignUpPage.dart';
 import 'screens/UploadScreen.dart';
 
@@ -99,7 +99,7 @@ class MyHomePageState extends State<MyHomePage> {
   int _selectedIndex = 0;
 
   static List<Widget> _contents = <Widget>[
-    SearchScreen(),
+    HomeScreen(),
     MyAccountScreen(),
   ];
 

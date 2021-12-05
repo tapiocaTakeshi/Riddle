@@ -3,6 +3,7 @@ import 'package:Riddle/screens/SettingPage.dart';
 import 'package:animations/animations.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 
 import 'DetailPage.dart';
@@ -16,14 +17,16 @@ class AccountScreen extends StatefulWidget {
 
 class AccountScreenState extends State<AccountScreen>
     with SingleTickerProviderStateMixin {
+  final currentUser = FirebaseAuth.instance.currentUser;
   List<Map<String, dynamic>> myRiddles = [];
   List<Map<String, dynamic>> favoriteRiddles = [];
-  Map<String, dynamic>? user;
+  var user;
   bool isSubscribed = false;
+  int? subscribersCount = 0;
 
   void loadRiddles() async {
     user = await getData('Users', widget.uid);
-    final myRiddleIdList = user!['MyRiddleList'];
+    final myRiddleIdList = user['MyRiddleList'];
 
     if (myRiddleIdList.isNotEmpty) {
       final myRiddlesSnapshot = await FirebaseFirestore.instance
@@ -38,7 +41,7 @@ class AccountScreenState extends State<AccountScreen>
       });
     }
 
-    final favoriteRiddleIdList = user!['FavoriteRiddleList'];
+    final favoriteRiddleIdList = user['FavoriteRiddleList'];
 
     if (favoriteRiddleIdList.isNotEmpty) {
       final favoriteRiddlesSnapshot = await FirebaseFirestore.instance
@@ -69,9 +72,20 @@ class AccountScreenState extends State<AccountScreen>
   void initState() {
     // TODO: implement initState
     super.initState();
-    // isSubscribed =
-    //     (user!['SubscribedChannelList'] as List).contains(widget.uid);
-    loadRiddles();
+    Future(() async {
+      loadRiddles();
+      final currentUserData = await getData('Users', currentUser!.uid);
+      final CurrentSubscribedChannelList =
+          currentUserData['SubscribedChannelList'];
+      isSubscribed = CurrentSubscribedChannelList.contains(widget.uid);
+      final Users = await FirebaseFirestore.instance
+          .collection('Users')
+          .where('SubscribedChannelList', arrayContains: widget.uid)
+          .get()
+          .then((QuerySnapshot snapshots) => snapshots.docs);
+      subscribersCount = Users.length;
+    });
+
     _tabController = TabController(length: _tab.length, vsync: this);
   }
 
@@ -99,9 +113,10 @@ class AccountScreenState extends State<AccountScreen>
                     return [
                       SliverPersistentHeader(
                           delegate: MySliverPersistentHeaderDelegate(
-                              userImage: snapshot.data!['photoURL'],
-                              subscribersCount: 100,
-                              GDV: 50)),
+                              snapshot.data!['photoURL'],
+                              subscribersCount,
+                              widget.uid,
+                              isSubscribed)),
                       SliverPadding(
                         padding: EdgeInsets.only(bottom: 1),
                         sliver: SliverAppBar(
@@ -145,91 +160,88 @@ class AccountScreenState extends State<AccountScreen>
 class MySliverPersistentHeaderDelegate extends SliverPersistentHeaderDelegate {
   final userImage;
   final subscribersCount;
-  final GDV;
+  final uid;
+  var isSubscribed;
 
   MySliverPersistentHeaderDelegate(
-      {@required this.userImage,
-      @required this.subscribersCount,
-      @required this.GDV});
+      this.userImage, this.subscribersCount, this.uid, this.isSubscribed);
+
+  void updateSubscribe() async {
+    final currentUser = FirebaseAuth.instance.currentUser;
+    isSubscribed
+        ? await FirebaseFirestore.instance
+            .collection('Users')
+            .doc(currentUser!.uid)
+            .update({
+            'SubscribedChannelList': FieldValue.arrayUnion([uid])
+          })
+        : await FirebaseFirestore.instance
+            .collection('Users')
+            .doc(currentUser!.uid)
+            .update({
+            'SubscribedChannelList': FieldValue.arrayRemove([uid])
+          });
+  }
 
   @override
   Widget build(
       BuildContext context, double shrinkOffset, bool overlapsContent) {
     // TODO: implement build
-    return Container(
-      alignment: Alignment.topCenter,
-      child: Padding(
-        padding: const EdgeInsets.all(10),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            Container(
-              margin: EdgeInsets.symmetric(horizontal: 30),
-              child: CircleAvatar(backgroundImage: NetworkImage(userImage)),
-              height: 80,
-              width: 80,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
+    return StatefulBuilder(builder: (context, setState) {
+      return Container(
+        alignment: Alignment.topCenter,
+        child: Padding(
+          padding: const EdgeInsets.all(10),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              Container(
+                margin: EdgeInsets.symmetric(horizontal: 30),
+                child: CircleAvatar(backgroundImage: NetworkImage(userImage)),
+                height: 80,
+                width: 80,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                ),
               ),
-            ),
-            VerticalDivider(),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              child: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.all(3.0),
-                  child: Text(
-                    "登録者数",
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  child:
+                      Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
+                    subscribersCount != null
+                        ? Padding(
+                            padding: const EdgeInsets.all(1.0),
+                            child: Text(
+                              'チャンネル登録者数 ' + subscribersCount.toString() + '人',
+                              style: TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          )
+                        : Container(),
+                    FlatButton(
+                      child: isSubscribed
+                          ? Text('登録済み', style: TextStyle(color: Colors.grey))
+                          : Text('チャンネル登録',
+                              style: TextStyle(color: Colors.red)),
+                      onPressed: () {
+                        setState(() {
+                          isSubscribed = !isSubscribed;
+                        });
+                        updateSubscribe();
+                      },
+                    )
+                  ]),
                 ),
-                Padding(
-                  padding: const EdgeInsets.all(1.0),
-                  child: Text(
-                    subscribersCount.toString(),
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                )
-              ]),
-            ),
-            VerticalDivider(),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              child: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.all(3.0),
-                  child: Text(
-                    "偏差値",
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(1.0),
-                  child: Text(
-                    GDV.toString(),
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                )
-              ]),
-            ),
-            VerticalDivider(),
-          ],
+              ),
+            ],
+          ),
         ),
-      ),
-    );
+      );
+    });
   }
 
   @override

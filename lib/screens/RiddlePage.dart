@@ -137,9 +137,9 @@ class _RiddlePageState extends State<RiddlePage> {
           width: 300,
           padding: EdgeInsets.symmetric(horizontal: 20),
           decoration: BoxDecoration(
-              color: Colors.grey,
+              color: Theme.of(context).backgroundColor,
               borderRadius: BorderRadius.circular(35.0),
-              border: Border.all(color: Colors.grey.shade300)),
+              border: Border.all(color: Colors.grey)),
           child: Center(
             child: TextField(
                 maxLines: 1,

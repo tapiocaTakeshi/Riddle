@@ -1,9 +1,11 @@
 import 'package:Riddle/functions/Firebase.dart';
+import 'package:Riddle/models/GoogleSignInModel.dart';
 import 'package:Riddle/screens/SettingPage.dart';
 import 'package:animations/animations.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import 'DetailPage.dart';
 
@@ -17,6 +19,7 @@ class MyAccountScreenState extends State<MyAccountScreen>
   final user = FirebaseAuth.instance.currentUser;
   List<Map<String, dynamic>> myRiddles = [];
   List<Map<String, dynamic>> favoriteRiddles = [];
+  int? subscribersCount = 0;
 
   void loadRiddles() async {
     final data = await getData("Users", user!.uid);
@@ -66,6 +69,14 @@ class MyAccountScreenState extends State<MyAccountScreen>
     // TODO: implement initState
     super.initState();
     loadRiddles();
+    Future(() async {
+      final Users = await FirebaseFirestore.instance
+          .collection('Users')
+          .where('SubscribedChannelList', arrayContains: user!.uid)
+          .get()
+          .then((QuerySnapshot snapshots) => snapshots.docs);
+      subscribersCount = Users.length;
+    });
     _tabController = TabController(length: _tab.length, vsync: this);
   }
 
@@ -81,11 +92,14 @@ class MyAccountScreenState extends State<MyAccountScreen>
         actions: <Widget>[
           IconButton(
               icon: Icon(
-                Icons.settings_outlined,
+                Icons.logout_outlined,
               ),
               onPressed: () {
-                Navigator.of(context).push(
-                    MaterialPageRoute(builder: (context) => SettingPage()));
+                // Navigator.of(context).push(
+                //     MaterialPageRoute(builder: (context) => SettingPage()));
+                final provider =
+                    Provider.of<GoogleSignInModel>(context, listen: false);
+                provider.signOut();
               })
         ],
         elevation: 1,
@@ -96,9 +110,9 @@ class MyAccountScreenState extends State<MyAccountScreen>
             return [
               SliverPersistentHeader(
                   delegate: MySliverPersistentHeaderDelegate(
-                      userImage: user!.photoURL,
-                      subscribersCount: 100,
-                      GDV: 50)),
+                userImage: user!.photoURL,
+                subscribersCount: subscribersCount,
+              )),
               SliverPadding(
                 padding: EdgeInsets.only(bottom: 1),
                 sliver: SliverAppBar(
@@ -134,12 +148,11 @@ class MyAccountScreenState extends State<MyAccountScreen>
 class MySliverPersistentHeaderDelegate extends SliverPersistentHeaderDelegate {
   final userImage;
   final subscribersCount;
-  final GDV;
 
-  MySliverPersistentHeaderDelegate(
-      {@required this.userImage,
-      @required this.subscribersCount,
-      @required this.GDV});
+  MySliverPersistentHeaderDelegate({
+    @required this.userImage,
+    @required this.subscribersCount,
+  });
 
   @override
   Widget build(
@@ -162,59 +175,18 @@ class MySliverPersistentHeaderDelegate extends SliverPersistentHeaderDelegate {
                 shape: BoxShape.circle,
               ),
             ),
-            VerticalDivider(),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              child: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.all(3.0),
-                  child: Text(
-                    "登録者数",
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.bold,
+            subscribersCount != null
+                ? Padding(
+                    padding: const EdgeInsets.all(1.0),
+                    child: Text(
+                      'チャンネル登録者数 ' + subscribersCount.toString() + '人',
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(1.0),
-                  child: Text(
-                    subscribersCount.toString(),
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                )
-              ]),
-            ),
-            VerticalDivider(),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              child: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.all(3.0),
-                  child: Text(
-                    "偏差値",
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(1.0),
-                  child: Text(
-                    GDV.toString(),
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                )
-              ]),
-            ),
-            VerticalDivider(),
+                  )
+                : Container(),
           ],
         ),
       ),
