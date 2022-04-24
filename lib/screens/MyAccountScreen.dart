@@ -26,31 +26,36 @@ class MyAccountScreenState extends State<MyAccountScreen>
 
     final myRiddleList = data['MyRiddleList'];
     if (myRiddleList.isNotEmpty) {
-      final myRiddlesSnapshot = await FirebaseFirestore.instance
-          .collection('Riddles')
-          .where('id', whereIn: myRiddleList)
-          .get();
-      setState(() {
-        this.myRiddles = myRiddlesSnapshot.docs
-            .map((DocumentSnapshot document) =>
-                document.data() as Map<String, dynamic>)
-            .toList();
-      });
+      myRiddles = await subListFunc(myRiddleList);
     }
 
     final favoriteRiddleList = data['FavoriteRiddleList'];
     if (favoriteRiddleList.isNotEmpty) {
-      final favoriteRiddlesSnapshot = await FirebaseFirestore.instance
-          .collection('Riddles')
-          .where('id', whereIn: favoriteRiddleList)
-          .get();
-      setState(() {
-        this.favoriteRiddles = favoriteRiddlesSnapshot.docs
-            .map((DocumentSnapshot document) =>
-                document.data() as Map<String, dynamic>)
-            .toList();
-      });
+      favoriteRiddles = await subListFunc(favoriteRiddleList);
     }
+    setState(() {});
+  }
+
+  Future<List<Map<String, dynamic>>> loadData(List s) async {
+    final riddlesSnapshot = await FirebaseFirestore.instance
+        .collection('Riddles')
+        .where('id', whereIn: s)
+        .get();
+    final riddles = riddlesSnapshot.docs
+        .map((DocumentSnapshot document) =>
+            document.data() as Map<String, dynamic>)
+        .toList();
+    return riddles;
+  }
+
+  Future<List<Map<String, dynamic>>> subListFunc(List list) async {
+    var inChunks = [];
+    List<Map<String, dynamic>> outChunks = [];
+    for (var i = 0; i < list.length; i += 10) {
+      inChunks = list.sublist(i, i + 10 > list.length ? list.length : i + 10);
+      outChunks.addAll(await loadData(inChunks));
+    }
+    return outChunks;
   }
 
   final _tab = <Tab>[

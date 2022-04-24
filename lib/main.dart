@@ -138,11 +138,11 @@ class MyHomePageState extends State<MyHomePage> {
               BottomNavigationBarItem(
                   icon: Icon(Icons.home_sharp),
                   // ignore: deprecated_member_use
-                  title: Text('ホーム')),
+                  label: 'ホーム'),
               BottomNavigationBarItem(
                   icon: Icon(Icons.account_circle_outlined),
                   // ignore: deprecated_member_use
-                  title: Text('アカウント'))
+                  label: 'アカウント')
             ],
             currentIndex: _selectedIndex,
             selectedItemColor: Colors.orange,

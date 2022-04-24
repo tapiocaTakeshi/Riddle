@@ -26,35 +26,40 @@ class AccountScreenState extends State<AccountScreen>
 
   void loadRiddles() async {
     user = await getData('Users', widget.uid);
-    final myRiddleIdList = user['MyRiddleList'];
+    final myRiddleList = user['MyRiddleList'];
 
-    if (myRiddleIdList.isNotEmpty) {
-      final myRiddlesSnapshot = await FirebaseFirestore.instance
-          .collection('Riddles')
-          .where('id', whereIn: myRiddleIdList)
-          .get();
-      setState(() {
-        this.myRiddles = myRiddlesSnapshot.docs
-            .map((DocumentSnapshot document) =>
-                document.data() as Map<String, dynamic>)
-            .toList();
-      });
+    if (myRiddleList.isNotEmpty) {
+      myRiddles = await subListFunc(myRiddleList);
     }
 
-    final favoriteRiddleIdList = user['FavoriteRiddleList'];
+    final favoriteRiddleList = user['FavoriteRiddleList'];
 
-    if (favoriteRiddleIdList.isNotEmpty) {
-      final favoriteRiddlesSnapshot = await FirebaseFirestore.instance
-          .collection('Riddles')
-          .where('id', whereIn: favoriteRiddleIdList)
-          .get();
-      setState(() {
-        this.favoriteRiddles = favoriteRiddlesSnapshot.docs
-            .map((DocumentSnapshot document) =>
-                document.data() as Map<String, dynamic>)
-            .toList();
-      });
+    if (favoriteRiddleList.isNotEmpty) {
+      favoriteRiddles = await subListFunc(favoriteRiddleList);
     }
+    setState(() {});
+  }
+
+  Future<List<Map<String, dynamic>>> loadData(List s) async {
+    final riddlesSnapshot = await FirebaseFirestore.instance
+        .collection('Riddles')
+        .where('id', whereIn: s)
+        .get();
+    final riddles = riddlesSnapshot.docs
+        .map((DocumentSnapshot document) =>
+            document.data() as Map<String, dynamic>)
+        .toList();
+    return riddles;
+  }
+
+  Future<List<Map<String, dynamic>>> subListFunc(List list) async {
+    var inChunks = [];
+    List<Map<String, dynamic>> outChunks = [];
+    for (var i = 0; i < list.length; i += 10) {
+      inChunks = list.sublist(i, i + 10 > list.length ? list.length : i + 10);
+      outChunks.addAll(await loadData(inChunks));
+    }
+    return outChunks;
   }
 
   final _tab = <Tab>[

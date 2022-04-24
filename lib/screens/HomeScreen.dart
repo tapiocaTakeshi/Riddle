@@ -24,6 +24,8 @@ class HomeScreenState extends State<HomeScreen> {
   List<Map<String, dynamic>> riddles = [];
   // List<Map<String, dynamic>> userInfos=[];
   String? keyword = '';
+  var inChunks = [];
+  List<Query> outChunks = [];
 
   Future loadRiddles() async {
     Query? riddlesReference;
@@ -52,49 +54,73 @@ class HomeScreenState extends State<HomeScreen> {
     var flag = false;
     switch (filter) {
       case filters.All:
+        print('All');
         break;
       case filters.Subsc:
         final currentUser = FirebaseAuth.instance.currentUser;
         final currentUserData = await getData('Users', currentUser!.uid);
+
         if (currentUserData['SubscribedChannelList'].isNotEmpty) {
-          riddlesReference = riddlesReference!
-              .where('uid', whereIn: currentUserData['SubscribedChannelList']);
+          for (var i = 0;
+              i < currentUserData['SubscribedChannelList'].length;
+              i += 10) {
+            inChunks = currentUserData['SubscribedChannelList'].sublist(
+                i,
+                i + 10 > currentUserData['SubscribedChannelList'].length
+                    ? currentUserData['SubscribedChannelList'].length
+                    : i + 10);
+            var riddlesQuery =
+                riddlesReference!.where('uid', whereIn: inChunks);
+            outChunks.add(riddlesQuery);
+          }
         } else {
           flag = true;
         }
         break;
       default:
     }
-    QuerySnapshot riddlesSnapshot = await riddlesReference!.get();
+
+    List<Map<String, dynamic>> temp = [];
+    riddles = [];
     if (mounted) {
-      setState(() {
-        if (flag) {
-          this.riddles = [];
+      if (flag) {
+        this.riddles = [];
+      } else {
+        if (outChunks.isNotEmpty) {
+          for (Query riddlesQuery in outChunks) {
+            riddles.addAll((await riddlesQuery.get())
+                .docs
+                .map((DocumentSnapshot document) =>
+                    document.data() as Map<String, dynamic>)
+                .toList());
+          }
         } else {
-          this.riddles = riddlesSnapshot.docs
+          riddles = (await riddlesReference!.get())
+              .docs
               .map((DocumentSnapshot document) =>
                   document.data() as Map<String, dynamic>)
               .toList();
         }
-        if (keyword != '')
-          this.riddles = riddles
-              .where((riddle) => riddle['title'].contains(keyword))
-              .toList();
-      });
+      }
+      if (keyword != '')
+        this.riddles = riddles
+            .where((riddle) => riddle['title'].contains(keyword))
+            .toList();
     }
+    setState(() {});
   }
 
-  BannerAd? banner = BannerAd(
-      size: AdSize.banner,
-      adUnitId: AdState.BannerAdId,
-      listener: BannerAdListener(),
-      request: AdRequest());
+  // BannerAd? banner = BannerAd(
+  //     size: AdSize.banner,
+  //     adUnitId: AdState.BannerAdId,
+  //     listener: BannerAdListener(),
+  //     request: AdRequest());
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    banner!.load();
+    // banner!.load();
     loadRiddles();
   }
 
@@ -151,41 +177,37 @@ class HomeScreenState extends State<HomeScreen> {
                 mainAxisSpacing: 0,
                 crossAxisSpacing: 0,
                 childAspectRatio: 16 / 9,
-                children: List.generate(
-                    riddles.length + riddles.length ~/ k + 1, (index) {
-                  final index2 = index - index ~/ k - 1;
-                  return index % k == 0
-                      ? AdWidget(ad: banner!)
-                      : Card(
-                          elevation: 3,
-                          clipBehavior: Clip.antiAlias,
-                          child: OpenContainer(
-                            closedElevation: 1,
-                            openBuilder: (context, closedContainer) {
-                              return DetailPage(
-                                id: riddles[index2]['id'],
-                                title: riddles[index2]['title'],
-                                image: riddles[index2]['thumbnailURL'],
-                                onPressed: closedContainer,
-                              );
-                            },
-                            closedBuilder: (context, openContainer) {
-                              return Center(
-                                child: InkWell(
-                                  child: Image.network(
-                                    riddles[index2]['thumbnailURL'],
-                                    width: size.width,
-                                    height: size.width * 9 / 16,
-                                    fit: BoxFit.cover,
-                                  ),
-                                  highlightColor: Colors.grey.withOpacity(0.3),
-                                  splashColor: Colors.grey.withOpacity(0.3),
-                                  onTap: () => openContainer(),
-                                ),
-                              );
-                            },
+                children: List.generate(riddles.length, (index) {
+                  return Card(
+                    elevation: 3,
+                    clipBehavior: Clip.antiAlias,
+                    child: OpenContainer(
+                      closedElevation: 1,
+                      openBuilder: (context, closedContainer) {
+                        return DetailPage(
+                          id: riddles[index]['id'],
+                          title: riddles[index]['title'],
+                          image: riddles[index]['thumbnailURL'],
+                          onPressed: closedContainer,
+                        );
+                      },
+                      closedBuilder: (context, openContainer) {
+                        return Center(
+                          child: InkWell(
+                            child: Image.network(
+                              riddles[index]['thumbnailURL'],
+                              width: size.width,
+                              height: size.width * 9 / 16,
+                              fit: BoxFit.cover,
+                            ),
+                            highlightColor: Colors.grey.withOpacity(0.3),
+                            splashColor: Colors.grey.withOpacity(0.3),
+                            onTap: () => openContainer(),
                           ),
                         );
+                      },
+                    ),
+                  );
                 }),
               ),
             ),
