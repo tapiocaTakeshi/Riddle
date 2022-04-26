@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'dart:typed_data';
+import 'package:Riddle/main.dart';
 import 'package:Riddle/models/ThumbnailModel.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -126,11 +127,6 @@ class UploadScreen2State extends State<UploadScreen2> {
                         ],
                       ),
                     )),
-                    Container(
-                        color: Colors.white,
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 10.0),
-                        )),
                     Padding(
                       padding: const EdgeInsets.all(10.0),
                       child: SizedBox(
@@ -150,6 +146,7 @@ class UploadScreen2State extends State<UploadScreen2> {
                                 setState(() {
                                   model.visible = true;
                                 });
+                                print('a');
                                 final snapshotRiddle = await FirebaseFirestore
                                     .instance
                                     .collection('Riddles')
@@ -197,8 +194,7 @@ class UploadScreen2State extends State<UploadScreen2> {
                                 String thumbnailURL = await uploadImage(
                                     model.thumbnailImageFile!,
                                     'Riddles/${snapshotRiddle.id}/thumbnailImageFile.jpg');
-
-                                if (thumbnailURL == '') return;
+                                print(thumbnailURL);
                                 await FirebaseFirestore.instance
                                     .collection('Riddles')
                                     .doc(snapshotRiddle.id)
@@ -211,8 +207,11 @@ class UploadScreen2State extends State<UploadScreen2> {
                                 setState(() {
                                   model.visible = false;
                                 });
-                                Navigator.of(context)
-                                    .popUntil((route) => route.isFirst);
+                                Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => MyHomePage(),
+                                    ));
                               } else if (model.thumbnailImage == null) {
                                 setState(() {
                                   thumbnailTextColor = Colors.red;

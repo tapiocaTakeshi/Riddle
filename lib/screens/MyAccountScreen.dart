@@ -4,6 +4,8 @@ import 'package:Riddle/screens/SettingPage.dart';
 import 'package:animations/animations.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -33,7 +35,7 @@ class MyAccountScreenState extends State<MyAccountScreen>
     if (favoriteRiddleList.isNotEmpty) {
       favoriteRiddles = await subListFunc(favoriteRiddleList);
     }
-    setState(() {});
+    if (mounted) setState(() {});
   }
 
   Future<List<Map<String, dynamic>>> loadData(List s) async {
@@ -92,16 +94,15 @@ class MyAccountScreenState extends State<MyAccountScreen>
       appBar: AppBar(
         title: Text(
           user!.displayName.toString(),
-          style: TextStyle(color: Colors.black),
+          style: TextStyle(color: Theme.of(context).textTheme.bodyText1!.color),
         ),
         actions: <Widget>[
-          IconButton(
-              icon: Icon(
-                Icons.logout_outlined,
+          FlatButton(
+              child: Text(
+                'ログアウト',
+                style: TextStyle(color: Theme.of(context).colorScheme.primary),
               ),
               onPressed: () {
-                // Navigator.of(context).push(
-                //     MaterialPageRoute(builder: (context) => SettingPage()));
                 final provider =
                     Provider.of<GoogleSignInModel>(context, listen: false);
                 provider.signOut();
@@ -128,7 +129,8 @@ class MyAccountScreenState extends State<MyAccountScreen>
                       controller: _tabController,
                       tabs: _tab,
                       labelColor: Colors.orange,
-                      unselectedLabelColor: Colors.black,
+                      unselectedLabelColor:
+                          Theme.of(context).textTheme.bodyText1!.color,
                       indicatorColor: Colors.orange),
                 ),
               ),
@@ -139,12 +141,18 @@ class MyAccountScreenState extends State<MyAccountScreen>
                 onRefresh: () async {
                   loadRiddles();
                 },
-                child: TabPage(contents: myRiddles)),
+                child: TabPage(
+                  contents: myRiddles,
+                  isMyRiddle: true,
+                )),
             RefreshIndicator(
                 onRefresh: () async {
                   loadRiddles();
                 },
-                child: TabPage(contents: favoriteRiddles)),
+                child: TabPage(
+                  contents: favoriteRiddles,
+                  isMyRiddle: false,
+                )),
           ])),
     );
   }
@@ -163,6 +171,11 @@ class MySliverPersistentHeaderDelegate extends SliverPersistentHeaderDelegate {
   Widget build(
       BuildContext context, double shrinkOffset, bool overlapsContent) {
     // TODO: implement build
+    String subscribersText = subscribersCount! >= 10000
+        ? subscribersCount! >= 100000000
+            ? (subscribersCount! ~/ 100000000).toString() + '億'
+            : (subscribersCount! ~/ 10000).toString() + '万'
+        : subscribersCount.toString();
     return Container(
       alignment: Alignment.topCenter,
       child: Padding(
@@ -184,7 +197,7 @@ class MySliverPersistentHeaderDelegate extends SliverPersistentHeaderDelegate {
                 ? Padding(
                     padding: const EdgeInsets.all(1.0),
                     child: Text(
-                      'チャンネル登録者数 ' + subscribersCount.toString() + '人',
+                      'チャンネル登録者数 ' + subscribersText + '人',
                       style: TextStyle(
                         fontSize: 15,
                         fontWeight: FontWeight.bold,
@@ -215,8 +228,9 @@ class MySliverPersistentHeaderDelegate extends SliverPersistentHeaderDelegate {
 
 class TabPage extends StatelessWidget {
   final contents;
+  final isMyRiddle;
 
-  TabPage({@required this.contents});
+  TabPage({@required this.contents, @required this.isMyRiddle});
 
   @override
   Widget build(BuildContext context) {
@@ -232,38 +246,87 @@ class TabPage extends StatelessWidget {
           crossAxisSpacing: 0,
           childAspectRatio: 16 / 9,
           children: List.generate(contents.length, (index) {
-            return Card(
-              elevation: 3,
-              clipBehavior: Clip.antiAlias,
-              // shape: RoundedRectangleBorder(
-              //     borderRadius: BorderRadius.circular(5)
-              // ),
-              child: OpenContainer(
-                closedElevation: 0,
-                openBuilder: (context, closedContainer) {
-                  return DetailPage(
-                    id: contents[index]['id'],
-                    title: contents[index]['title'],
-                    image: contents[index]['thumbnailURL'],
-                    onPressed: closedContainer,
-                  );
-                },
-                closedBuilder: (context, openContainer) {
-                  return Center(
-                    child: InkWell(
-                      child: Image.network(
-                        contents[index]['thumbnailURL'],
-                        width: size.width,
-                        height: size.width * 9 / 16,
-                        fit: BoxFit.cover,
+            return Stack(
+              children: [
+                Card(
+                  elevation: 3,
+                  clipBehavior: Clip.antiAlias,
+                  child: OpenContainer(
+                    closedElevation: 0,
+                    openBuilder: (context, closedContainer) {
+                      return DetailPage(
+                        id: contents[index]['id'],
+                        title: contents[index]['title'],
+                        image: contents[index]['thumbnailURL'],
+                        onPressed: closedContainer,
+                      );
+                    },
+                    closedBuilder: (context, openContainer) {
+                      return Center(
+                        child: InkWell(
+                          child: Image.network(
+                            contents[index]['thumbnailURL'],
+                            width: size.width,
+                            height: size.width * 9 / 16,
+                            fit: BoxFit.cover,
+                          ),
+                          highlightColor: Colors.grey.withOpacity(0.3),
+                          splashColor: Colors.grey.withOpacity(0.3),
+                          onTap: () => openContainer(),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+                if (isMyRiddle)
+                  Align(
+                    alignment: Alignment.topRight,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Container(
+                        height: 40,
+                        width: 40,
+                        decoration: BoxDecoration(
+                            color: Theme.of(context).colorScheme.secondary,
+                            shape: BoxShape.circle),
+                        child: IconButton(
+                          icon: Icon(
+                            Icons.more_vert,
+                            color: Theme.of(context).iconTheme.color,
+                          ),
+                          onPressed: () {
+                            showCupertinoModalPopup(
+                                context: context,
+                                builder: (BuildContext context) =>
+                                    CupertinoActionSheet(
+                                      actions: [
+                                        CupertinoActionSheetAction(
+                                            onPressed: () {
+                                              FirebaseFirestore.instance
+                                                  .collection('Riddles')
+                                                  .doc(contents[index]['id'])
+                                                  .delete();
+                                              FirebaseStorage.instance
+                                                  .ref()
+                                                  .child('Riddles/' +
+                                                      contents[index]['id'])
+                                                  .delete();
+                                            },
+                                            child: Text('削除'))
+                                      ],
+                                      cancelButton: CupertinoActionSheetAction(
+                                        child: Text('キャンセル'),
+                                        onPressed: () {
+                                          Navigator.pop(context);
+                                        },
+                                      ),
+                                    ));
+                          },
+                        ),
                       ),
-                      highlightColor: Colors.grey.withOpacity(0.3),
-                      splashColor: Colors.grey.withOpacity(0.3),
-                      onTap: () => openContainer(),
                     ),
-                  );
-                },
-              ),
+                  )
+              ],
             );
           }),
         ),

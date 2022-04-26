@@ -114,8 +114,9 @@ class MyHomePageState extends State<MyHomePage> {
     // TODO: implement build
     return Scaffold(
         resizeToAvoidBottomInset: false,
-        body: Center(
-          child: _contents.elementAt(_selectedIndex),
+        body: IndexedStack(
+          index: _selectedIndex,
+          children: _contents,
         ),
         floatingActionButton: FloatingActionButton(
           child: Icon(
@@ -124,7 +125,7 @@ class MyHomePageState extends State<MyHomePage> {
             color: Colors.orange,
           ),
           elevation: 2,
-          onPressed: () => Navigator.push(
+          onPressed: () => Navigator.pushReplacement(
               context,
               MaterialPageRoute(
                   builder: (context) => UploadScreen(),

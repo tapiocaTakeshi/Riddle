@@ -36,7 +36,7 @@ class UploadScreenState extends State<UploadScreen> {
                     if (model.isOpeneds.every((element) => element))
                       IconButton(
                           onPressed: () {
-                            Navigator.push(
+                            Navigator.pushReplacement(
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) => UploadScreen2(
@@ -204,9 +204,10 @@ class UploadScreenState extends State<UploadScreen> {
                                                                               fontSize: 0),
                                                                       filled:
                                                                           true,
-                                                                      fillColor:
-                                                                          Colors
-                                                                              .white,
+                                                                      fillColor: Theme.of(
+                                                                              context)
+                                                                          .colorScheme
+                                                                          .secondary,
                                                                       enabledBorder:
                                                                           OutlineInputBorder(
                                                                               borderSide: BorderSide(color: Colors.grey)),

@@ -26,76 +26,81 @@ class HomeScreenState extends State<HomeScreen> {
   String? keyword = '';
   var inChunks = [];
   List<Query> outChunks = [];
+  int lastIndex = 0;
+  final loadLength = 3;
+  bool hasMore = true;
+  List<Map<String, dynamic>> temp = [];
 
   Future loadRiddles() async {
-    Query? riddlesReference;
-    switch (order) {
-      case orders.New:
-        riddlesReference = FirebaseFirestore.instance
-            .collection('Riddles')
-            .orderBy('date', descending: false);
-        print('New');
-        break;
-      case orders.Popular:
-        riddlesReference = FirebaseFirestore.instance
-            .collection('Riddles')
-            .orderBy('answerCount', descending: true);
-        print('Popular');
-        break;
-      case orders.Difficult:
-        riddlesReference = FirebaseFirestore.instance
-            .collection('Riddles')
-            .orderBy('CorrectAnswerRatemean', descending: false);
-        print('Difficlut');
-        break;
-      default:
-        break;
-    }
-    var flag = false;
-    switch (filter) {
-      case filters.All:
-        print('All');
-        break;
-      case filters.Subsc:
-        final currentUser = FirebaseAuth.instance.currentUser;
-        final currentUserData = await getData('Users', currentUser!.uid);
+    await Future.delayed(Duration(seconds: 3), () async {
+      Query? riddlesReference;
+      switch (order) {
+        case orders.New:
+          riddlesReference = FirebaseFirestore.instance
+              .collection('Riddles')
+              .orderBy('date', descending: false);
+          // print('New');
+          break;
+        case orders.Popular:
+          riddlesReference = FirebaseFirestore.instance
+              .collection('Riddles')
+              .orderBy('answerCount', descending: true);
+          // print('Popular');
+          break;
+        case orders.Difficult:
+          riddlesReference = FirebaseFirestore.instance
+              .collection('Riddles')
+              .orderBy('CorrectAnswerRatemean', descending: false);
+          // print('Difficlut');
+          break;
+        default:
+          break;
+      }
+      var flag = false;
+      switch (filter) {
+        case filters.All:
+          outChunks = [];
+          // print('All');
+          break;
+        case filters.Subsc:
+          final currentUser = FirebaseAuth.instance.currentUser;
+          final currentUserData = await getData('Users', currentUser!.uid);
 
-        if (currentUserData['SubscribedChannelList'].isNotEmpty) {
-          for (var i = 0;
-              i < currentUserData['SubscribedChannelList'].length;
-              i += 10) {
-            inChunks = currentUserData['SubscribedChannelList'].sublist(
-                i,
-                i + 10 > currentUserData['SubscribedChannelList'].length
-                    ? currentUserData['SubscribedChannelList'].length
-                    : i + 10);
-            var riddlesQuery =
-                riddlesReference!.where('uid', whereIn: inChunks);
-            outChunks.add(riddlesQuery);
+          if (currentUserData['SubscribedChannelList'].isNotEmpty) {
+            outChunks = [];
+            for (var i = 0;
+                i < currentUserData['SubscribedChannelList'].length;
+                i += 10) {
+              inChunks = currentUserData['SubscribedChannelList'].sublist(
+                  i,
+                  i + 10 > currentUserData['SubscribedChannelList'].length
+                      ? currentUserData['SubscribedChannelList'].length
+                      : i + 10);
+              var riddlesQuery =
+                  riddlesReference!.where('uid', whereIn: inChunks);
+              outChunks.add(riddlesQuery);
+            }
+          } else {
+            flag = true;
           }
-        } else {
-          flag = true;
-        }
-        break;
-      default:
-    }
+          break;
+        default:
+      }
+      temp = [];
 
-    List<Map<String, dynamic>> temp = [];
-    riddles = [];
-    if (mounted) {
       if (flag) {
-        this.riddles = [];
+        temp = [];
       } else {
         if (outChunks.isNotEmpty) {
           for (Query riddlesQuery in outChunks) {
-            riddles.addAll((await riddlesQuery.get())
+            temp.addAll((await riddlesQuery.get())
                 .docs
                 .map((DocumentSnapshot document) =>
                     document.data() as Map<String, dynamic>)
                 .toList());
           }
         } else {
-          riddles = (await riddlesReference!.get())
+          temp = (await riddlesReference!.get())
               .docs
               .map((DocumentSnapshot document) =>
                   document.data() as Map<String, dynamic>)
@@ -103,24 +108,23 @@ class HomeScreenState extends State<HomeScreen> {
         }
       }
       if (keyword != '')
-        this.riddles = riddles
-            .where((riddle) => riddle['title'].contains(keyword))
-            .toList();
-    }
-    setState(() {});
-  }
+        temp =
+            temp.where((riddle) => riddle['title'].contains(keyword)).toList();
+      riddles = [];
+      for (var i = 0; i < lastIndex + loadLength; i++) {
+        if (i < temp.length) riddles.add(temp[i]);
+      }
 
-  // BannerAd? banner = BannerAd(
-  //     size: AdSize.banner,
-  //     adUnitId: AdState.BannerAdId,
-  //     listener: BannerAdListener(),
-  //     request: AdRequest());
+      lastIndex += loadLength;
+      if (riddles.length >= temp.length) hasMore = false;
+    });
+    if (mounted) setState(() {});
+  }
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    // banner!.load();
     loadRiddles();
   }
 
@@ -128,7 +132,6 @@ class HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     // TODO: implement build
     Size size = MediaQuery.of(context).size;
-    final k = 3;
     return Scaffold(
         appBar: AppBar(
           elevation: 1,
@@ -149,6 +152,10 @@ class HomeScreenState extends State<HomeScreen> {
                       context: context,
                       delegate: searchDelegate(Keywords, histories),
                       useRootNavigator: true);
+                  setState(() {
+                    lastIndex = 0;
+                    riddles = [];
+                  });
                   loadRiddles();
                 },
                 icon: Icon(Icons.search)),
@@ -159,6 +166,10 @@ class HomeScreenState extends State<HomeScreen> {
                           builder: (_) => SearchOptionPage(),
                           fullscreenDialog: true))
                       .then((value) {
+                    setState(() {
+                      lastIndex = 0;
+                      riddles = [];
+                    });
                     loadRiddles();
                   });
                 },
@@ -177,37 +188,48 @@ class HomeScreenState extends State<HomeScreen> {
                 mainAxisSpacing: 0,
                 crossAxisSpacing: 0,
                 childAspectRatio: 16 / 9,
-                children: List.generate(riddles.length, (index) {
-                  return Card(
-                    elevation: 3,
-                    clipBehavior: Clip.antiAlias,
-                    child: OpenContainer(
-                      closedElevation: 1,
-                      openBuilder: (context, closedContainer) {
-                        return DetailPage(
-                          id: riddles[index]['id'],
-                          title: riddles[index]['title'],
-                          image: riddles[index]['thumbnailURL'],
-                          onPressed: closedContainer,
-                        );
-                      },
-                      closedBuilder: (context, openContainer) {
-                        return Center(
-                          child: InkWell(
-                            child: Image.network(
-                              riddles[index]['thumbnailURL'],
-                              width: size.width,
-                              height: size.width * 9 / 16,
-                              fit: BoxFit.cover,
+                children: List.generate(riddles.length + 1, (index) {
+                  if (index < riddles.length) {
+                    return Card(
+                      elevation: 3,
+                      clipBehavior: Clip.antiAlias,
+                      child: OpenContainer(
+                        closedElevation: 1,
+                        openBuilder: (context, closedContainer) {
+                          return DetailPage(
+                            id: riddles[index]['id'],
+                            title: riddles[index]['title'],
+                            image: riddles[index]['thumbnailURL'],
+                            onPressed: closedContainer,
+                          );
+                        },
+                        closedBuilder: (context, openContainer) {
+                          return Center(
+                            child: InkWell(
+                              child: Image.network(
+                                riddles[index]['thumbnailURL'],
+                                width: size.width,
+                                height: size.width * 9 / 16,
+                                fit: BoxFit.cover,
+                              ),
+                              highlightColor: Colors.grey.withOpacity(0.3),
+                              splashColor: Colors.grey.withOpacity(0.3),
+                              onTap: () => openContainer(),
                             ),
-                            highlightColor: Colors.grey.withOpacity(0.3),
-                            splashColor: Colors.grey.withOpacity(0.3),
-                            onTap: () => openContainer(),
-                          ),
-                        );
-                      },
-                    ),
-                  );
+                          );
+                        },
+                      ),
+                    );
+                  } else {
+                    loadRiddles();
+                    return Center(
+                      child: hasMore
+                          ? CircularProgressIndicator(
+                              color: Colors.orange,
+                            )
+                          : Text('データがありません'),
+                    );
+                  }
                 }),
               ),
             ),
@@ -253,7 +275,7 @@ class searchDelegate extends SearchDelegate<String> {
 
   @override
   Widget buildResults(BuildContext context) {
-    WidgetsBinding.instance!.addPostFrameCallback((_) async {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
       close(context, query);
       if (query.isNotEmpty) {
         final snapshotFilter =

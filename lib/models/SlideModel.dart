@@ -47,9 +47,9 @@ class SlideModel extends ChangeNotifier {
       visible = false;
       print(slidePath);
       expPaths = List.generate(slideImageBytes.length, (index) => '');
-      expImages = []..length = slideImageBytes.length;
-      expImageFiles = []..length = slideImageBytes.length;
-      expImageBytes = []..length = slideImageBytes.length;
+      expImages = [].cast()..length = slideImageBytes.length;
+      expImageFiles = [].cast()..length = slideImageBytes.length;
+      expImageBytes = [].cast()..length = slideImageBytes.length;
       isOpeneds = List.generate(slideImageBytes.length, (index) => false);
     }
     notifyListeners();

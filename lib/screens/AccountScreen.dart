@@ -37,7 +37,7 @@ class AccountScreenState extends State<AccountScreen>
     if (favoriteRiddleList.isNotEmpty) {
       favoriteRiddles = await subListFunc(favoriteRiddleList);
     }
-    setState(() {});
+    if (mounted) setState(() {});
   }
 
   Future<List<Map<String, dynamic>>> loadData(List s) async {
@@ -108,7 +108,8 @@ class AccountScreenState extends State<AccountScreen>
               appBar: AppBar(
                 title: Text(
                   snapshot.data!['name'].toString(),
-                  style: TextStyle(color: Colors.black),
+                  style: TextStyle(
+                      color: Theme.of(context).textTheme.bodyText1!.color),
                 ),
                 elevation: 1,
                 centerTitle: false,
@@ -133,7 +134,8 @@ class AccountScreenState extends State<AccountScreen>
                               controller: _tabController,
                               tabs: _tab,
                               labelColor: Colors.orange,
-                              unselectedLabelColor: Colors.black,
+                              unselectedLabelColor:
+                                  Theme.of(context).textTheme.bodyText1!.color,
                               indicatorColor: Colors.orange),
                         ),
                       ),
@@ -192,6 +194,11 @@ class MySliverPersistentHeaderDelegate extends SliverPersistentHeaderDelegate {
   Widget build(
       BuildContext context, double shrinkOffset, bool overlapsContent) {
     // TODO: implement build
+    String subscribersText = subscribersCount! >= 10000
+        ? subscribersCount! >= 100000000
+            ? (subscribersCount! ~/ 100000000).toString() + '億'
+            : (subscribersCount! ~/ 10000).toString() + '万'
+        : subscribersCount.toString();
     return StatefulBuilder(builder: (context, setState) {
       return Container(
         alignment: Alignment.topCenter,
@@ -219,7 +226,7 @@ class MySliverPersistentHeaderDelegate extends SliverPersistentHeaderDelegate {
                         ? Padding(
                             padding: const EdgeInsets.all(1.0),
                             child: Text(
-                              'チャンネル登録者数 ' + subscribersCount.toString() + '人',
+                              'チャンネル登録者数 ' + subscribersText + '人',
                               style: TextStyle(
                                 fontSize: 15,
                                 fontWeight: FontWeight.bold,
