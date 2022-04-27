@@ -2,9 +2,11 @@ import 'package:Riddle/screens/HomeScreen.dart';
 import 'package:flutter/material.dart';
 
 enum orders { New, Popular, Difficult }
+
 orders order = orders.New;
 
 enum filters { All, Subsc }
+
 filters filter = filters.All;
 
 class SearchOptionPage extends StatefulWidget {
@@ -27,6 +29,10 @@ class _SearchOptionPageState extends State<SearchOptionPage> {
       appBar: AppBar(),
       body: Column(
         children: [
+          Text(
+            '並び替え',
+            style: TextStyle(fontSize: 20),
+          ),
           Column(
             children: [
               RadioListTile<orders>(
@@ -54,6 +60,10 @@ class _SearchOptionPageState extends State<SearchOptionPage> {
                     _handleRadio1(value);
                   }),
             ],
+          ),
+          Text(
+            'フィルタ',
+            style: TextStyle(fontSize: 20),
           ),
           Column(
             children: [

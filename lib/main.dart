@@ -128,8 +128,9 @@ class MyHomePageState extends State<MyHomePage> {
           onPressed: () => Navigator.pushReplacement(
               context,
               MaterialPageRoute(
-                  builder: (context) => UploadScreen(),
-                  fullscreenDialog: true)),
+                builder: (context) => UploadScreen(),
+                fullscreenDialog: true,
+              )),
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
         bottomNavigationBar: SizedBox(

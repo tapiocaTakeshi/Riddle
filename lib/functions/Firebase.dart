@@ -9,8 +9,8 @@ Future<String> uploadImage(File imageFile, String path) async {
   final storage = FirebaseStorage.instance;
   final ref = storage.ref().child(path);
   if (imageFile.existsSync()) {
-    final uploadTask = await ref.putFile(imageFile);
-    var dowurl = await uploadTask.ref.getDownloadURL();
+    final uploadTask = ref.putFile(imageFile);
+    var dowurl = await (await uploadTask).ref.getDownloadURL();
     var url = dowurl.toString();
     return url;
   } else {

@@ -144,6 +144,7 @@ class MyAccountScreenState extends State<MyAccountScreen>
                 child: TabPage(
                   contents: myRiddles,
                   isMyRiddle: true,
+                  loadRiddles: () => loadRiddles(),
                 )),
             RefreshIndicator(
                 onRefresh: () async {
@@ -152,6 +153,7 @@ class MyAccountScreenState extends State<MyAccountScreen>
                 child: TabPage(
                   contents: favoriteRiddles,
                   isMyRiddle: false,
+                  loadRiddles: () => loadRiddles(),
                 )),
           ])),
     );
@@ -229,8 +231,10 @@ class MySliverPersistentHeaderDelegate extends SliverPersistentHeaderDelegate {
 class TabPage extends StatelessWidget {
   final contents;
   final isMyRiddle;
+  final VoidCallback? loadRiddles;
 
-  TabPage({@required this.contents, @required this.isMyRiddle});
+  TabPage(
+      {@required this.contents, @required this.isMyRiddle, this.loadRiddles});
 
   @override
   Widget build(BuildContext context) {
@@ -301,16 +305,20 @@ class TabPage extends StatelessWidget {
                                     CupertinoActionSheet(
                                       actions: [
                                         CupertinoActionSheetAction(
-                                            onPressed: () {
-                                              FirebaseFirestore.instance
+                                            onPressed: () async {
+                                              await FirebaseFirestore.instance
                                                   .collection('Riddles')
-                                                  .doc(contents[index]['id'])
+                                                  .doc(contents[index]['id']
+                                                      .toString())
                                                   .delete();
-                                              FirebaseStorage.instance
-                                                  .ref()
-                                                  .child('Riddles/' +
-                                                      contents[index]['id'])
-                                                  .delete();
+                                              // await FirebaseStorage.instance
+                                              //     .ref('/')
+                                              //     .child('Riddles')
+                                              //     .child(contents[index]['id']
+                                              //         .toString())
+                                              //     .delete();
+                                              Navigator.pop(context);
+                                              loadRiddles;
                                             },
                                             child: Text('削除'))
                                       ],
