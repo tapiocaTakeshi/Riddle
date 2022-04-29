@@ -317,8 +317,8 @@ class TabPage extends StatelessWidget {
                                               //     .child(contents[index]['id']
                                               //         .toString())
                                               //     .delete();
-                                              Navigator.pop(context);
                                               loadRiddles;
+                                              Navigator.pop(context);
                                             },
                                             child: Text('削除'))
                                       ],
