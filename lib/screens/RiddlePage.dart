@@ -105,6 +105,7 @@ class _RiddlePageState extends State<RiddlePage> {
       await Future<void>.delayed(Duration(milliseconds: 500));
 
       setState(() {
+        isCorrect = false;
         widget.CoOrIn!.add(true);
         isComplete = true;
       });
