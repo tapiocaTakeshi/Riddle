@@ -154,7 +154,7 @@ class _RiddlePageState extends State<RiddlePage> {
 
   @override
   Widget build(BuildContext context) {
-    final MediaSize = MediaQuery.of(context).size;
+    Size size = MediaQuery.of(context).size;
     return SafeArea(
       left: false,
       right: false,
@@ -169,8 +169,8 @@ class _RiddlePageState extends State<RiddlePage> {
                         Center(
                           child: Image.network(
                             slideImageURL!,
-                            height: 225,
-                            width: 400,
+                            width: size.width,
+                            height: size.width * 9 / 16,
                             fit: BoxFit.cover,
                             filterQuality: FilterQuality.high,
                           ),
@@ -205,8 +205,7 @@ class _RiddlePageState extends State<RiddlePage> {
                         ),
                       )
                   ])
-                : SizedBox(
-                    width: 400,
+                : Center(
                     child: Column(
                       children: [
                         Text(
@@ -216,8 +215,8 @@ class _RiddlePageState extends State<RiddlePage> {
                         Card(
                           child: Image.network(
                             widget.Slides![widget.index!]['expImageURL'],
-                            height: 225,
-                            width: 400,
+                            width: size.width,
+                            height: size.width * 9 / 16,
                             fit: BoxFit.cover,
                             filterQuality: FilterQuality.high,
                           ),

@@ -181,57 +181,54 @@ class HomeScreenState extends State<HomeScreen> {
             loadRiddles();
           },
           child: Center(
-            child: Container(
-              width: 400,
-              child: GridView.count(
-                crossAxisCount: 1,
-                mainAxisSpacing: 0,
-                crossAxisSpacing: 0,
-                childAspectRatio: 16 / 9,
-                children: List.generate(riddles.length + 1, (index) {
-                  if (index < riddles.length) {
-                    return Card(
-                      elevation: 3,
-                      clipBehavior: Clip.antiAlias,
-                      child: OpenContainer(
-                        closedElevation: 1,
-                        openBuilder: (context, closedContainer) {
-                          return DetailPage(
-                            id: riddles[index]['id'],
-                            title: riddles[index]['title'],
-                            image: riddles[index]['thumbnailURL'],
-                            onPressed: closedContainer,
-                          );
-                        },
-                        closedBuilder: (context, openContainer) {
-                          return Center(
-                            child: InkWell(
-                              child: Image.network(
-                                riddles[index]['thumbnailURL'],
-                                width: size.width,
-                                height: size.width * 9 / 16,
-                                fit: BoxFit.cover,
-                              ),
-                              highlightColor: Colors.grey.withOpacity(0.3),
-                              splashColor: Colors.grey.withOpacity(0.3),
-                              onTap: () => openContainer(),
+            child: GridView.count(
+              crossAxisCount: 1,
+              mainAxisSpacing: 0,
+              crossAxisSpacing: 0,
+              childAspectRatio: 16 / 9,
+              children: List.generate(riddles.length + 1, (index) {
+                if (index < riddles.length) {
+                  return Card(
+                    elevation: 3,
+                    clipBehavior: Clip.antiAlias,
+                    child: OpenContainer(
+                      closedElevation: 1,
+                      openBuilder: (context, closedContainer) {
+                        return DetailPage(
+                          id: riddles[index]['id'],
+                          title: riddles[index]['title'],
+                          image: riddles[index]['thumbnailURL'],
+                          onPressed: closedContainer,
+                        );
+                      },
+                      closedBuilder: (context, openContainer) {
+                        return Center(
+                          child: InkWell(
+                            child: Image.network(
+                              riddles[index]['thumbnailURL'],
+                              width: size.width,
+                              height: size.width * 9 / 16,
+                              fit: BoxFit.cover,
                             ),
-                          );
-                        },
-                      ),
-                    );
-                  } else {
-                    loadRiddles();
-                    return Center(
-                      child: hasMore
-                          ? CircularProgressIndicator(
-                              color: Colors.orange,
-                            )
-                          : Text('データがありません'),
-                    );
-                  }
-                }),
-              ),
+                            highlightColor: Colors.grey.withOpacity(0.3),
+                            splashColor: Colors.grey.withOpacity(0.3),
+                            onTap: () => openContainer(),
+                          ),
+                        );
+                      },
+                    ),
+                  );
+                } else {
+                  loadRiddles();
+                  return Center(
+                    child: hasMore
+                        ? CircularProgressIndicator(
+                            color: Colors.orange,
+                          )
+                        : Text('データがありません'),
+                  );
+                }
+              }),
             ),
           ),
         ));

@@ -241,103 +241,100 @@ class TabPage extends StatelessWidget {
     Size size = MediaQuery.of(context).size;
     // TODO: implement build
     return Center(
-      child: Container(
-        width: 400,
-        child: GridView.count(
-          physics: NeverScrollableScrollPhysics(),
-          crossAxisCount: 1,
-          mainAxisSpacing: 0,
-          crossAxisSpacing: 0,
-          childAspectRatio: 16 / 9,
-          children: List.generate(contents.length, (index) {
-            return Stack(
-              children: [
-                Card(
-                  elevation: 3,
-                  clipBehavior: Clip.antiAlias,
-                  child: OpenContainer(
-                    closedElevation: 0,
-                    openBuilder: (context, closedContainer) {
-                      return DetailPage(
-                        id: contents[index]['id'],
-                        title: contents[index]['title'],
-                        image: contents[index]['thumbnailURL'],
-                        onPressed: closedContainer,
-                      );
-                    },
-                    closedBuilder: (context, openContainer) {
-                      return Center(
-                        child: InkWell(
-                          child: Image.network(
-                            contents[index]['thumbnailURL'],
-                            width: size.width,
-                            height: size.width * 9 / 16,
-                            fit: BoxFit.cover,
-                          ),
-                          highlightColor: Colors.grey.withOpacity(0.3),
-                          splashColor: Colors.grey.withOpacity(0.3),
-                          onTap: () => openContainer(),
+      child: GridView.count(
+        physics: NeverScrollableScrollPhysics(),
+        crossAxisCount: 1,
+        mainAxisSpacing: 0,
+        crossAxisSpacing: 0,
+        childAspectRatio: 16 / 9,
+        children: List.generate(contents.length, (index) {
+          return Stack(
+            children: [
+              Card(
+                elevation: 3,
+                clipBehavior: Clip.antiAlias,
+                child: OpenContainer(
+                  closedElevation: 0,
+                  openBuilder: (context, closedContainer) {
+                    return DetailPage(
+                      id: contents[index]['id'],
+                      title: contents[index]['title'],
+                      image: contents[index]['thumbnailURL'],
+                      onPressed: closedContainer,
+                    );
+                  },
+                  closedBuilder: (context, openContainer) {
+                    return Center(
+                      child: InkWell(
+                        child: Image.network(
+                          contents[index]['thumbnailURL'],
+                          width: size.width,
+                          height: size.width * 9 / 16,
+                          fit: BoxFit.cover,
                         ),
-                      );
-                    },
-                  ),
+                        highlightColor: Colors.grey.withOpacity(0.3),
+                        splashColor: Colors.grey.withOpacity(0.3),
+                        onTap: () => openContainer(),
+                      ),
+                    );
+                  },
                 ),
-                if (isMyRiddle)
-                  Align(
-                    alignment: Alignment.topRight,
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Container(
-                        height: 40,
-                        width: 40,
-                        decoration: BoxDecoration(
-                            color: Theme.of(context).colorScheme.secondary,
-                            shape: BoxShape.circle),
-                        child: IconButton(
-                          icon: Icon(
-                            Icons.more_vert,
-                            color: Theme.of(context).iconTheme.color,
-                          ),
-                          onPressed: () {
-                            showCupertinoModalPopup(
-                                context: context,
-                                builder: (BuildContext context) =>
-                                    CupertinoActionSheet(
-                                      actions: [
-                                        CupertinoActionSheetAction(
-                                            onPressed: () async {
-                                              await FirebaseFirestore.instance
-                                                  .collection('Riddles')
-                                                  .doc(contents[index]['id']
-                                                      .toString())
-                                                  .delete();
-                                              // await FirebaseStorage.instance
-                                              //     .ref('/')
-                                              //     .child('Riddles')
-                                              //     .child(contents[index]['id']
-                                              //         .toString())
-                                              //     .delete();
-                                              loadRiddles;
-                                              Navigator.pop(context);
-                                            },
-                                            child: Text('削除'))
-                                      ],
-                                      cancelButton: CupertinoActionSheetAction(
-                                        child: Text('キャンセル'),
-                                        onPressed: () {
-                                          Navigator.pop(context);
-                                        },
-                                      ),
-                                    ));
-                          },
+              ),
+              if (isMyRiddle)
+                Align(
+                  alignment: Alignment.topRight,
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Container(
+                      height: 40,
+                      width: 40,
+                      decoration: BoxDecoration(
+                          color: Theme.of(context).colorScheme.secondary,
+                          shape: BoxShape.circle),
+                      child: IconButton(
+                        icon: Icon(
+                          Icons.more_vert,
+                          color: Theme.of(context).iconTheme.color,
                         ),
+                        onPressed: () {
+                          showCupertinoModalPopup(
+                              context: context,
+                              builder: (BuildContext context) =>
+                                  CupertinoActionSheet(
+                                    actions: [
+                                      CupertinoActionSheetAction(
+                                          onPressed: () async {
+                                            await FirebaseFirestore.instance
+                                                .collection('Riddles')
+                                                .doc(contents[index]['id']
+                                                    .toString())
+                                                .delete();
+                                            // await FirebaseStorage.instance
+                                            //     .ref('/')
+                                            //     .child('Riddles')
+                                            //     .child(contents[index]['id']
+                                            //         .toString())
+                                            //     .delete();
+                                            loadRiddles;
+                                            Navigator.pop(context);
+                                          },
+                                          child: Text('削除'))
+                                    ],
+                                    cancelButton: CupertinoActionSheetAction(
+                                      child: Text('キャンセル'),
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                      },
+                                    ),
+                                  ));
+                        },
                       ),
                     ),
-                  )
-              ],
-            );
-          }),
-        ),
+                  ),
+                )
+            ],
+          );
+        }),
       ),
     );
   }

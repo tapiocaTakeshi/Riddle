@@ -9,6 +9,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/services.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:provider/provider.dart';
+import 'models/SlideModel.dart';
+import 'models/ThumbnailModel.dart';
 import 'screens/MyAccountScreen.dart';
 import 'screens/HomeScreen.dart';
 import 'screens/SignUpPage.dart';
@@ -27,8 +29,18 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) => GoogleSignInModel(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (context) => GoogleSignInModel(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => SlideModel(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => ThumbnailModel(),
+        ),
+      ],
       child: MaterialApp(
         theme: ThemeData(
           brightness: Brightness.light,

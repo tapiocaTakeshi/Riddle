@@ -31,203 +31,200 @@ class UploadScreen2State extends State<UploadScreen2> {
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
-    return ChangeNotifierProvider<ThumbnailModel>(
-      create: (_) => ThumbnailModel(),
-      child: Consumer<ThumbnailModel>(builder: (context, model, child) {
-        return Stack(fit: StackFit.expand, children: [
-          GestureDetector(
-            onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
-            child: Scaffold(
-              appBar: AppBar(),
-              body: Form(
-                key: _formkey,
-                child: ListView(
-                  children: [
-                    Container(
-                        child: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 10.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Center(
-                            child: InkWell(
-                                onTap: () async {
-                                  model.setThumbnail();
-                                },
-                                child: model.thumbnailPath == ''
-                                    ? Container(
-                                        decoration: BoxDecoration(
-                                            border: Border.all(
-                                                color: Colors.grey.shade300)),
-                                        child: Container(
-                                          child: Center(
-                                              child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.center,
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: [
-                                              Text(
-                                                'サムネイル用画像（JPG）を選択',
-                                                style: TextStyle(
-                                                    color: thumbnailTextColor,
-                                                    fontSize: 15),
-                                              ),
-                                              Text(
-                                                '縦横比　9:16',
-                                                style: TextStyle(
-                                                    color: Colors.grey,
-                                                    fontSize: 10),
-                                              ),
-                                            ],
-                                          )),
-                                          height: 135,
-                                          width: 240,
-                                          color: Colors.grey[100],
-                                        ),
-                                      )
-                                    : model.thumbnailImage),
+    return Consumer<ThumbnailModel>(builder: (context, model, child) {
+      return Stack(fit: StackFit.expand, children: [
+        GestureDetector(
+          onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
+          child: Scaffold(
+            appBar: AppBar(),
+            body: Form(
+              key: _formkey,
+              child: ListView(
+                children: [
+                  Container(
+                      child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 10.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Center(
+                          child: InkWell(
+                              onTap: () async {
+                                model.setThumbnail();
+                              },
+                              child: model.thumbnailPath == ''
+                                  ? Container(
+                                      decoration: BoxDecoration(
+                                          border: Border.all(
+                                              color: Colors.grey.shade300)),
+                                      child: Container(
+                                        child: Center(
+                                            child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Text(
+                                              'サムネイル用画像（JPG）を選択',
+                                              style: TextStyle(
+                                                  color: thumbnailTextColor,
+                                                  fontSize: 15),
+                                            ),
+                                            Text(
+                                              '縦横比　9:16',
+                                              style: TextStyle(
+                                                  color: Colors.grey,
+                                                  fontSize: 10),
+                                            ),
+                                          ],
+                                        )),
+                                        height: 135,
+                                        width: 240,
+                                        color: Colors.grey[100],
+                                      ),
+                                    )
+                                  : model.thumbnailImage),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.all(10),
+                          child: Text(
+                            'タイトル',
+                            style: TextStyle(
+                                color: Colors.blueAccent, fontSize: 20),
                           ),
-                          Padding(
-                            padding: EdgeInsets.all(10),
-                            child: Text(
-                              'タイトル',
-                              style: TextStyle(
-                                  color: Colors.blueAccent, fontSize: 20),
-                            ),
+                        ),
+                        Container(
+                          child: TextFormField(
+                              initialValue: _title,
+                              validator: (String? value) {
+                                if (value!.isNotEmpty) {
+                                  return null;
+                                } else {
+                                  return 'タイトルを入力してください';
+                                }
+                              },
+                              onChanged: (value) {
+                                this._title = value;
+                              },
+                              maxLength: 20,
+                              maxLines: 2,
+                              cursorColor: Colors.blueAccent,
+                              decoration: InputDecoration(
+                                  enabledBorder: OutlineInputBorder(
+                                      borderSide:
+                                          BorderSide(color: Colors.grey)),
+                                  focusedBorder: OutlineInputBorder(
+                                      borderSide:
+                                          BorderSide(color: Colors.blueAccent)),
+                                  focusedErrorBorder: OutlineInputBorder(
+                                      borderSide:
+                                          BorderSide(color: Colors.red)))),
+                          width: 300,
+                        ),
+                      ],
+                    ),
+                  )),
+                  Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: SizedBox(
+                      width: 110,
+                      child: RaisedButton(
+                          elevation: 1,
+                          textColor: Colors.white,
+                          color: Colors.blueAccent.withOpacity(0.9),
+                          child: Text(
+                            'アップロード',
+                            style: TextStyle(fontSize: 13),
                           ),
-                          Container(
-                            child: TextFormField(
-                                initialValue: _title,
-                                validator: (String? value) {
-                                  if (value!.isNotEmpty) {
-                                    return null;
-                                  } else {
-                                    return 'タイトルを入力してください';
-                                  }
-                                },
-                                onChanged: (value) {
-                                  this._title = value;
-                                },
-                                maxLength: 20,
-                                maxLines: 2,
-                                cursorColor: Colors.blueAccent,
-                                decoration: InputDecoration(
-                                    enabledBorder: OutlineInputBorder(
-                                        borderSide:
-                                            BorderSide(color: Colors.grey)),
-                                    focusedBorder: OutlineInputBorder(
-                                        borderSide: BorderSide(
-                                            color: Colors.blueAccent)),
-                                    focusedErrorBorder: OutlineInputBorder(
-                                        borderSide:
-                                            BorderSide(color: Colors.red)))),
-                            width: 300,
-                          ),
-                        ],
-                      ),
-                    )),
-                    Padding(
-                      padding: const EdgeInsets.all(10.0),
-                      child: SizedBox(
-                        width: 110,
-                        child: RaisedButton(
-                            elevation: 1,
-                            textColor: Colors.white,
-                            color: Colors.blueAccent.withOpacity(0.9),
-                            child: Text(
-                              'アップロード',
-                              style: TextStyle(fontSize: 13),
-                            ),
-                            onPressed: () async {
-                              if (_formkey.currentState!.validate() &&
-                                  model.thumbnailImage != null) {
-                                _formkey.currentState!.save();
-                                setState(() {
-                                  model.visible = true;
-                                });
-                                print('a');
-                                final snapshotRiddle = await FirebaseFirestore
-                                    .instance
-                                    .collection('Riddles')
-                                    .add({
-                                  'title': _title,
-                                  'explanation': '',
-                                  'date': DateTime.now(),
-                                  'answerCount': 0
-                                });
+                          onPressed: () async {
+                            if (_formkey.currentState!.validate() &&
+                                model.thumbnailImage != null) {
+                              _formkey.currentState!.save();
+                              setState(() {
+                                model.visible = true;
+                              });
+                              print('a');
+                              final snapshotRiddle = await FirebaseFirestore
+                                  .instance
+                                  .collection('Riddles')
+                                  .add({
+                                'title': _title,
+                                'explanation': '',
+                                'date': DateTime.now(),
+                                'answerCount': 0
+                              });
 
-                                //作成したユーザーと紐付ける
-                                await FirebaseFirestore.instance
-                                    .collection('Users')
-                                    .doc(user!.uid)
-                                    .update({
-                                  'MyRiddleList':
-                                      FieldValue.arrayUnion([snapshotRiddle.id])
-                                });
+                              //作成したユーザーと紐付ける
+                              await FirebaseFirestore.instance
+                                  .collection('Users')
+                                  .doc(user!.uid)
+                                  .update({
+                                'MyRiddleList':
+                                    FieldValue.arrayUnion([snapshotRiddle.id])
+                              });
 
-                                //スライドをアップロード
-                                widget.slideImageFiles!
-                                    .asMap()
-                                    .forEach((index, value) async {
-                                  var slideurl = await uploadImage(value,
-                                      'Riddles/${snapshotRiddle.id}/Slides/${value.path.split('/').last}');
-                                  var expurl = await uploadImage(
-                                      widget.expImageFiles![index],
-                                      'Riddles/${snapshotRiddle.id}/Slides/${widget.expImageFiles![index].path.split('/').last}');
-                                  print(slideurl);
-                                  print(expurl);
-                                  await FirebaseFirestore.instance
-                                      .collection('Riddles')
-                                      .doc(snapshotRiddle.id)
-                                      .collection('Slides')
-                                      .doc(index.toString())
-                                      .set({
-                                    'slideImageURL': slideurl,
-                                    'expImageURL': expurl,
-                                    'answer': widget.answers![index],
-                                    'limit': widget.durations![index].inSeconds,
-                                  });
-                                });
-
-                                //サムネイルをアップロード
-                                String thumbnailURL = await uploadImage(
-                                    model.thumbnailImageFile!,
-                                    'Riddles/${snapshotRiddle.id}/thumbnailImageFile.jpg');
-                                print(thumbnailURL);
+                              //スライドをアップロード
+                              widget.slideImageFiles!
+                                  .asMap()
+                                  .forEach((index, value) async {
+                                var slideurl = await uploadImage(value,
+                                    'Riddles/${snapshotRiddle.id}/Slides/${value.path.split('/').last}');
+                                var expurl = await uploadImage(
+                                    widget.expImageFiles![index],
+                                    'Riddles/${snapshotRiddle.id}/Slides/${widget.expImageFiles![index].path.split('/').last}');
+                                print(slideurl);
+                                print(expurl);
                                 await FirebaseFirestore.instance
                                     .collection('Riddles')
                                     .doc(snapshotRiddle.id)
-                                    .update({
-                                  'thumbnailURL': thumbnailURL,
-                                  'id': snapshotRiddle.id.toString(),
-                                  'uid': user!.uid
+                                    .collection('Slides')
+                                    .doc(index.toString())
+                                    .set({
+                                  'slideImageURL': slideurl,
+                                  'expImageURL': expurl,
+                                  'answer': widget.answers![index],
+                                  'limit': widget.durations![index].inSeconds,
                                 });
+                              });
 
-                                setState(() {
-                                  model.visible = false;
-                                });
-                                Navigator.pushReplacement(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => MyHomePage(),
-                                    ));
-                              } else if (model.thumbnailImage == null) {
-                                setState(() {
-                                  thumbnailTextColor = Colors.red;
-                                });
-                              }
-                            }),
-                      ),
+                              //サムネイルをアップロード
+                              String thumbnailURL = await uploadImage(
+                                  model.thumbnailImageFile!,
+                                  'Riddles/${snapshotRiddle.id}/thumbnailImageFile.jpg');
+                              print(thumbnailURL);
+                              await FirebaseFirestore.instance
+                                  .collection('Riddles')
+                                  .doc(snapshotRiddle.id)
+                                  .update({
+                                'thumbnailURL': thumbnailURL,
+                                'id': snapshotRiddle.id.toString(),
+                                'uid': user!.uid
+                              });
+
+                              setState(() {
+                                model.visible = false;
+                              });
+                              Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => MyHomePage(),
+                                  ));
+                            } else if (model.thumbnailImage == null) {
+                              setState(() {
+                                thumbnailTextColor = Colors.red;
+                              });
+                            }
+                          }),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
           ),
-          OverlayLoadingMolecules(visible: model.visible),
-        ]);
-      }),
-    );
+        ),
+        OverlayLoadingMolecules(visible: model.visible),
+      ]);
+    });
   }
 }
