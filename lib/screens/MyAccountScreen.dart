@@ -102,10 +102,8 @@ class MyAccountScreenState extends State<MyAccountScreen>
                 'ログアウト',
                 style: TextStyle(color: Theme.of(context).colorScheme.primary),
               ),
-              onPressed: () {
-                final provider =
-                    Provider.of<GoogleSignInModel>(context, listen: false);
-                provider.signOut();
+              onPressed: () async {
+                await FirebaseAuth.instance.signOut();
               })
         ],
         elevation: 1,

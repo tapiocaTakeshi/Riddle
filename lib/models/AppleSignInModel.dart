@@ -1,23 +1,22 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:google_sign_in/google_sign_in.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
-class GoogleSignInModel extends ChangeNotifier {
-  GoogleSignInAccount? _user;
-
-  GoogleSignInAccount? get user => _user;
-
+class AppleSignInModel extends ChangeNotifier {
   Future signIn() async {
     try {
-      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
-      if (googleUser == null) return;
-      _user = googleUser;
-      final GoogleSignInAuthentication googleAuth =
-          await googleUser.authentication;
+      final applecredential = await SignInWithApple.getAppleIDCredential(
+        scopes: [
+          AppleIDAuthorizationScopes.email,
+          AppleIDAuthorizationScopes.fullName,
+        ],
+      );
 
-      final OAuthCredential credential = GoogleAuthProvider.credential(
-          idToken: googleAuth.idToken, accessToken: googleAuth.accessToken);
+      OAuthProvider AppleAuthProvider = OAuthProvider('apple.com');
+      final OAuthCredential credential = AppleAuthProvider.credential(
+          idToken: applecredential.identityToken,
+          accessToken: applecredential.authorizationCode);
 
       final result =
           await FirebaseAuth.instance.signInWithCredential(credential);
