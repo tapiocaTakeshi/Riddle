@@ -37,7 +37,7 @@ class UploadScreenState extends State<UploadScreen> {
                           context,
                           MaterialPageRoute(
                             builder: (context) => MyHomePage(),
-                          ));
+                          )).then((value) => model.deleteSlide());
                     },
                     icon: Icon(Icons.clear)),
                 actions: [

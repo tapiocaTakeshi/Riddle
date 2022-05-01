@@ -55,6 +55,17 @@ class SlideModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  void deleteSlide() {
+    slidePath = '';
+    slideImages = [];
+    slideImageFiles = [];
+    slideImageBytes = [];
+    answers = [];
+    durations = [];
+    isOpeneds = [false];
+    notifyListeners();
+  }
+
   List<String>? expPaths;
   List<File>? expImageFiles;
   List<Image>? expImages;
