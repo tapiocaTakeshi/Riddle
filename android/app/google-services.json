@@ -7,9 +7,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:788794383607:android:d3e9b7060bfdb2f6a487f2",
+        "mobilesdk_app_id": "1:788794383607:android:c2d473512d111f73a487f2",
         "android_client_info": {
-          "package_name": "com.riddle"
+          "package_name": "com.higuchiyuya.riddle"
         }
       },
       "oauth_client": [

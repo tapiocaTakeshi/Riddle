@@ -1,7 +1,9 @@
+import 'dart:io';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:pdf_image_renderer/pdf_image_renderer.dart';
+import 'package:image_picker/image_picker.dart';
 
 //pdfファイルをアップロード
 Future<String> PdfUpload() async {
@@ -46,4 +48,10 @@ Future<String> JpgUpload() async {
 
   String path = result?.files.single.path.toString() ?? '';
   return Future<String>.value(path);
+}
+
+Future<File?> imagePicker() async {
+  final image = await ImagePicker().pickImage(source: ImageSource.gallery);
+  if (image == null) return null;
+  return File(image.path);
 }

@@ -108,186 +108,189 @@ class DetailPageState extends State<DetailPage> {
     // TODO: implement build
     return Scaffold(
       appBar: AppBar(),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: <Widget>[
-          Padding(
-            padding: EdgeInsets.symmetric(vertical: 10, horizontal: 6),
-            child: Container(
-              width: 400,
-              child: Column(
-                children: <Widget>[
-                  Padding(
-                    padding: EdgeInsets.symmetric(vertical: 5),
-                    child: Card(
-                      clipBehavior: Clip.antiAlias,
-                      child: Image.network(widget.image!,
-                          width: size.width,
-                          height: size.width * 9 / 16,
-                          fit: BoxFit.cover),
-                      elevation: 0,
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            Padding(
+              padding: EdgeInsets.symmetric(vertical: 10, horizontal: 6),
+              child: Container(
+                width: 400,
+                child: Column(
+                  children: <Widget>[
+                    Padding(
+                      padding: EdgeInsets.symmetric(vertical: 5),
+                      child: Card(
+                        clipBehavior: Clip.antiAlias,
+                        child: Image.network(widget.image!,
+                            width: size.width,
+                            height: size.width * 9 / 16,
+                            fit: BoxFit.cover),
+                        elevation: 0,
+                      ),
                     ),
-                  ),
-                  FutureBuilder<DocumentSnapshot>(
-                      future: FirebaseFirestore.instance
-                          .collection('Riddles')
-                          .doc(widget.id)
-                          .get(),
-                      builder: (context, riddle) {
-                        if (riddle.hasData) {
-                          return FutureBuilder<DocumentSnapshot>(
-                              future: FirebaseFirestore.instance
-                                  .collection('Users')
-                                  .doc(riddle.data!['uid'])
-                                  .get(),
-                              builder: (context, user) {
-                                if (user.hasData) {
-                                  return Column(
-                                    children: <Widget>[
-                                      Padding(
-                                        padding: EdgeInsets.symmetric(
-                                            vertical: 5, horizontal: 10),
-                                        child: Container(
-                                            child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Text(
-                                                  widget.title!,
-                                                  style: TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      fontSize: 18),
-                                                ),
-                                                Text(AnswerCountText +
-                                                    CorrectAnswerRateText)
-                                              ],
-                                            ),
-                                            width: double.infinity),
-                                      ),
-                                      Row(
-                                        children: <Widget>[
-                                          LikedButton(isLiked),
-                                          Padding(
-                                            padding: const EdgeInsets.symmetric(
-                                                horizontal: 8.0),
-                                            child: CommentButton(),
-                                          )
-                                        ],
-                                      ),
-                                      InkWell(
-                                        onTap: () {
-                                          if (data2['uid'] ==
-                                              currentUser!.uid) {
-                                            Navigator.of(context).push(
-                                                MaterialPageRoute(
-                                                    builder: (_) =>
-                                                        MyAccountScreen()));
-                                          } else {
-                                            Navigator.of(context).push(
-                                                MaterialPageRoute(
-                                                    builder: (_) =>
-                                                        AccountScreen(riddle
-                                                            .data!['uid'])));
-                                          }
-                                        },
-                                        child: Row(
+                    FutureBuilder<DocumentSnapshot>(
+                        future: FirebaseFirestore.instance
+                            .collection('Riddles')
+                            .doc(widget.id)
+                            .get(),
+                        builder: (context, riddle) {
+                          if (riddle.hasData) {
+                            return FutureBuilder<DocumentSnapshot>(
+                                future: FirebaseFirestore.instance
+                                    .collection('Users')
+                                    .doc(riddle.data!['uid'])
+                                    .get(),
+                                builder: (context, user) {
+                                  if (user.hasData) {
+                                    return Column(
+                                      children: <Widget>[
+                                        Padding(
+                                          padding: EdgeInsets.symmetric(
+                                              vertical: 5, horizontal: 10),
+                                          child: Container(
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    widget.title!,
+                                                    style: TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        fontSize: 18),
+                                                  ),
+                                                  Text(AnswerCountText +
+                                                      CorrectAnswerRateText)
+                                                ],
+                                              ),
+                                              width: double.infinity),
+                                        ),
+                                        Row(
                                           children: <Widget>[
-                                            CircleAvatar(
-                                              backgroundImage: NetworkImage(
-                                                  user.data!['photoURL']),
-                                            ),
+                                            LikedButton(isLiked),
                                             Padding(
                                               padding:
                                                   const EdgeInsets.symmetric(
-                                                      horizontal: 5.0),
-                                              child: Text(
-                                                user.data!['name'],
-                                                style: TextStyle(
-                                                    fontWeight:
-                                                        FontWeight.bold),
-                                              ),
-                                            ),
-                                            Spacer(),
-                                            if (data2['uid'] !=
-                                                currentUser!.uid)
-                                              FlatButton(
-                                                child: isSubscribed
-                                                    ? Text('登録済み',
-                                                        style: TextStyle(
-                                                            color: Colors.grey))
-                                                    : Text('チャンネル登録',
-                                                        style: TextStyle(
-                                                            color: Colors.red)),
-                                                onPressed: () {
-                                                  setState(() {
-                                                    this.isSubscribed =
-                                                        !isSubscribed;
-                                                  });
-                                                  updateSubscribe();
-                                                },
-                                              )
+                                                      horizontal: 8.0),
+                                              child: CommentButton(),
+                                            )
                                           ],
                                         ),
-                                      ),
-                                      ButtonTheme(
-                                        minWidth: size.width,
-                                        child: RaisedButton(
-                                            elevation: 1,
-                                            textColor: Colors.white,
-                                            color: Colors.blueAccent
-                                                .withOpacity(0.9),
-                                            child: Text(
-                                              '問題を解く',
-                                              style: TextStyle(fontSize: 13),
-                                            ),
-                                            onPressed: () async {
-                                              setState(() {
-                                                CoOrIn = [];
-                                              });
-
-                                              List<DocumentSnapshot> Slides =
-                                                  await FirebaseFirestore
-                                                      .instance
-                                                      .collection('Riddles')
-                                                      .doc(widget.id)
-                                                      .collection('Slides')
-                                                      .get()
-                                                      .then((value) =>
-                                                          value.docs);
-                                              var index = 0;
+                                        InkWell(
+                                          onTap: () {
+                                            if (data2['uid'] ==
+                                                currentUser!.uid) {
                                               Navigator.of(context).push(
                                                   MaterialPageRoute(
                                                       builder: (_) =>
-                                                          RiddlePage(
-                                                            Slides: Slides,
-                                                            index: index,
-                                                            length:
-                                                                Slides.length,
-                                                            CoOrIn: CoOrIn,
-                                                            id: widget.id,
-                                                          )));
-                                            }),
-                                      )
-                                    ],
-                                  );
-                                } else {
-                                  return Center(
-                                    child: CircularProgressIndicator(),
-                                  );
-                                }
-                              });
-                        } else {
-                          return Center(
-                            child: CircularProgressIndicator(),
-                          );
-                        }
-                      })
-                ],
+                                                          MyAccountScreen()));
+                                            } else {
+                                              Navigator.of(context).push(
+                                                  MaterialPageRoute(
+                                                      builder: (_) =>
+                                                          AccountScreen(riddle
+                                                              .data!['uid'])));
+                                            }
+                                          },
+                                          child: Row(
+                                            children: <Widget>[
+                                              CircleAvatar(
+                                                backgroundImage: NetworkImage(
+                                                    user.data!['photoURL']),
+                                              ),
+                                              Padding(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        horizontal: 5.0),
+                                                child: Text(
+                                                  user.data!['name'],
+                                                  style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
+                                              ),
+                                              Spacer(),
+                                              if (data2['uid'] !=
+                                                  currentUser!.uid)
+                                                FlatButton(
+                                                  child: isSubscribed
+                                                      ? Text('登録済み',
+                                                          style: TextStyle(
+                                                              color:
+                                                                  Colors.grey))
+                                                      : Text('チャンネル登録',
+                                                          style: TextStyle(
+                                                              color:
+                                                                  Colors.red)),
+                                                  onPressed: () {
+                                                    setState(() {
+                                                      this.isSubscribed =
+                                                          !isSubscribed;
+                                                    });
+                                                    updateSubscribe();
+                                                  },
+                                                )
+                                            ],
+                                          ),
+                                        ),
+                                        ButtonTheme(
+                                          minWidth: size.width,
+                                          child: RaisedButton(
+                                              elevation: 1,
+                                              textColor: Colors.white,
+                                              color: Colors.blueAccent
+                                                  .withOpacity(0.9),
+                                              child: Text(
+                                                '問題を解く',
+                                                style: TextStyle(fontSize: 13),
+                                              ),
+                                              onPressed: () async {
+                                                setState(() {
+                                                  CoOrIn = [];
+                                                });
+
+                                                List<DocumentSnapshot> Slides =
+                                                    await FirebaseFirestore
+                                                        .instance
+                                                        .collection('Riddles')
+                                                        .doc(widget.id)
+                                                        .collection('Slides')
+                                                        .get()
+                                                        .then((value) =>
+                                                            value.docs);
+                                                var index = 0;
+                                                Navigator.of(context).push(
+                                                    MaterialPageRoute(
+                                                        builder: (_) =>
+                                                            RiddlePage(
+                                                              Slides: Slides,
+                                                              index: index,
+                                                              length:
+                                                                  Slides.length,
+                                                              CoOrIn: CoOrIn,
+                                                              id: widget.id,
+                                                            )));
+                                              }),
+                                        )
+                                      ],
+                                    );
+                                  } else {
+                                    return Container();
+                                  }
+                                });
+                          } else {
+                            return Center(
+                              child: CircularProgressIndicator(),
+                            );
+                          }
+                        })
+                  ],
+                ),
               ),
-            ),
-          )
-        ],
+            )
+          ],
+        ),
       ),
     );
   }

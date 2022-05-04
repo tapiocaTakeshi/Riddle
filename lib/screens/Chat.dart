@@ -28,61 +28,80 @@ class _ChatPageState extends State<ChatPage> {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(),
-        body: CommentBox(
-          userImage: user!.photoURL,
-          textColor: Theme.of(context).textTheme.bodyText1!.color,
-          backgroundColor: Theme.of(context).backgroundColor,
-          sendWidget: Icon(
-            Icons.send_sharp,
-            size: 30,
-            color: Theme.of(context).iconTheme.color,
-          ),
-          commentController: _controller,
-          withBorder: false,
-          sendButtonMethod: () {
-            FirebaseFirestore.instance
-                .collection('Riddles')
-                .doc(widget.id)
-                .collection('Chat')
-                .add({'uid': user!.uid, 'comment': _controller.text});
-          },
-          child: StreamBuilder<QuerySnapshot>(
-              stream: FirebaseFirestore.instance
-                  .collection('Riddles')
-                  .doc(widget.id)
-                  .collection('Chat')
-                  .snapshots(),
-              builder: (context, snapshot) {
-                if (snapshot.hasError) return Text('エラー');
-                switch (snapshot.connectionState) {
-                  case ConnectionState.waiting:
-                    return Center(child: CircularProgressIndicator());
-                  default:
-                    return ListView(
-                      children: snapshot.data!.docs
-                          .map((DocumentSnapshot doc) =>
-                              StreamBuilder<DocumentSnapshot>(
-                                  stream: FirebaseFirestore.instance
-                                      .collection('Users')
-                                      .doc(doc['uid'])
-                                      .snapshots(),
-                                  builder: (context, snapshot) {
-                                    if (snapshot.hasData) {
-                                      return ListTile(
-                                        leading: CircleAvatar(
-                                          backgroundImage: NetworkImage(
-                                              snapshot.data!['photoURL']),
-                                        ),
-                                        title: Text(doc['comment']),
-                                      );
-                                    }
-                                    return Container();
-                                  }))
-                          .toList(),
-                    );
-                }
-              }),
-        ),
+        body: FutureBuilder<DocumentSnapshot>(
+            future: FirebaseFirestore.instance
+                .collection('Users')
+                .doc(user!.uid)
+                .get(),
+            builder: (context, currentUser) {
+              if (currentUser.hasData) {
+                return CommentBox(
+                  userImage: currentUser.data!['photoURL'],
+                  textColor: Theme.of(context).textTheme.bodyText1!.color,
+                  backgroundColor: Theme.of(context).backgroundColor,
+                  sendWidget: Icon(
+                    Icons.send_sharp,
+                    size: 30,
+                    color: Theme.of(context).iconTheme.color,
+                  ),
+                  commentController: _controller,
+                  withBorder: false,
+                  sendButtonMethod: () async {
+                    await FirebaseFirestore.instance
+                        .collection('Riddles')
+                        .doc(widget.id)
+                        .collection('Chat')
+                        .add({
+                      'uid': user!.uid,
+                      'comment': _controller.text,
+                      'date': DateTime.now()
+                    }).then((value) => _controller.clear());
+                  },
+                  child: StreamBuilder<QuerySnapshot>(
+                      stream: FirebaseFirestore.instance
+                          .collection('Riddles')
+                          .doc(widget.id)
+                          .collection('Chat')
+                          .orderBy('date', descending: true)
+                          .snapshots(),
+                      builder: (context, chat) {
+                        if (chat.hasError) return Text('エラー');
+                        switch (chat.connectionState) {
+                          case ConnectionState.waiting:
+                            return Center(child: CircularProgressIndicator());
+                          default:
+                            return ListView(
+                              shrinkWrap: true,
+                              children: chat.data!.docs
+                                  .map((DocumentSnapshot doc) =>
+                                      StreamBuilder<DocumentSnapshot>(
+                                          stream: FirebaseFirestore.instance
+                                              .collection('Users')
+                                              .doc(doc['uid'])
+                                              .snapshots(),
+                                          builder: (context, user) {
+                                            if (user.hasData) {
+                                              return ListTile(
+                                                leading: CircleAvatar(
+                                                  backgroundImage: NetworkImage(
+                                                      user.data!['photoURL']),
+                                                ),
+                                                title: Text(doc['comment']),
+                                                subtitle:
+                                                    Text(user.data!['name']),
+                                              );
+                                            }
+                                            return Container();
+                                          }))
+                                  .toList(),
+                            );
+                        }
+                      }),
+                );
+              } else {
+                return Container();
+              }
+            }),
       ),
     );
   }

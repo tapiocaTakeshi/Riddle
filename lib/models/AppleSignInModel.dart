@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -26,9 +28,10 @@ class AppleSignInModel extends ChangeNotifier {
             .collection('Users')
             .doc(result.user!.uid)
             .set({
-          'name': result.user!.displayName,
+          'name': 'Riddle Taro',
           'email': result.user!.email,
-          'photoURL': result.user!.photoURL,
+          'photoURL':
+              'https://firebasestorage.googleapis.com/v0/b/riddle-b4b7b.appspot.com/o/Account.jpg?alt=media&token=97b13594-5418-4ddb-9823-abaf8e937da9',
           'MyRiddleList': [],
           'FavoriteRiddleList': [],
           'SubscribedChannelList': []

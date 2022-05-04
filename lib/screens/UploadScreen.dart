@@ -210,10 +210,6 @@ class UploadScreenState extends State<UploadScreen> {
                                                                               fontSize: 0),
                                                                       filled:
                                                                           true,
-                                                                      fillColor: Theme.of(
-                                                                              context)
-                                                                          .colorScheme
-                                                                          .secondary,
                                                                       enabledBorder:
                                                                           OutlineInputBorder(
                                                                               borderSide: BorderSide(color: Colors.grey)),

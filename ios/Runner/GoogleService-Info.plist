@@ -3,9 +3,11 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>788794383607-h68s00965popobsn68popeckmb59b3if.apps.googleusercontent.com</string>
+	<string>788794383607-qe3rs9ldelr9qg35nr54hjggqnppniip.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.788794383607-h68s00965popobsn68popeckmb59b3if</string>
+	<string>com.googleusercontent.apps.788794383607-qe3rs9ldelr9qg35nr54hjggqnppniip</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>788794383607-bk0q3gpb84c1f4g6a6bkl4c5p1rl0i0g.apps.googleusercontent.com</string>
 	<key>API_KEY</key>
 	<string>AIzaSyDnu9Nf--hTr0yGw5VfsPK7DHFNkVwdipU</string>
 	<key>GCM_SENDER_ID</key>
@@ -13,7 +15,7 @@
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.riddle</string>
+	<string>com.higuchiyuya.riddle</string>
 	<key>PROJECT_ID</key>
 	<string>riddle-b4b7b</string>
 	<key>STORAGE_BUCKET</key>
@@ -29,6 +31,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:788794383607:ios:3ede3d97d6a89eefa487f2</string>
+	<string>1:788794383607:ios:9ce88ab50199781ca487f2</string>
 </dict>
 </plist>

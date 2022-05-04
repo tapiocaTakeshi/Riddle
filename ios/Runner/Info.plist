@@ -31,7 +31,7 @@
 			<string>Editor</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>com.googleusercontent.apps.788794383607-h68s00965popobsn68popeckmb59b3if</string>
+				<string>com.googleusercontent.apps.788794383607-qe3rs9ldelr9qg35nr54hjggqnppniip</string>
 			</array>
 		</dict>
 	</array>
@@ -39,6 +39,11 @@
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
 	<key>GADApplicationIdentifier</key>
 	<string>ca-app-pub-8734362508424778~9090483464</string>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>https</string>
+		<string>http</string>
+	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSPhotoLibraryUsageDescription</key>

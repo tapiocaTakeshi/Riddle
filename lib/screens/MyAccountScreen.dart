@@ -1,5 +1,6 @@
 import 'package:Riddle/functions/Firebase.dart';
 import 'package:Riddle/models/GoogleSignInModel.dart';
+import 'package:Riddle/screens/ProfileEditingPage.dart';
 import 'package:Riddle/screens/SettingPage.dart';
 import 'package:animations/animations.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -90,71 +91,85 @@ class MyAccountScreenState extends State<MyAccountScreen>
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          user!.displayName.toString(),
-          style: TextStyle(color: Theme.of(context).textTheme.bodyText1!.color),
-        ),
-        actions: <Widget>[
-          FlatButton(
-              child: Text(
-                'ログアウト',
-                style: TextStyle(color: Theme.of(context).colorScheme.primary),
-              ),
-              onPressed: () async {
-                await FirebaseAuth.instance.signOut();
-              })
-        ],
-        elevation: 1,
-        centerTitle: false,
-      ),
-      body: NestedScrollView(
-          headerSliverBuilder: (context, value) {
-            return [
-              SliverPersistentHeader(
-                  delegate: MySliverPersistentHeaderDelegate(
-                userImage: user!.photoURL,
-                subscribersCount: subscribersCount,
-              )),
-              SliverPadding(
-                padding: EdgeInsets.only(bottom: 1),
-                sliver: SliverAppBar(
-                  titleSpacing: 0,
-                  elevation: 5,
-                  pinned: true,
-                  title: TabBar(
-                      controller: _tabController,
-                      tabs: _tab,
-                      labelColor: Colors.orange,
-                      unselectedLabelColor:
-                          Theme.of(context).textTheme.bodyText1!.color,
-                      indicatorColor: Colors.orange),
+    return FutureBuilder<DocumentSnapshot>(
+        future:
+            FirebaseFirestore.instance.collection('Users').doc(user!.uid).get(),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            return Scaffold(
+              appBar: AppBar(
+                title: Text(
+                  snapshot.data!['name'],
+                  style: TextStyle(
+                      color: Theme.of(context).textTheme.bodyText1!.color),
                 ),
+                actions: <Widget>[
+                  TextButton(
+                      child: Text(
+                        'ログアウト',
+                        style: TextStyle(
+                            color: Theme.of(context).colorScheme.primary),
+                      ),
+                      onPressed: () async {
+                        await FirebaseAuth.instance.signOut();
+                      })
+                ],
+                elevation: 1,
+                centerTitle: false,
               ),
-            ];
-          },
-          body: TabBarView(controller: _tabController, children: <Widget>[
-            RefreshIndicator(
-                onRefresh: () async {
-                  loadRiddles();
-                },
-                child: TabPage(
-                  contents: myRiddles,
-                  isMyRiddle: true,
-                  loadRiddles: () => loadRiddles(),
-                )),
-            RefreshIndicator(
-                onRefresh: () async {
-                  loadRiddles();
-                },
-                child: TabPage(
-                  contents: favoriteRiddles,
-                  isMyRiddle: false,
-                  loadRiddles: () => loadRiddles(),
-                )),
-          ])),
-    );
+              body: NestedScrollView(
+                  headerSliverBuilder: (context, value) {
+                    return [
+                      SliverPersistentHeader(
+                          delegate: MySliverPersistentHeaderDelegate(
+                        userImage: snapshot.data!['photoURL'],
+                        subscribersCount: subscribersCount,
+                      )),
+                      SliverPadding(
+                        padding: EdgeInsets.only(bottom: 1),
+                        sliver: SliverAppBar(
+                          titleSpacing: 0,
+                          elevation: 5,
+                          pinned: true,
+                          title: TabBar(
+                              controller: _tabController,
+                              tabs: _tab,
+                              labelColor: Colors.orange,
+                              unselectedLabelColor:
+                                  Theme.of(context).textTheme.bodyText1!.color,
+                              indicatorColor: Colors.orange),
+                        ),
+                      ),
+                    ];
+                  },
+                  body:
+                      TabBarView(controller: _tabController, children: <Widget>[
+                    RefreshIndicator(
+                        onRefresh: () async {
+                          loadRiddles();
+                        },
+                        child: TabPage(
+                          contents: myRiddles,
+                          isMyRiddle: true,
+                          loadRiddles: () => loadRiddles(),
+                        )),
+                    RefreshIndicator(
+                        onRefresh: () async {
+                          loadRiddles();
+                        },
+                        child: TabPage(
+                          contents: favoriteRiddles,
+                          isMyRiddle: false,
+                          loadRiddles: () => loadRiddles(),
+                        )),
+                  ])),
+            );
+          } else {
+            return Material(
+              child: Center(child: CircularProgressIndicator()),
+            );
+          }
+        });
   }
 }
 
@@ -193,22 +208,58 @@ class MySliverPersistentHeaderDelegate extends SliverPersistentHeaderDelegate {
                 shape: BoxShape.circle,
               ),
             ),
-            subscribersCount != null
-                ? Padding(
-                    padding: const EdgeInsets.all(1.0),
-                    child: Text(
-                      'チャンネル登録者数 ' + subscribersText + '人',
-                      style: TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  )
-                : Container(),
+            Column(
+              children: [
+                subscribersCount != null
+                    ? Padding(
+                        padding: const EdgeInsets.all(1.0),
+                        child: Text(
+                          'チャンネル登録者数 ' + subscribersText + '人',
+                          style: TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      )
+                    : Container(),
+                OutlinedButton(
+                    onPressed: (() {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              fullscreenDialog: true,
+                              builder: (context) => ProfileEditingPage()));
+                    }),
+                    child: Text('プロフィールを編集'))
+              ],
+            ),
           ],
         ),
       ),
     );
+  }
+
+  @override
+  // TODO: implement maxExtent
+  double get maxExtent => 100;
+
+  @override
+  // TODO: implement minExtent
+  double get minExtent => 100;
+
+  @override
+  bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate) {
+    // TODO: implement shouldRebuild
+    return true;
+  }
+}
+
+class NoDelegate extends SliverPersistentHeaderDelegate {
+  @override
+  Widget build(
+      BuildContext context, double shrinkOffset, bool overlapsContent) {
+    // TODO: implement build
+    return Container();
   }
 
   @override

@@ -1,12 +1,15 @@
 import 'package:auth_buttons/auth_buttons.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:sign_in_with_apple/sign_in_with_apple.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 import '../models/AppleSignInModel.dart';
 import '../models/GoogleSignInModel.dart';
 
 class SignUpPage extends StatelessWidget {
+  final url =
+      'https://higuchiyuya-riddle.hatenablog.com/entry/2022/05/03/234027?_ga=2.186036073.1388920404.1651588780-1098742724.1651226562';
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
@@ -41,6 +44,8 @@ class SignUpPage extends StatelessWidget {
                           listen: false);
                       provider.signIn();
                     },
+                    darkMode: MediaQuery.platformBrightnessOf(context) ==
+                        Brightness.dark,
                   )),
               Padding(
                   padding: const EdgeInsets.all(8.0),
@@ -50,7 +55,17 @@ class SignUpPage extends StatelessWidget {
                           Provider.of<AppleSignInModel>(context, listen: false);
                       provider.signIn();
                     },
+                    darkMode: MediaQuery.platformBrightnessOf(context) ==
+                        Brightness.dark,
                   )),
+              TextButton(
+                  onPressed: () async {
+                    final canLaunch = await canLaunchUrlString(url);
+                    if (canLaunch) {
+                      launchUrlString(url);
+                    }
+                  },
+                  child: Text('利用規約'))
             ],
           ),
         ),
