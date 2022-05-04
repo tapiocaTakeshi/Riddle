@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:Riddle/main.dart';
+import 'package:Riddle/models/SlideModel.dart';
 import 'package:Riddle/models/ThumbnailModel.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -201,6 +202,7 @@ class UploadScreen2State extends State<UploadScreen2> {
                                 'id': snapshotRiddle.id.toString(),
                                 'uid': user!.uid
                               });
+                              Provider.of<SlideModel>(context).deleteSlide();
 
                               setState(() {
                                 model.visible = false;

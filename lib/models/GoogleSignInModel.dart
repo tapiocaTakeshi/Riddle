@@ -11,7 +11,7 @@ class GoogleSignInModel extends ChangeNotifier {
   Future signIn() async {
     try {
       final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
-      if (googleUser == null) return;
+      if (googleUser == null) return null;
       _user = googleUser;
       final GoogleSignInAuthentication googleAuth =
           await googleUser.authentication;
