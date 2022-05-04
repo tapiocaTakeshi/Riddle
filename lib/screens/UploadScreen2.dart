@@ -202,7 +202,8 @@ class UploadScreen2State extends State<UploadScreen2> {
                                 'id': snapshotRiddle.id.toString(),
                                 'uid': user!.uid
                               });
-                              Provider.of<SlideModel>(context).deleteSlide();
+                              Provider.of<SlideModel>(context, listen: false)
+                                  .deleteSlide();
 
                               setState(() {
                                 model.visible = false;

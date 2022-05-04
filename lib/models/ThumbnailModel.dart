@@ -15,7 +15,7 @@ class ThumbnailModel extends ChangeNotifier {
 
   void setThumbnail() async {
     thumbnailPath = await JpgUpload();
-    if (thumbnailPath != null) {
+    if (thumbnailPath != '') {
       visible = true;
       thumbnailImageByte = File(thumbnailPath).readAsBytesSync();
       thumbnailImageFile = File('${systemTempDir.path}/thumbnailImage.jpg');
