@@ -1,3 +1,4 @@
+import 'package:Riddle/main.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:comment_box/comment/comment.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -21,7 +22,6 @@ class ChatPage extends StatefulWidget {
 }
 
 class _ChatPageState extends State<ChatPage> {
-  final user = FirebaseAuth.instance.currentUser;
   final _controller = TextEditingController();
   @override
   Widget build(BuildContext context) {
@@ -31,12 +31,12 @@ class _ChatPageState extends State<ChatPage> {
         body: FutureBuilder<DocumentSnapshot>(
             future: FirebaseFirestore.instance
                 .collection('Users')
-                .doc(user!.uid)
+                .doc(currentUser!.uid)
                 .get(),
-            builder: (context, currentUser) {
-              if (currentUser.hasData) {
+            builder: (context, user) {
+              if (user.hasData) {
                 return CommentBox(
-                  userImage: currentUser.data!['photoURL'],
+                  userImage: user.data!['photoURL'],
                   textColor: Theme.of(context).textTheme.bodyText1!.color,
                   backgroundColor: Theme.of(context).backgroundColor,
                   sendWidget: Icon(
@@ -52,7 +52,7 @@ class _ChatPageState extends State<ChatPage> {
                         .doc(widget.id)
                         .collection('Chat')
                         .add({
-                      'uid': user!.uid,
+                      'uid': currentUser!.uid,
                       'comment': _controller.text,
                       'date': DateTime.now()
                     }).then((value) => _controller.clear());

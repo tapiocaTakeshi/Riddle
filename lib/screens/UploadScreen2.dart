@@ -27,7 +27,6 @@ class UploadScreen2State extends State<UploadScreen2> {
   final _formkey = GlobalKey<FormState>();
   String _title = '';
   Color thumbnailTextColor = Colors.black45;
-  final user = FirebaseAuth.instance.currentUser;
 
   @override
   Widget build(BuildContext context) {
@@ -126,101 +125,94 @@ class UploadScreen2State extends State<UploadScreen2> {
                       ],
                     ),
                   )),
-                  Padding(
-                    padding: const EdgeInsets.all(10.0),
-                    child: SizedBox(
-                      width: 110,
-                      child: RaisedButton(
-                          elevation: 1,
-                          textColor: Colors.white,
-                          color: Colors.blueAccent.withOpacity(0.9),
-                          child: Text(
-                            'アップロード',
-                            style: TextStyle(fontSize: 13),
-                          ),
-                          onPressed: () async {
-                            if (_formkey.currentState!.validate() &&
-                                model.thumbnailImage != null) {
-                              _formkey.currentState!.save();
-                              setState(() {
-                                model.visible = true;
-                              });
-                              print('a');
-                              final snapshotRiddle = await FirebaseFirestore
-                                  .instance
-                                  .collection('Riddles')
-                                  .add({
-                                'title': _title,
-                                'explanation': '',
-                                'date': DateTime.now(),
-                                'answerCount': 0
-                              });
+                  ElevatedButton(
+                      child: Text(
+                        'アップロード',
+                        style: TextStyle(fontSize: 13),
+                      ),
+                      onPressed: () async {
+                        if (_formkey.currentState!.validate() &&
+                            model.thumbnailImage != null) {
+                          _formkey.currentState!.save();
+                          setState(() {
+                            model.visible = true;
+                          });
+                          print('a');
+                          final snapshotRiddle = await FirebaseFirestore
+                              .instance
+                              .collection('Riddles')
+                              .add({
+                            'title': _title,
+                            'explanation': '',
+                            'date': DateTime.now(),
+                            'answerCount': 0
+                          });
 
-                              //作成したユーザーと紐付ける
-                              await FirebaseFirestore.instance
-                                  .collection('Users')
-                                  .doc(user!.uid)
-                                  .update({
-                                'MyRiddleList':
-                                    FieldValue.arrayUnion([snapshotRiddle.id])
-                              });
+                          //作成したユーザーと紐付ける
+                          await FirebaseFirestore.instance
+                              .collection('Users')
+                              .doc(currentUser!.uid)
+                              .update({
+                            'MyRiddleList':
+                                FieldValue.arrayUnion([snapshotRiddle.id])
+                          });
 
-                              //スライドをアップロード
-                              widget.slideImageFiles!
-                                  .asMap()
-                                  .forEach((index, value) async {
-                                var slideurl = await uploadImage(value,
-                                    'Riddles/${snapshotRiddle.id}/Slides/${value.path.split('/').last}');
-                                var expurl = await uploadImage(
-                                    widget.expImageFiles![index],
-                                    'Riddles/${snapshotRiddle.id}/Slides/${widget.expImageFiles![index].path.split('/').last}');
-                                print(slideurl);
-                                print(expurl);
-                                await FirebaseFirestore.instance
-                                    .collection('Riddles')
-                                    .doc(snapshotRiddle.id)
-                                    .collection('Slides')
-                                    .doc(index.toString())
-                                    .set({
-                                  'slideImageURL': slideurl,
-                                  'expImageURL': expurl,
-                                  'answer': widget.answers![index],
-                                  'limit': widget.durations![index].inSeconds,
-                                });
-                              });
+                          //スライドをアップロード
+                          widget.slideImageFiles!
+                              .asMap()
+                              .forEach((index, value) async {
+                            var slideurl = await uploadImage(value,
+                                'Riddles/${snapshotRiddle.id}/Slides/${value.path.split('/').last}');
+                            var expurl = await uploadImage(
+                                widget.expImageFiles![index],
+                                'Riddles/${snapshotRiddle.id}/Slides/${widget.expImageFiles![index].path.split('/').last}');
+                            print(slideurl);
+                            print(expurl);
+                            await FirebaseFirestore.instance
+                                .collection('Riddles')
+                                .doc(snapshotRiddle.id)
+                                .collection('Slides')
+                                .doc(index.toString())
+                                .set({
+                              'slideImageURL': slideurl,
+                              'expImageURL': expurl,
+                              'answer': widget.answers![index],
+                              'limit': widget.durations![index].inSeconds,
+                            });
+                          });
 
-                              //サムネイルをアップロード
-                              String thumbnailURL = await uploadImage(
-                                  model.thumbnailImageFile!,
-                                  'Riddles/${snapshotRiddle.id}/thumbnailImageFile.jpg');
-                              print(thumbnailURL);
-                              await FirebaseFirestore.instance
-                                  .collection('Riddles')
-                                  .doc(snapshotRiddle.id)
-                                  .update({
-                                'thumbnailURL': thumbnailURL,
-                                'id': snapshotRiddle.id.toString(),
-                                'uid': user!.uid
-                              });
-                              Provider.of<SlideModel>(context, listen: false)
-                                  .deleteSlide();
+                          //サムネイルをアップロード
+                          String thumbnailURL = await uploadImage(
+                              model.thumbnailImageFile!,
+                              'Riddles/${snapshotRiddle.id}/thumbnailImageFile.jpg');
+                          print(thumbnailURL);
+                          await FirebaseFirestore.instance
+                              .collection('Riddles')
+                              .doc(snapshotRiddle.id)
+                              .update({
+                            'thumbnailURL': thumbnailURL,
+                            'id': snapshotRiddle.id.toString(),
+                            'uid': currentUser!.uid
+                          });
+                          Provider.of<SlideModel>(context, listen: false)
+                              .deleteSlide();
+                          Provider.of<ThumbnailModel>(context, listen: false)
+                              .deleteThumbnail();
 
-                              setState(() {
-                                model.visible = false;
-                              });
-                              Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => MyHomePage(),
-                                  ));
-                            } else if (model.thumbnailImage == null) {
-                              setState(() {
-                                thumbnailTextColor = Colors.red;
-                              });
-                            }
-                          }),
-                    ),
-                  ),
+                          setState(() {
+                            model.visible = false;
+                          });
+                          Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => MyHomePage(),
+                              ));
+                        } else if (model.thumbnailImage == null) {
+                          setState(() {
+                            thumbnailTextColor = Colors.red;
+                          });
+                        }
+                      }),
                 ],
               ),
             ),

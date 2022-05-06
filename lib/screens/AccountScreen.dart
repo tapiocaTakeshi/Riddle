@@ -1,9 +1,11 @@
 import 'package:Riddle/functions/Firebase.dart';
+import 'package:Riddle/main.dart';
 import 'package:Riddle/screens/SettingPage.dart';
 import 'package:animations/animations.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'DetailPage.dart';
@@ -113,6 +115,41 @@ class AccountScreenState extends State<AccountScreen>
                 ),
                 elevation: 1,
                 centerTitle: false,
+                actions: [
+                  IconButton(
+                      onPressed: () {
+                        showCupertinoModalPopup(
+                            context: context,
+                            builder: (context) => CupertinoActionSheet(
+                                  actions: [
+                                    CupertinoActionSheetAction(
+                                        onPressed: () async {
+                                          await FirebaseFirestore.instance
+                                              .collection('Users')
+                                              .doc(currentUser!.uid)
+                                              .update({
+                                            'BlockedUserList':
+                                                FieldValue.arrayUnion(
+                                                    [widget.uid])
+                                          });
+                                          Navigator.pop(context);
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(SnackBar(
+                                                  content:
+                                                      Text('ユーザーをブロックしました。')));
+                                        },
+                                        child: Text('ユーザーをブロックする'))
+                                  ],
+                                  cancelButton: CupertinoActionSheetAction(
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                    },
+                                    child: Text('キャンセル'),
+                                  ),
+                                ));
+                      },
+                      icon: Icon(CupertinoIcons.shield_slash))
+                ],
               ),
               body: NestedScrollView(
                   headerSliverBuilder: (context, value) {
@@ -165,13 +202,13 @@ class AccountScreenState extends State<AccountScreen>
 }
 
 class MySliverPersistentHeaderDelegate extends SliverPersistentHeaderDelegate {
-  final userImage;
+  final currentUserImage;
   final subscribersCount;
   final uid;
   var isSubscribed;
 
-  MySliverPersistentHeaderDelegate(
-      this.userImage, this.subscribersCount, this.uid, this.isSubscribed);
+  MySliverPersistentHeaderDelegate(this.currentUserImage, this.subscribersCount,
+      this.uid, this.isSubscribed);
 
   void updateSubscribe() async {
     final currentUser = FirebaseAuth.instance.currentUser;
@@ -210,7 +247,8 @@ class MySliverPersistentHeaderDelegate extends SliverPersistentHeaderDelegate {
             children: <Widget>[
               Container(
                 margin: EdgeInsets.symmetric(horizontal: 30),
-                child: CircleAvatar(backgroundImage: NetworkImage(userImage)),
+                child: CircleAvatar(
+                    backgroundImage: NetworkImage(currentUserImage)),
                 height: 80,
                 width: 80,
                 decoration: BoxDecoration(
@@ -281,46 +319,54 @@ class TabPage extends StatelessWidget {
     Size size = MediaQuery.of(context).size;
     // TODO: implement build
     return Center(
-      child: GridView.count(
+      child: ListView(
         physics: NeverScrollableScrollPhysics(),
-        crossAxisCount: 1,
-        mainAxisSpacing: 0,
-        crossAxisSpacing: 0,
-        childAspectRatio: 16 / 9,
         children: List.generate(contents.length, (index) {
-          return Card(
-            elevation: 3,
-            clipBehavior: Clip.antiAlias,
-            // shape: RoundedRectangleBorder(
-            //     borderRadius: BorderRadius.circular(5)
-            // ),
-            child: OpenContainer(
-              closedElevation: 0,
-              openBuilder: (context, closedContainer) {
-                return DetailPage(
-                  id: contents[index]['id'],
-                  title: contents[index]['title'],
-                  image: contents[index]['thumbnailURL'],
-                  onPressed: closedContainer,
-                );
-              },
-              closedBuilder: (context, openContainer) {
-                return Center(
-                  child: InkWell(
-                    child: Image.network(
-                      contents[index]['thumbnailURL'],
-                      width: size.width,
-                      height: size.width * 9 / 16,
-                      fit: BoxFit.cover,
+          return FutureBuilder<DocumentSnapshot>(
+              future: FirebaseFirestore.instance
+                  .collection('Users')
+                  .doc(currentUser!.uid)
+                  .get(),
+              builder: (context, currentUser) {
+                if (currentUser.hasData) {
+                  return Visibility(
+                    visible: !(currentUser.data!['BlockedUserList'] as List)
+                        .contains(contents[index]['uid']),
+                    child: Card(
+                      elevation: 3,
+                      clipBehavior: Clip.antiAlias,
+                      child: OpenContainer(
+                        closedElevation: 1,
+                        openBuilder: (context, closedContainer) {
+                          return DetailPage(
+                            id: contents[index]['id'],
+                            title: contents[index]['title'],
+                            image: contents[index]['thumbnailURL'],
+                            onPressed: closedContainer,
+                          );
+                        },
+                        closedBuilder: (context, openContainer) {
+                          return Center(
+                            child: InkWell(
+                              child: Image.network(
+                                contents[index]['thumbnailURL'],
+                                width: size.width,
+                                height: size.width * 9 / 16,
+                                fit: BoxFit.cover,
+                              ),
+                              highlightColor: Colors.grey.withOpacity(0.3),
+                              splashColor: Colors.grey.withOpacity(0.3),
+                              onTap: () => openContainer(),
+                            ),
+                          );
+                        },
+                      ),
                     ),
-                    highlightColor: Colors.grey.withOpacity(0.3),
-                    splashColor: Colors.grey.withOpacity(0.3),
-                    onTap: () => openContainer(),
-                  ),
-                );
-              },
-            ),
-          );
+                  );
+                } else {
+                  return Container();
+                }
+              });
         }),
       ),
     );

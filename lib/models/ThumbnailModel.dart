@@ -13,6 +13,13 @@ class ThumbnailModel extends ChangeNotifier {
   final Directory systemTempDir = Directory.systemTemp;
   bool visible = false;
 
+  void deleteThumbnail() {
+    thumbnailPath = '';
+    thumbnailImageFile = null;
+    thumbnailImage = null;
+    thumbnailImageByte = null;
+  }
+
   void setThumbnail() async {
     thumbnailPath = await JpgUpload();
     if (thumbnailPath != '') {

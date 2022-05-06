@@ -47,7 +47,7 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>アルバムの写真を選択します。</string>
+	<string>アプリに表示・使用するための写真や動画をライブラリから選択する目的でリクエストします。</string>
 	<key>SKAdNetworkItems</key>
 	<array>
 		<dict>

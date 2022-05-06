@@ -1,4 +1,5 @@
 import 'package:Riddle/data/AdState.dart';
+import 'package:Riddle/main.dart';
 import 'package:Riddle/screens/SearchOptionPage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -20,9 +21,8 @@ class HomeScreen extends StatefulWidget {
 }
 
 class HomeScreenState extends State<HomeScreen> {
-  final user = FirebaseAuth.instance.currentUser;
   List<Map<String, dynamic>> riddles = [];
-  // List<Map<String, dynamic>> userInfos=[];
+  // List<Map<String, dynamic>> currentUserInfos=[];
   String? keyword = '';
   var inChunks = [];
   List<Query> outChunks = [];
@@ -181,52 +181,67 @@ class HomeScreenState extends State<HomeScreen> {
             loadRiddles();
           },
           child: Center(
-            child: GridView.count(
-              crossAxisCount: 1,
-              mainAxisSpacing: 0,
-              crossAxisSpacing: 0,
-              childAspectRatio: 16 / 9,
+            child: ListView(
               children: List.generate(riddles.length + 1, (index) {
                 if (index < riddles.length) {
-                  return Card(
-                    elevation: 3,
-                    clipBehavior: Clip.antiAlias,
-                    child: OpenContainer(
-                      closedElevation: 1,
-                      openBuilder: (context, closedContainer) {
-                        return DetailPage(
-                          id: riddles[index]['id'],
-                          title: riddles[index]['title'],
-                          image: riddles[index]['thumbnailURL'],
-                          onPressed: closedContainer,
-                        );
-                      },
-                      closedBuilder: (context, openContainer) {
-                        return Center(
-                          child: InkWell(
-                            child: Image.network(
-                              riddles[index]['thumbnailURL'],
-                              width: size.width,
-                              height: size.width * 9 / 16,
-                              fit: BoxFit.cover,
+                  return FutureBuilder<DocumentSnapshot>(
+                      future: FirebaseFirestore.instance
+                          .collection('Users')
+                          .doc(currentUser!.uid)
+                          .get(),
+                      builder: (context, currentUser) {
+                        if (currentUser.hasData) {
+                          return Visibility(
+                            visible:
+                                !(currentUser.data!['BlockedUserList'] as List)
+                                    .contains(riddles[index]['uid']),
+                            child: Card(
+                              elevation: 3,
+                              clipBehavior: Clip.antiAlias,
+                              child: OpenContainer(
+                                closedElevation: 1,
+                                openBuilder: (context, closedContainer) {
+                                  return DetailPage(
+                                    id: riddles[index]['id'],
+                                    title: riddles[index]['title'],
+                                    image: riddles[index]['thumbnailURL'],
+                                    onPressed: closedContainer,
+                                  );
+                                },
+                                closedBuilder: (context, openContainer) {
+                                  return Center(
+                                    child: InkWell(
+                                      child: Image.network(
+                                        riddles[index]['thumbnailURL'],
+                                        width: size.width,
+                                        height: size.width * 9 / 16,
+                                        fit: BoxFit.cover,
+                                      ),
+                                      highlightColor:
+                                          Colors.grey.withOpacity(0.3),
+                                      splashColor: Colors.grey.withOpacity(0.3),
+                                      onTap: () => openContainer(),
+                                    ),
+                                  );
+                                },
+                              ),
                             ),
-                            highlightColor: Colors.grey.withOpacity(0.3),
-                            splashColor: Colors.grey.withOpacity(0.3),
-                            onTap: () => openContainer(),
-                          ),
-                        );
-                      },
-                    ),
-                  );
+                          );
+                        } else {
+                          return Container();
+                        }
+                      });
                 } else {
                   loadRiddles();
                   return Center(
-                    child: hasMore
-                        ? CircularProgressIndicator(
-                            color: Colors.orange,
-                          )
-                        : Text('データがありません'),
-                  );
+                      child: hasMore
+                          ? Padding(
+                              padding: const EdgeInsets.all(20.0),
+                              child: CircularProgressIndicator(
+                                color: Colors.orange,
+                              ),
+                            )
+                          : Container());
                 }
               }),
             ),

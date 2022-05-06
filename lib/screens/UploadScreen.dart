@@ -1,3 +1,4 @@
+import 'package:Riddle/models/ThumbnailModel.dart';
 import 'package:Riddle/screens/UploadScreen2.dart';
 import 'package:animations/animations.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -33,6 +34,10 @@ class UploadScreenState extends State<UploadScreen> {
                 elevation: 1,
                 leading: IconButton(
                     onPressed: () {
+                      Provider.of<SlideModel>(context, listen: false)
+                          .deleteSlide();
+                      Provider.of<ThumbnailModel>(context, listen: false)
+                          .deleteThumbnail();
                       Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
@@ -62,7 +67,7 @@ class UploadScreenState extends State<UploadScreen> {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          RaisedButton(
+                          ElevatedButton(
                             onPressed: () async {
                               model.setSlide();
                             },
@@ -70,7 +75,6 @@ class UploadScreenState extends State<UploadScreen> {
                               'スライド画像（PDF）を選択',
                               style: TextStyle(color: Colors.white),
                             ),
-                            color: Colors.blueAccent,
                           ),
                           Text('縦横比　9:16')
                         ],

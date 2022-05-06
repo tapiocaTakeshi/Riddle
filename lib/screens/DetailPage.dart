@@ -1,11 +1,14 @@
 import 'package:Riddle/data/AdState.dart';
 import 'package:Riddle/functions/Firebase.dart';
+import 'package:Riddle/main.dart';
 import 'package:Riddle/screens/AccountScreen.dart';
 import 'package:Riddle/screens/Chat.dart';
 import 'package:Riddle/screens/MyAccountScreen.dart';
+import 'package:Riddle/screens/ReportPage.dart';
 import 'package:Riddle/screens/RiddlePage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:provider/provider.dart';
@@ -29,7 +32,6 @@ class DetailPage extends StatefulWidget {
 }
 
 class DetailPageState extends State<DetailPage> {
-  final currentUser = FirebaseAuth.instance.currentUser;
   var isLiked = false;
   var isSubscribed = false;
   var AnswerCountText = '';
@@ -153,12 +155,43 @@ class DetailPageState extends State<DetailPage> {
                                                 crossAxisAlignment:
                                                     CrossAxisAlignment.start,
                                                 children: [
-                                                  Text(
-                                                    widget.title!,
-                                                    style: TextStyle(
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        fontSize: 18),
+                                                  Row(
+                                                    children: [
+                                                      Text(
+                                                        widget.title!,
+                                                        style: TextStyle(
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                            fontSize: 18),
+                                                      ),
+                                                      Spacer(),
+                                                      IconButton(
+                                                          onPressed: () {
+                                                            showCupertinoModalPopup(
+                                                                context:
+                                                                    context,
+                                                                builder:
+                                                                    (context) =>
+                                                                        CupertinoActionSheet(
+                                                                          actions: [
+                                                                            CupertinoActionSheetAction(
+                                                                                onPressed: () {
+                                                                                  Navigator.pop(context);
+                                                                                  Navigator.of(context).push(MaterialPageRoute(builder: ((context) => ReportPage(riddle.data!['uid']))));
+                                                                                },
+                                                                                child: Text('この投稿を通報する'))
+                                                                          ],
+                                                                          cancelButton: CupertinoActionSheetAction(
+                                                                              onPressed: () {
+                                                                                Navigator.pop(context);
+                                                                              },
+                                                                              child: Text('キャンセル')),
+                                                                        ));
+                                                          },
+                                                          icon: Icon(
+                                                              CupertinoIcons
+                                                                  .flag))
+                                                    ],
                                                   ),
                                                   Text(AnswerCountText +
                                                       CorrectAnswerRateText)
@@ -177,6 +210,7 @@ class DetailPageState extends State<DetailPage> {
                                             )
                                           ],
                                         ),
+                                        Divider(),
                                         InkWell(
                                           onTap: () {
                                             if (data2['uid'] ==
@@ -234,45 +268,39 @@ class DetailPageState extends State<DetailPage> {
                                             ],
                                           ),
                                         ),
-                                        ButtonTheme(
-                                          minWidth: size.width,
-                                          child: RaisedButton(
-                                              elevation: 1,
-                                              textColor: Colors.white,
-                                              color: Colors.blueAccent
-                                                  .withOpacity(0.9),
-                                              child: Text(
-                                                '問題を解く',
-                                                style: TextStyle(fontSize: 13),
-                                              ),
-                                              onPressed: () async {
-                                                setState(() {
-                                                  CoOrIn = [];
-                                                });
+                                        Divider(),
+                                        ElevatedButton(
+                                            child: Text(
+                                              '問題を解く',
+                                              style: TextStyle(fontSize: 13),
+                                            ),
+                                            onPressed: () async {
+                                              setState(() {
+                                                CoOrIn = [];
+                                              });
 
-                                                List<DocumentSnapshot> Slides =
-                                                    await FirebaseFirestore
-                                                        .instance
-                                                        .collection('Riddles')
-                                                        .doc(widget.id)
-                                                        .collection('Slides')
-                                                        .get()
-                                                        .then((value) =>
-                                                            value.docs);
-                                                var index = 0;
-                                                Navigator.of(context).push(
-                                                    MaterialPageRoute(
-                                                        builder: (_) =>
-                                                            RiddlePage(
-                                                              Slides: Slides,
-                                                              index: index,
-                                                              length:
-                                                                  Slides.length,
-                                                              CoOrIn: CoOrIn,
-                                                              id: widget.id,
-                                                            )));
-                                              }),
-                                        )
+                                              List<DocumentSnapshot> Slides =
+                                                  await FirebaseFirestore
+                                                      .instance
+                                                      .collection('Riddles')
+                                                      .doc(widget.id)
+                                                      .collection('Slides')
+                                                      .get()
+                                                      .then((value) =>
+                                                          value.docs);
+                                              var index = 0;
+                                              Navigator.of(context).push(
+                                                  MaterialPageRoute(
+                                                      builder: (_) =>
+                                                          RiddlePage(
+                                                            Slides: Slides,
+                                                            index: index,
+                                                            length:
+                                                                Slides.length,
+                                                            CoOrIn: CoOrIn,
+                                                            id: widget.id,
+                                                          )));
+                                            })
                                       ],
                                     );
                                   } else {

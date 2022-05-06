@@ -32,7 +32,8 @@ class GoogleSignInModel extends ChangeNotifier {
           'photoURL': result.user!.photoURL,
           'MyRiddleList': [],
           'FavoriteRiddleList': [],
-          'SubscribedChannelList': []
+          'SubscribedChannelList': [],
+          'BlockedUserList': []
         });
       }
     } catch (e) {

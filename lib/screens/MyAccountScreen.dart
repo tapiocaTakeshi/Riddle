@@ -1,4 +1,5 @@
 import 'package:Riddle/functions/Firebase.dart';
+import 'package:Riddle/main.dart';
 import 'package:Riddle/models/GoogleSignInModel.dart';
 import 'package:Riddle/screens/ProfileEditingPage.dart';
 import 'package:Riddle/screens/SettingPage.dart';
@@ -19,13 +20,12 @@ class MyAccountScreen extends StatefulWidget {
 
 class MyAccountScreenState extends State<MyAccountScreen>
     with SingleTickerProviderStateMixin {
-  final user = FirebaseAuth.instance.currentUser;
   List<Map<String, dynamic>> myRiddles = [];
   List<Map<String, dynamic>> favoriteRiddles = [];
   int? subscribersCount = 0;
 
   void loadRiddles() async {
-    final data = await getData("Users", user!.uid);
+    final data = await getData("Users", currentUser!.uid);
 
     final myRiddleList = data['MyRiddleList'];
     if (myRiddleList.isNotEmpty) {
@@ -80,7 +80,7 @@ class MyAccountScreenState extends State<MyAccountScreen>
     Future(() async {
       final Users = await FirebaseFirestore.instance
           .collection('Users')
-          .where('SubscribedChannelList', arrayContains: user!.uid)
+          .where('SubscribedChannelList', arrayContains: currentUser!.uid)
           .get()
           .then((QuerySnapshot snapshots) => snapshots.docs);
       subscribersCount = Users.length;
@@ -92,8 +92,10 @@ class MyAccountScreenState extends State<MyAccountScreen>
   Widget build(BuildContext context) {
     // TODO: implement build
     return FutureBuilder<DocumentSnapshot>(
-        future:
-            FirebaseFirestore.instance.collection('Users').doc(user!.uid).get(),
+        future: FirebaseFirestore.instance
+            .collection('Users')
+            .doc(currentUser!.uid)
+            .get(),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             return Scaffold(
@@ -122,7 +124,7 @@ class MyAccountScreenState extends State<MyAccountScreen>
                     return [
                       SliverPersistentHeader(
                           delegate: MySliverPersistentHeaderDelegate(
-                        userImage: snapshot.data!['photoURL'],
+                        currentUserImage: snapshot.data!['photoURL'],
                         subscribersCount: subscribersCount,
                       )),
                       SliverPadding(
@@ -131,6 +133,7 @@ class MyAccountScreenState extends State<MyAccountScreen>
                           titleSpacing: 0,
                           elevation: 5,
                           pinned: true,
+                          automaticallyImplyLeading: false,
                           title: TabBar(
                               controller: _tabController,
                               tabs: _tab,
@@ -174,11 +177,11 @@ class MyAccountScreenState extends State<MyAccountScreen>
 }
 
 class MySliverPersistentHeaderDelegate extends SliverPersistentHeaderDelegate {
-  final userImage;
+  final currentUserImage;
   final subscribersCount;
 
   MySliverPersistentHeaderDelegate({
-    @required this.userImage,
+    @required this.currentUserImage,
     @required this.subscribersCount,
   });
 
@@ -201,7 +204,8 @@ class MySliverPersistentHeaderDelegate extends SliverPersistentHeaderDelegate {
           children: <Widget>[
             Container(
               margin: EdgeInsets.symmetric(horizontal: 30),
-              child: CircleAvatar(backgroundImage: NetworkImage(userImage)),
+              child:
+                  CircleAvatar(backgroundImage: NetworkImage(currentUserImage)),
               height: 80,
               width: 80,
               decoration: BoxDecoration(
@@ -254,29 +258,6 @@ class MySliverPersistentHeaderDelegate extends SliverPersistentHeaderDelegate {
   }
 }
 
-class NoDelegate extends SliverPersistentHeaderDelegate {
-  @override
-  Widget build(
-      BuildContext context, double shrinkOffset, bool overlapsContent) {
-    // TODO: implement build
-    return Container();
-  }
-
-  @override
-  // TODO: implement maxExtent
-  double get maxExtent => 100;
-
-  @override
-  // TODO: implement minExtent
-  double get minExtent => 100;
-
-  @override
-  bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate) {
-    // TODO: implement shouldRebuild
-    return true;
-  }
-}
-
 class TabPage extends StatelessWidget {
   final contents;
   final isMyRiddle;
@@ -290,45 +271,56 @@ class TabPage extends StatelessWidget {
     Size size = MediaQuery.of(context).size;
     // TODO: implement build
     return Center(
-      child: GridView.count(
+      child: ListView(
         physics: NeverScrollableScrollPhysics(),
-        crossAxisCount: 1,
-        mainAxisSpacing: 0,
-        crossAxisSpacing: 0,
-        childAspectRatio: 16 / 9,
         children: List.generate(contents.length, (index) {
           return Stack(
             children: [
-              Card(
-                elevation: 3,
-                clipBehavior: Clip.antiAlias,
-                child: OpenContainer(
-                  closedElevation: 0,
-                  openBuilder: (context, closedContainer) {
-                    return DetailPage(
-                      id: contents[index]['id'],
-                      title: contents[index]['title'],
-                      image: contents[index]['thumbnailURL'],
-                      onPressed: closedContainer,
-                    );
-                  },
-                  closedBuilder: (context, openContainer) {
-                    return Center(
-                      child: InkWell(
-                        child: Image.network(
-                          contents[index]['thumbnailURL'],
-                          width: size.width,
-                          height: size.width * 9 / 16,
-                          fit: BoxFit.cover,
+              FutureBuilder<DocumentSnapshot>(
+                  future: FirebaseFirestore.instance
+                      .collection('Users')
+                      .doc(currentUser!.uid)
+                      .get(),
+                  builder: (context, currentUser) {
+                    if (currentUser.hasData) {
+                      return Visibility(
+                        visible: !(currentUser.data!['BlockedUserList'] as List)
+                            .contains(contents[index]['uid']),
+                        child: Card(
+                          elevation: 3,
+                          clipBehavior: Clip.antiAlias,
+                          child: OpenContainer(
+                            closedElevation: 1,
+                            openBuilder: (context, closedContainer) {
+                              return DetailPage(
+                                id: contents[index]['id'],
+                                title: contents[index]['title'],
+                                image: contents[index]['thumbnailURL'],
+                                onPressed: closedContainer,
+                              );
+                            },
+                            closedBuilder: (context, openContainer) {
+                              return Center(
+                                child: InkWell(
+                                  child: Image.network(
+                                    contents[index]['thumbnailURL'],
+                                    width: size.width,
+                                    height: size.width * 9 / 16,
+                                    fit: BoxFit.cover,
+                                  ),
+                                  highlightColor: Colors.grey.withOpacity(0.3),
+                                  splashColor: Colors.grey.withOpacity(0.3),
+                                  onTap: () => openContainer(),
+                                ),
+                              );
+                            },
+                          ),
                         ),
-                        highlightColor: Colors.grey.withOpacity(0.3),
-                        splashColor: Colors.grey.withOpacity(0.3),
-                        onTap: () => openContainer(),
-                      ),
-                    );
-                  },
-                ),
-              ),
+                      );
+                    } else {
+                      return Container();
+                    }
+                  }),
               if (isMyRiddle)
                 Align(
                   alignment: Alignment.topRight,

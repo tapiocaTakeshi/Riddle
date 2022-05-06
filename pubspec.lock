@@ -112,7 +112,7 @@ packages:
       name: cross_file
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.3.2"
+    version: "0.3.3"
   crypto:
     dependency: transitive
     description:
@@ -251,6 +251,13 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_email_sender:
+    dependency: "direct main"
+    description:
+      name: flutter_email_sender
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "5.1.0"
   flutter_gradients:
     dependency: "direct main"
     description:
@@ -589,7 +596,7 @@ packages:
       name: quiver
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.0.1+1"
+    version: "3.1.0"
   settings_ui:
     dependency: "direct main"
     description:

@@ -34,7 +34,8 @@ class AppleSignInModel extends ChangeNotifier {
               'https://firebasestorage.googleapis.com/v0/b/riddle-b4b7b.appspot.com/o/Account.jpg?alt=media&token=97b13594-5418-4ddb-9823-abaf8e937da9',
           'MyRiddleList': [],
           'FavoriteRiddleList': [],
-          'SubscribedChannelList': []
+          'SubscribedChannelList': [],
+          'BlockedUserList': []
         });
       }
     } catch (e) {

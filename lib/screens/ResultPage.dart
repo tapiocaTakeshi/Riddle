@@ -47,10 +47,7 @@ class _ResultPageState extends State<ResultPage> {
             ),
             SizedBox(
               width: 300,
-              child: RaisedButton(
-                  elevation: 1,
-                  textColor: Colors.white,
-                  color: Colors.blueAccent.withOpacity(0.9),
+              child: ElevatedButton(
                   child: Text(
                     '終了',
                     style: TextStyle(fontSize: 13),

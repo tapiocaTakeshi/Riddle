@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:Riddle/functions/Firebase.dart';
 import 'package:Riddle/functions/Upload.dart';
+import 'package:Riddle/main.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -14,7 +15,6 @@ class ProfileEditingPage extends StatefulWidget {
 }
 
 class _ProfileEditingPageState extends State<ProfileEditingPage> {
-  final user = FirebaseAuth.instance.currentUser;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -22,7 +22,7 @@ class _ProfileEditingPageState extends State<ProfileEditingPage> {
       body: StreamBuilder<DocumentSnapshot>(
           stream: FirebaseFirestore.instance
               .collection('Users')
-              .doc(user!.uid)
+              .doc(currentUser!.uid)
               .snapshots(),
           builder: (context, snapshot) {
             if (snapshot.hasData) {
@@ -37,11 +37,11 @@ class _ProfileEditingPageState extends State<ProfileEditingPage> {
                     onTap: () async {
                       final imageFile = await imagePicker();
                       if (imageFile == null) return;
-                      final downloadURL =
-                          await uploadImage(imageFile, 'Users/' + user!.uid);
+                      final downloadURL = await uploadImage(
+                          imageFile, 'Users/' + currentUser!.uid);
                       await FirebaseFirestore.instance
                           .collection('Users')
-                          .doc(user!.uid)
+                          .doc(currentUser!.uid)
                           .update({'photoURL': downloadURL});
                     },
                   ),
@@ -53,7 +53,7 @@ class _ProfileEditingPageState extends State<ProfileEditingPage> {
                       onSubmitted: (value) async {
                         await FirebaseFirestore.instance
                             .collection('Users')
-                            .doc(user!.uid)
+                            .doc(currentUser!.uid)
                             .update({'name': value});
                       },
                     ),

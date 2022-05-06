@@ -176,6 +176,13 @@ class _RiddlePageState extends State<RiddlePage> {
                             filterQuality: FilterQuality.high,
                           ),
                         ),
+                        Align(
+                          alignment: Alignment.topLeft,
+                          child: TextButton(
+                              onPressed: () => Navigator.popUntil(
+                                  context, (route) => route.isFirst),
+                              child: Text('解くのをやめる')),
+                        ),
                         Expanded(
                           child: Center(
                               child: Padding(
@@ -222,10 +229,7 @@ class _RiddlePageState extends State<RiddlePage> {
                             filterQuality: FilterQuality.high,
                           ),
                         ),
-                        RaisedButton(
-                            elevation: 1,
-                            textColor: Colors.white,
-                            color: Colors.blueAccent.withOpacity(0.9),
+                        ElevatedButton(
                             child: Text(
                               '次へ',
                               style: TextStyle(fontSize: 13),
