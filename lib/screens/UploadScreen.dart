@@ -38,20 +38,17 @@ class UploadScreenState extends State<UploadScreen> {
                           .deleteSlide();
                       Provider.of<ThumbnailModel>(context, listen: false)
                           .deleteThumbnail();
-                      Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => MyHomePage(),
-                          ));
+                      Navigator.pop(context);
                     },
                     icon: Icon(Icons.clear)),
                 actions: [
                   if (model.isOpeneds.every((element) => element))
                     IconButton(
                         onPressed: () {
-                          Navigator.pushReplacement(
+                          Navigator.push(
                               context,
                               MaterialPageRoute(
+                                  fullscreenDialog: true,
                                   builder: (context) => UploadScreen2(
                                       model.answers!,
                                       model.durations!,

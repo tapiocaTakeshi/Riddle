@@ -144,7 +144,7 @@ class MyHomePageState extends State<MyHomePage> {
             color: Colors.orange,
           ),
           elevation: 2,
-          onPressed: () => Navigator.pushReplacement(
+          onPressed: () => Navigator.push(
               context,
               MaterialPageRoute(
                 builder: (context) => UploadScreen(),

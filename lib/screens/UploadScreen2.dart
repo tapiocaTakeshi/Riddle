@@ -202,11 +202,8 @@ class UploadScreen2State extends State<UploadScreen2> {
                           setState(() {
                             model.visible = false;
                           });
-                          Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => MyHomePage(),
-                              ));
+                          Navigator.of(context)
+                              .popUntil((route) => route.isFirst);
                         } else if (model.thumbnailImage == null) {
                           setState(() {
                             thumbnailTextColor = Colors.red;

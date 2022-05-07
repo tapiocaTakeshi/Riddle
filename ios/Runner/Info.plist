@@ -47,7 +47,7 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>アプリに表示・使用するための写真や動画をライブラリから選択する目的でリクエストします。</string>
+	<string>プロフィールに表示するための写真や動画を選択するために使用します。</string>
 	<key>SKAdNetworkItems</key>
 	<array>
 		<dict>

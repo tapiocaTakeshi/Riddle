@@ -30,6 +30,7 @@ class HomeScreenState extends State<HomeScreen> {
   final loadLength = 3;
   bool hasMore = true;
   List<Map<String, dynamic>> temp = [];
+  final _scrollController = ScrollController();
 
   Future loadRiddles() async {
     await Future.delayed(Duration(seconds: 3), () async {
@@ -126,6 +127,12 @@ class HomeScreenState extends State<HomeScreen> {
     // TODO: implement initState
     super.initState();
     loadRiddles();
+    _scrollController.addListener(() {
+      if (_scrollController.position.maxScrollExtent ==
+          _scrollController.offset) {
+        loadRiddles();
+      }
+    });
   }
 
   @override
@@ -232,7 +239,6 @@ class HomeScreenState extends State<HomeScreen> {
                         }
                       });
                 } else {
-                  loadRiddles();
                   return Center(
                       child: hasMore
                           ? Padding(
