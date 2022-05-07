@@ -23,6 +23,7 @@ class MyAccountScreenState extends State<MyAccountScreen>
   List<Map<String, dynamic>> myRiddles = [];
   List<Map<String, dynamic>> favoriteRiddles = [];
   int? subscribersCount = 0;
+  final currentUser = FirebaseAuth.instance.currentUser;
 
   void loadRiddles() async {
     final data = await getData("Users", currentUser!.uid);
@@ -91,11 +92,11 @@ class MyAccountScreenState extends State<MyAccountScreen>
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
-    return FutureBuilder<DocumentSnapshot>(
-        future: FirebaseFirestore.instance
+    return StreamBuilder<DocumentSnapshot>(
+        stream: FirebaseFirestore.instance
             .collection('Users')
             .doc(currentUser!.uid)
-            .get(),
+            .snapshots(),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             return Scaffold(
@@ -262,6 +263,7 @@ class TabPage extends StatelessWidget {
   final contents;
   final isMyRiddle;
   final VoidCallback? loadRiddles;
+  final currentUser = FirebaseAuth.instance.currentUser;
 
   TabPage(
       {@required this.contents, @required this.isMyRiddle, this.loadRiddles});

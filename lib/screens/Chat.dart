@@ -23,6 +23,7 @@ class ChatPage extends StatefulWidget {
 
 class _ChatPageState extends State<ChatPage> {
   final _controller = TextEditingController();
+  final currentUser = FirebaseAuth.instance.currentUser;
   @override
   Widget build(BuildContext context) {
     return SafeArea(

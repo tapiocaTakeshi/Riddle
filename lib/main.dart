@@ -17,8 +17,6 @@ import 'screens/HomeScreen.dart';
 import 'screens/SignUpPage.dart';
 import 'screens/UploadScreen.dart';
 
-final currentUser = FirebaseAuth.instance.currentUser;
-
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();

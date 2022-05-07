@@ -39,6 +39,7 @@ class DetailPageState extends State<DetailPage> {
   List<bool> CoOrIn = [];
   Map<String, dynamic> data1 = Map();
   Map<String, dynamic> data2 = Map();
+  final currentUser = FirebaseAuth.instance.currentUser;
 
   @override
   void initState() {

@@ -311,6 +311,7 @@ class MySliverPersistentHeaderDelegate extends SliverPersistentHeaderDelegate {
 
 class TabPage extends StatelessWidget {
   final contents;
+  final currentUser = FirebaseAuth.instance.currentUser;
 
   TabPage({@required this.contents});
 

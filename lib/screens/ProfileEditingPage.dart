@@ -15,6 +15,7 @@ class ProfileEditingPage extends StatefulWidget {
 }
 
 class _ProfileEditingPageState extends State<ProfileEditingPage> {
+  final currentUser = FirebaseAuth.instance.currentUser;
   @override
   Widget build(BuildContext context) {
     return Scaffold(

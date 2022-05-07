@@ -27,10 +27,11 @@ class HomeScreenState extends State<HomeScreen> {
   var inChunks = [];
   List<Query> outChunks = [];
   int lastIndex = 0;
-  final loadLength = 3;
+  final loadLength = 10;
   bool hasMore = true;
   List<Map<String, dynamic>> temp = [];
   final _scrollController = ScrollController();
+  final currentUser = FirebaseAuth.instance.currentUser;
 
   Future loadRiddles() async {
     await Future.delayed(Duration(seconds: 3), () async {
@@ -188,16 +189,17 @@ class HomeScreenState extends State<HomeScreen> {
             loadRiddles();
           },
           child: Center(
-            child: ListView(
-              children: List.generate(riddles.length + 1, (index) {
-                if (index < riddles.length) {
-                  return FutureBuilder<DocumentSnapshot>(
-                      future: FirebaseFirestore.instance
-                          .collection('Users')
-                          .doc(currentUser!.uid)
-                          .get(),
-                      builder: (context, currentUser) {
-                        if (currentUser.hasData) {
+            child: FutureBuilder<DocumentSnapshot>(
+                future: FirebaseFirestore.instance
+                    .collection('Users')
+                    .doc(currentUser!.uid)
+                    .get(),
+                builder: (context, currentUser) {
+                  if (currentUser.hasData) {
+                    return ListView(
+                      controller: _scrollController,
+                      children: List.generate(riddles.length + 1, (index) {
+                        if (index < riddles.length) {
                           return Visibility(
                             visible:
                                 !(currentUser.data!['BlockedUserList'] as List)
@@ -235,22 +237,22 @@ class HomeScreenState extends State<HomeScreen> {
                             ),
                           );
                         } else {
-                          return Container();
+                          return Center(
+                              child: hasMore
+                                  ? Padding(
+                                      padding: const EdgeInsets.all(20.0),
+                                      child: CircularProgressIndicator(
+                                        color: Colors.orange,
+                                      ),
+                                    )
+                                  : Container());
                         }
-                      });
-                } else {
-                  return Center(
-                      child: hasMore
-                          ? Padding(
-                              padding: const EdgeInsets.all(20.0),
-                              child: CircularProgressIndicator(
-                                color: Colors.orange,
-                              ),
-                            )
-                          : Container());
-                }
-              }),
-            ),
+                      }),
+                    );
+                  } else {
+                    return Container();
+                  }
+                }),
           ),
         ));
   }

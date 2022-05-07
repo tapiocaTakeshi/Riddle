@@ -24,6 +24,7 @@ class UploadScreen2 extends StatefulWidget {
 }
 
 class UploadScreen2State extends State<UploadScreen2> {
+  final currentUser = FirebaseAuth.instance.currentUser;
   final _formkey = GlobalKey<FormState>();
   String _title = '';
   Color thumbnailTextColor = Colors.black45;
