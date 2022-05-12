@@ -31,8 +31,15 @@ class SignUpPage extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.only(bottom: 16),
                     child: SizedBox(
+                      height: 40,
+                      child: Image.asset(
+                        MediaQuery.platformBrightnessOf(context) ==
+                                Brightness.dark
+                            ? 'assets/images/RiddleLogo_DarkMode.png'
+                            : 'assets/images/RiddleLogo_LightMode.png',
                         height: 40,
-                        child: Image.asset('assets/images/RiddleLogo.png')),
+                      ),
+                    ),
                   ),
                 ],
               ),

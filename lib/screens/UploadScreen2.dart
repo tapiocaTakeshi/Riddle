@@ -37,7 +37,12 @@ class UploadScreen2State extends State<UploadScreen2> {
         GestureDetector(
           onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
           child: Scaffold(
-            appBar: AppBar(),
+            appBar: PreferredSize(
+              preferredSize: Size.fromHeight(40),
+              child: AppBar(
+                elevation: 1,
+              ),
+            ),
             body: Form(
               key: _formkey,
               child: ListView(

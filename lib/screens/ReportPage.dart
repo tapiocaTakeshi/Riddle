@@ -20,11 +20,15 @@ class _ReportPageState extends State<ReportPage> {
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
-        appBar: AppBar(
-          title: Text(
-            'ユーザー報告フォーム',
-            style:
-                TextStyle(color: Theme.of(context).textTheme.bodyText1!.color),
+        appBar: PreferredSize(
+          preferredSize: Size.fromHeight(40),
+          child: AppBar(
+            elevation: 1,
+            title: Text(
+              'ユーザー報告フォーム',
+              style: TextStyle(
+                  color: Theme.of(context).textTheme.bodyText1!.color),
+            ),
           ),
         ),
         body: Form(

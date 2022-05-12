@@ -107,49 +107,52 @@ class AccountScreenState extends State<AccountScreen>
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             return Scaffold(
-              appBar: AppBar(
-                title: Text(
-                  snapshot.data!['name'].toString(),
-                  style: TextStyle(
-                      color: Theme.of(context).textTheme.bodyText1!.color),
+              appBar: PreferredSize(
+                preferredSize: Size.fromHeight(40),
+                child: AppBar(
+                  title: Text(
+                    snapshot.data!['name'].toString(),
+                    style: TextStyle(
+                        color: Theme.of(context).textTheme.bodyText1!.color),
+                  ),
+                  elevation: 1,
+                  centerTitle: false,
+                  actions: [
+                    IconButton(
+                        onPressed: () {
+                          showCupertinoModalPopup(
+                              context: context,
+                              builder: (context) => CupertinoActionSheet(
+                                    actions: [
+                                      CupertinoActionSheetAction(
+                                          onPressed: () async {
+                                            await FirebaseFirestore.instance
+                                                .collection('Users')
+                                                .doc(currentUser!.uid)
+                                                .update({
+                                              'BlockedUserList':
+                                                  FieldValue.arrayUnion(
+                                                      [widget.uid])
+                                            });
+                                            Navigator.pop(context);
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(SnackBar(
+                                                    content: Text(
+                                                        'ユーザーをブロックしました。')));
+                                          },
+                                          child: Text('ユーザーをブロックする'))
+                                    ],
+                                    cancelButton: CupertinoActionSheetAction(
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                      },
+                                      child: Text('キャンセル'),
+                                    ),
+                                  ));
+                        },
+                        icon: Icon(CupertinoIcons.shield_slash))
+                  ],
                 ),
-                elevation: 1,
-                centerTitle: false,
-                actions: [
-                  IconButton(
-                      onPressed: () {
-                        showCupertinoModalPopup(
-                            context: context,
-                            builder: (context) => CupertinoActionSheet(
-                                  actions: [
-                                    CupertinoActionSheetAction(
-                                        onPressed: () async {
-                                          await FirebaseFirestore.instance
-                                              .collection('Users')
-                                              .doc(currentUser!.uid)
-                                              .update({
-                                            'BlockedUserList':
-                                                FieldValue.arrayUnion(
-                                                    [widget.uid])
-                                          });
-                                          Navigator.pop(context);
-                                          ScaffoldMessenger.of(context)
-                                              .showSnackBar(SnackBar(
-                                                  content:
-                                                      Text('ユーザーをブロックしました。')));
-                                        },
-                                        child: Text('ユーザーをブロックする'))
-                                  ],
-                                  cancelButton: CupertinoActionSheetAction(
-                                    onPressed: () {
-                                      Navigator.pop(context);
-                                    },
-                                    child: Text('キャンセル'),
-                                  ),
-                                ));
-                      },
-                      icon: Icon(CupertinoIcons.shield_slash))
-                ],
               ),
               body: NestedScrollView(
                   headerSliverBuilder: (context, value) {

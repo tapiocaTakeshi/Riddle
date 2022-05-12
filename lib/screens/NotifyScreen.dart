@@ -6,10 +6,13 @@ class NotifyScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     // TODO: implement build
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Riddle', style: TextStyle(color: Colors.orange)),
-        backgroundColor: Colors.white,
-        elevation: 0.4,
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(40),
+        child: AppBar(
+          title: Text('Riddle', style: TextStyle(color: Colors.orange)),
+          backgroundColor: Colors.white,
+          elevation: 1,
+        ),
       ),
       body: Center(
         child: Text('Notify'),

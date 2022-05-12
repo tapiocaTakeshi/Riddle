@@ -30,33 +30,36 @@ class UploadScreenState extends State<UploadScreen> {
         GestureDetector(
           onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
           child: Scaffold(
-              appBar: AppBar(
-                elevation: 1,
-                leading: IconButton(
-                    onPressed: () {
-                      Provider.of<SlideModel>(context, listen: false)
-                          .deleteSlide();
-                      Provider.of<ThumbnailModel>(context, listen: false)
-                          .deleteThumbnail();
-                      Navigator.pop(context);
-                    },
-                    icon: Icon(Icons.clear)),
-                actions: [
-                  if (model.isOpeneds.every((element) => element))
-                    IconButton(
-                        onPressed: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  fullscreenDialog: true,
-                                  builder: (context) => UploadScreen2(
-                                      model.answers!,
-                                      model.durations!,
-                                      model.slideImageFiles,
-                                      model.expImageFiles!)));
-                        },
-                        icon: Icon(Icons.arrow_forward_ios))
-                ],
+              appBar: PreferredSize(
+                preferredSize: Size.fromHeight(40),
+                child: AppBar(
+                  elevation: 1,
+                  leading: IconButton(
+                      onPressed: () {
+                        Provider.of<SlideModel>(context, listen: false)
+                            .deleteSlide();
+                        Provider.of<ThumbnailModel>(context, listen: false)
+                            .deleteThumbnail();
+                        Navigator.pop(context);
+                      },
+                      icon: Icon(Icons.clear)),
+                  actions: [
+                    if (model.isOpeneds.every((element) => element))
+                      IconButton(
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    fullscreenDialog: true,
+                                    builder: (context) => UploadScreen2(
+                                        model.answers!,
+                                        model.durations!,
+                                        model.slideImageFiles,
+                                        model.expImageFiles!)));
+                          },
+                          icon: Icon(Icons.arrow_forward_ios))
+                  ],
+                ),
               ),
               body: model.slidePath == ''
                   ? Center(

@@ -7,7 +7,7 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:788794383607:android:c2d473512d111f73a487f2",
+        "mobilesdk_app_id": "1:788794383607:android:0be84683d2006492a487f2",
         "android_client_info": {
           "package_name": "com.higuchiyuya.riddle"
         }
@@ -34,7 +34,43 @@
               "client_id": "788794383607-h68s00965popobsn68popeckmb59b3if.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.riddle"
+                "bundle_id": "com.higuchiyuya.riddle"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:788794383607:android:e3f34a923894c16ea487f2",
+        "android_client_info": {
+          "package_name": "com.higuchiyuya.riddle"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "788794383607-pejk8ricjoq40pfr4oaotg15s518h19g.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAXUmI7ihzCkYzW03RU2BrmB57eitV-Ki8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "788794383607-pejk8ricjoq40pfr4oaotg15s518h19g.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "788794383607-h68s00965popobsn68popeckmb59b3if.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.higuchiyuya.riddle"
               }
             }
           ]

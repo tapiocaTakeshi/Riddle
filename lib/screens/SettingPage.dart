@@ -10,8 +10,11 @@ class SettingPage extends StatelessWidget {
     // TODO: implement build
     return Scaffold(
         backgroundColor: Colors.grey[100],
-        appBar: AppBar(
-          elevation: 1,
+        appBar: PreferredSize(
+          preferredSize: Size.fromHeight(40),
+          child: AppBar(
+            elevation: 1,
+          ),
         ),
         body: ListView(
           padding: EdgeInsets.all(24),

@@ -10,6 +10,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'DetailPage.dart';
 
@@ -100,25 +101,31 @@ class MyAccountScreenState extends State<MyAccountScreen>
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             return Scaffold(
-              appBar: AppBar(
-                title: Text(
-                  snapshot.data!['name'],
-                  style: TextStyle(
-                      color: Theme.of(context).textTheme.bodyText1!.color),
+              appBar: PreferredSize(
+                preferredSize: Size.fromHeight(40),
+                child: AppBar(
+                  title: Text(
+                    snapshot.data!['name'],
+                    style: TextStyle(
+                        color: Theme.of(context).textTheme.bodyText1!.color),
+                  ),
+                  actions: <Widget>[
+                    TextButton(
+                        child: Text(
+                          'ログアウト',
+                          style: TextStyle(
+                              color: Theme.of(context).colorScheme.primary),
+                        ),
+                        onPressed: () async {
+                          SharedPreferences prefs =
+                              await SharedPreferences.getInstance();
+                          await prefs.setBool('firstTime', true);
+                          await FirebaseAuth.instance.signOut();
+                        })
+                  ],
+                  elevation: 1,
+                  centerTitle: false,
                 ),
-                actions: <Widget>[
-                  TextButton(
-                      child: Text(
-                        'ログアウト',
-                        style: TextStyle(
-                            color: Theme.of(context).colorScheme.primary),
-                      ),
-                      onPressed: () async {
-                        await FirebaseAuth.instance.signOut();
-                      })
-                ],
-                elevation: 1,
-                centerTitle: false,
               ),
               body: NestedScrollView(
                   headerSliverBuilder: (context, value) {

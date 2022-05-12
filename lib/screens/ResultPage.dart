@@ -28,9 +28,12 @@ class _ResultPageState extends State<ResultPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        elevation: 1,
-        automaticallyImplyLeading: false,
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(40),
+        child: AppBar(
+          elevation: 1,
+          automaticallyImplyLeading: false,
+        ),
       ),
       body: Center(
         child: Column(

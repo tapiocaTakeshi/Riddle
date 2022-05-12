@@ -28,7 +28,12 @@ class _ChatPageState extends State<ChatPage> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        appBar: AppBar(),
+        appBar: PreferredSize(
+          preferredSize: Size.fromHeight(40),
+          child: AppBar(
+            elevation: 1,
+          ),
+        ),
         body: FutureBuilder<DocumentSnapshot>(
             future: FirebaseFirestore.instance
                 .collection('Users')

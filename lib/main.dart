@@ -9,6 +9,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/services.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:showcaseview/showcaseview.dart';
 import 'models/AppleSignInModel.dart';
 import 'models/SlideModel.dart';
 import 'models/ThumbnailModel.dart';
@@ -96,7 +98,9 @@ class BranchState extends State<Branch> {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Center(child: CircularProgressIndicator());
         } else if (snapshot.hasData) {
-          return MyHomePage();
+          return ShowCaseWidget(
+            builder: Builder(builder: (_) => MyHomePage()),
+          );
         } else if (snapshot.hasError) {
           return Center(child: Text("ログインできませんでした"));
         } else {
@@ -106,6 +110,10 @@ class BranchState extends State<Branch> {
     );
   }
 }
+
+GlobalKey uploadKey = GlobalKey();
+GlobalKey searchKey = GlobalKey();
+GlobalKey humbergerKey = GlobalKey();
 
 class MyHomePage extends StatefulWidget {
   @override
@@ -127,6 +135,24 @@ class MyHomePageState extends State<MyHomePage> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance!.addPostFrameCallback((_) {
+      Future(
+        () async {
+          SharedPreferences prefs = await SharedPreferences.getInstance();
+          bool firstTime = prefs.getBool('firstTime') ?? true;
+          if (firstTime) {
+            await prefs.setBool('firstTime', false);
+            ShowCaseWidget.of(context)!
+                .startShowCase([uploadKey, searchKey, humbergerKey]);
+          }
+        },
+      );
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     // TODO: implement build
     return Scaffold(
@@ -135,19 +161,23 @@ class MyHomePageState extends State<MyHomePage> {
           index: _selectedIndex,
           children: _contents,
         ),
-        floatingActionButton: FloatingActionButton(
-          child: Icon(
-            Icons.add_outlined,
-            size: 38,
-            color: Colors.orange,
+        floatingActionButton: Showcase(
+          key: uploadKey,
+          description: 'アップロード用ボタン',
+          child: FloatingActionButton(
+            child: Icon(
+              Icons.add_outlined,
+              size: 38,
+              color: Colors.orange,
+            ),
+            elevation: 2,
+            onPressed: () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => UploadScreen(),
+                  fullscreenDialog: true,
+                )),
           ),
-          elevation: 2,
-          onPressed: () => Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => UploadScreen(),
-                fullscreenDialog: true,
-              )),
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
         bottomNavigationBar: SizedBox(

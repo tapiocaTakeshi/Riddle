@@ -19,7 +19,12 @@ class _ProfileEditingPageState extends State<ProfileEditingPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(40),
+        child: AppBar(
+          elevation: 1,
+        ),
+      ),
       body: StreamBuilder<DocumentSnapshot>(
           stream: FirebaseFirestore.instance
               .collection('Users')

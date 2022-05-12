@@ -9,6 +9,7 @@ import 'package:flutter/rendering.dart';
 import 'package:animations/animations.dart';
 import 'package:flutter/widgets.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:showcaseview/showcaseview.dart';
 import '../functions/Firebase.dart';
 import 'DetailPage.dart';
 
@@ -141,48 +142,68 @@ class HomeScreenState extends State<HomeScreen> {
     // TODO: implement build
     Size size = MediaQuery.of(context).size;
     return Scaffold(
-        appBar: AppBar(
-          elevation: 1,
-          actions: [
-            IconButton(
-                onPressed: () async {
-                  final Keywords =
-                      FirebaseFirestore.instance.collection('Keywords');
+        appBar: PreferredSize(
+          preferredSize: Size.fromHeight(40),
+          child: AppBar(
+            title: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: Image.asset(
+                MediaQuery.platformBrightnessOf(context) == Brightness.dark
+                    ? 'assets/images/RiddleLogo_DarkMode.png'
+                    : 'assets/images/RiddleLogo_LightMode.png',
+                height: 30,
+              ),
+            ),
+            elevation: 1,
+            actions: [
+              Showcase(
+                key: searchKey,
+                description: '検索用ボタン',
+                child: IconButton(
+                    onPressed: () async {
+                      final Keywords =
+                          FirebaseFirestore.instance.collection('Keywords');
 
-                  final histories =
-                      (await Keywords.orderBy('searchCount', descending: true)
+                      final histories = (await Keywords.orderBy('searchCount',
+                                  descending: true)
                               .get())
                           .docs
                           .map((DocumentSnapshot document) =>
                               document.data() as Map<String, dynamic>)
                           .toList();
-                  keyword = await showSearch(
-                      context: context,
-                      delegate: searchDelegate(Keywords, histories),
-                      useRootNavigator: true);
-                  setState(() {
-                    lastIndex = 0;
-                    riddles = [];
-                  });
-                  loadRiddles();
-                },
-                icon: Icon(Icons.search)),
-            IconButton(
-                onPressed: () {
-                  Navigator.of(context)
-                      .push(MaterialPageRoute(
-                          builder: (_) => SearchOptionPage(),
-                          fullscreenDialog: true))
-                      .then((value) {
-                    setState(() {
-                      lastIndex = 0;
-                      riddles = [];
-                    });
-                    loadRiddles();
-                  });
-                },
-                icon: Icon(Icons.menu))
-          ],
+                      keyword = await showSearch(
+                          context: context,
+                          delegate: searchDelegate(Keywords, histories),
+                          useRootNavigator: true);
+                      setState(() {
+                        lastIndex = 0;
+                        riddles = [];
+                      });
+                      loadRiddles();
+                    },
+                    icon: Icon(Icons.search)),
+              ),
+              Showcase(
+                key: humbergerKey,
+                description: '並び替えまたはフィルタ用ボタン',
+                child: IconButton(
+                    onPressed: () {
+                      Navigator.of(context)
+                          .push(MaterialPageRoute(
+                              builder: (_) => SearchOptionPage(),
+                              fullscreenDialog: true))
+                          .then((value) {
+                        setState(() {
+                          lastIndex = 0;
+                          riddles = [];
+                        });
+                        loadRiddles();
+                      });
+                    },
+                    icon: Icon(Icons.menu)),
+              )
+            ],
+          ),
         ),
         body: RefreshIndicator(
           onRefresh: () async {
@@ -295,7 +316,7 @@ class searchDelegate extends SearchDelegate<String> {
 
   @override
   Widget buildResults(BuildContext context) {
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
+    WidgetsBinding.instance!.addPostFrameCallback((_) async {
       close(context, query);
       if (query.isNotEmpty) {
         final snapshotFilter =

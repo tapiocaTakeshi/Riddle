@@ -26,7 +26,12 @@ class _SearchOptionPageState extends State<SearchOptionPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(40),
+        child: AppBar(
+          elevation: 1,
+        ),
+      ),
       body: Column(
         children: [
           Text(
