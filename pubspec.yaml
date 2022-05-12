@@ -67,8 +67,8 @@ dev_dependencies:
 flutter_icons:
   ios: true
   android: true
-  image_path_ios: "lib/assets/RiddleIcon.jpg"
-  image_path_android: "lib/assets/RiddleIcon.jpg"
+  image_path_ios: "lib/assets/RiddleIcon_ios.jpg"
+  image_path_android: "lib/assets/RiddleIcon_android.jpg"
 
 
 # For information on the generic Dart part of this file, see the
