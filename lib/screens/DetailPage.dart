@@ -1,6 +1,6 @@
 import 'package:Riddle/data/AdState.dart';
 import 'package:Riddle/functions/Firebase.dart';
-import 'package:Riddle/main.dart';
+import 'package:Riddle/MyApp.dart';
 import 'package:Riddle/screens/AccountScreen.dart';
 import 'package:Riddle/screens/Chat.dart';
 import 'package:Riddle/screens/MyAccountScreen.dart';

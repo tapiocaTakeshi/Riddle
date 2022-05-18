@@ -1,5 +1,5 @@
 import 'package:Riddle/functions/Firebase.dart';
-import 'package:Riddle/main.dart';
+import 'package:Riddle/MyApp.dart';
 import 'package:Riddle/models/GoogleSignInModel.dart';
 import 'package:Riddle/screens/ProfileEditingPage.dart';
 import 'package:Riddle/screens/SettingPage.dart';
@@ -110,18 +110,12 @@ class MyAccountScreenState extends State<MyAccountScreen>
                         color: Theme.of(context).textTheme.bodyText1!.color),
                   ),
                   actions: <Widget>[
-                    TextButton(
-                        child: Text(
-                          'ログアウト',
-                          style: TextStyle(
-                              color: Theme.of(context).colorScheme.primary),
-                        ),
-                        onPressed: () async {
-                          SharedPreferences prefs =
-                              await SharedPreferences.getInstance();
-                          await prefs.setBool('firstTime', true);
-                          await FirebaseAuth.instance.signOut();
-                        })
+                    IconButton(
+                        onPressed: () => Navigator.of(context).push(
+                            MaterialPageRoute(builder: (_) => SettingPage())),
+                        icon: Icon(
+                          Icons.settings_outlined,
+                        ))
                   ],
                   elevation: 1,
                   centerTitle: false,
@@ -220,31 +214,18 @@ class MySliverPersistentHeaderDelegate extends SliverPersistentHeaderDelegate {
                 shape: BoxShape.circle,
               ),
             ),
-            Column(
-              children: [
-                subscribersCount != null
-                    ? Padding(
-                        padding: const EdgeInsets.all(1.0),
-                        child: Text(
-                          'チャンネル登録者数 ' + subscribersText + '人',
-                          style: TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      )
-                    : Container(),
-                OutlinedButton(
-                    onPressed: (() {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              fullscreenDialog: true,
-                              builder: (context) => ProfileEditingPage()));
-                    }),
-                    child: Text('プロフィールを編集'))
-              ],
-            ),
+            subscribersCount != null
+                ? Padding(
+                    padding: const EdgeInsets.all(1.0),
+                    child: Text(
+                      'チャンネル登録者数 ' + subscribersText + '人',
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  )
+                : Container(),
           ],
         ),
       ),

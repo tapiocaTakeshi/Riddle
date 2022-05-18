@@ -1,3 +1,5 @@
+import 'package:Riddle/screens/ProfileEditingPage.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -9,28 +11,57 @@ class SettingPage extends StatelessWidget {
   Widget build(BuildContext context) {
     // TODO: implement build
     return Scaffold(
-        backgroundColor: Colors.grey[100],
         appBar: PreferredSize(
           preferredSize: Size.fromHeight(40),
           child: AppBar(
             elevation: 1,
+            title: Text(
+              '設定',
+              style: TextStyle(
+                  color: Theme.of(context).textTheme.bodyText1!.color),
+            ),
+            centerTitle: true,
           ),
         ),
         body: ListView(
           padding: EdgeInsets.all(24),
           children: [
-            Padding(
-              padding: const EdgeInsets.all(1.0),
-              child: ListTile(
-                title: Text('ログアウト'),
-                tileColor: Colors.white,
-                onTap: () {
-                  //  final provider = Provider.of<GoogleSignInModel>(context,listen: false);
-                  //  provider.signOut();
-                  Navigator.of(context).pop();
-                },
-              ),
+            Divider(),
+            ListTile(
+              leading: Icon(Icons.logout_outlined),
+              title: Text('ログアウト'),
+              onTap: () async {
+                await FirebaseAuth.instance.signOut();
+                Navigator.of(context).pop();
+              },
             ),
+            Divider(),
+            ListTile(
+              leading: Icon(Icons.person),
+              title: Text('プロフィール編集'),
+              onTap: () async {
+                Navigator.of(context).push(
+                    MaterialPageRoute(builder: (_) => ProfileEditingPage()));
+              },
+            ),
+            Divider(),
+            ListTile(
+              leading: Icon(Icons.shield_outlined),
+              title: Text('ブロックリスト'),
+              onTap: () async {
+                await FirebaseAuth.instance.signOut();
+                Navigator.of(context).pop();
+              },
+            ),
+            Divider(),
+            ListTile(
+              leading: Icon(Icons.help_center_outlined),
+              title: Text('ヘルプセンター'),
+              onTap: () async {
+                Navigator.of(context).pop();
+              },
+            ),
+            Divider(),
           ],
         ));
   }

@@ -2,6 +2,8 @@ import 'dart:io';
 
 import 'package:Riddle/data/AdState.dart';
 import 'package:Riddle/models/GoogleSignInModel.dart';
+import 'package:Riddle/screens/NotifyScreen.dart';
+import 'package:Riddle/screens/SearchScreen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -11,6 +13,7 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:showcaseview/showcaseview.dart';
+import 'flavors.dart';
 import 'models/AppleSignInModel.dart';
 import 'models/SlideModel.dart';
 import 'models/ThumbnailModel.dart';
@@ -18,14 +21,6 @@ import 'screens/MyAccountScreen.dart';
 import 'screens/HomeScreen.dart';
 import 'screens/SignUpPage.dart';
 import 'screens/UploadScreen.dart';
-
-Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
-  MobileAds.instance.initialize();
-  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-  runApp(MyApp());
-}
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
@@ -48,6 +43,7 @@ class MyApp extends StatelessWidget {
         ),
       ],
       child: MaterialApp(
+        title: F.title,
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
           brightness: Brightness.light,
@@ -74,7 +70,7 @@ class MyApp extends StatelessWidget {
           backgroundColor: Colors.grey[900],
           accentColor: Colors.black,
         ),
-        home: Branch(),
+        home: _flavorBanner(child: Branch()),
         // routes: <String, WidgetBuilder> {
         //   '/uploadpage': (BuildContext context) => new UploadPage(),
         // },
@@ -125,6 +121,7 @@ class MyHomePageState extends State<MyHomePage> {
 
   static List<Widget> _contents = <Widget>[
     HomeScreen(),
+    SearchScreen(),
     MyAccountScreen(),
   ];
 
@@ -161,41 +158,19 @@ class MyHomePageState extends State<MyHomePage> {
           index: _selectedIndex,
           children: _contents,
         ),
-        floatingActionButton: Showcase(
-          key: uploadKey,
-          description: 'アップロード用ボタン',
-          child: FloatingActionButton(
-            child: Icon(
-              Icons.add_outlined,
-              size: 38,
-              color: Colors.orange,
-            ),
-            elevation: 2,
-            onPressed: () => Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => UploadScreen(),
-                  fullscreenDialog: true,
-                )),
-          ),
-        ),
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-        bottomNavigationBar: SizedBox(
-          height: Platform.isAndroid ? 70 : 86,
+        bottomNavigationBar: PreferredSize(
+          preferredSize: Size.fromHeight(Platform.isAndroid ? 70 : 86),
           child: BottomNavigationBar(
+            type: BottomNavigationBarType.fixed,
             items: [
+              BottomNavigationBarItem(icon: Icon(Icons.home_sharp), label: ''),
+              BottomNavigationBarItem(icon: Icon(Icons.search), label: ''),
               BottomNavigationBarItem(
-                  icon: Icon(Icons.home_sharp),
-                  // ignore: deprecated_member_use
-                  label: 'ホーム'),
-              BottomNavigationBarItem(
-                  icon: Icon(Icons.account_circle_outlined),
-                  // ignore: deprecated_member_use
-                  label: 'アカウント')
+                  icon: Icon(Icons.account_circle_outlined), label: '')
             ],
             currentIndex: _selectedIndex,
             selectedItemColor: Colors.orange,
-            iconSize: 24,
+            iconSize: 30,
             selectedFontSize: 11,
             unselectedFontSize: 11,
             onTap: _onItemTap,
@@ -204,3 +179,20 @@ class MyHomePageState extends State<MyHomePage> {
         ));
   }
 }
+
+Widget _flavorBanner({
+  required Widget child,
+}) =>
+    F.appFlavor == Flavor.DEV
+        ? Banner(
+            child: child,
+            location: BannerLocation.topStart,
+            message: F.name,
+            color: Colors.green.withOpacity(0.6),
+            textStyle: TextStyle(
+                fontWeight: FontWeight.w700,
+                fontSize: 12.0,
+                letterSpacing: 1.0),
+            textDirection: TextDirection.ltr,
+          )
+        : child;

@@ -1,4 +1,4 @@
-import 'package:Riddle/main.dart';
+import 'package:Riddle/MyApp.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:comment_box/comment/comment.dart';
 import 'package:firebase_auth/firebase_auth.dart';

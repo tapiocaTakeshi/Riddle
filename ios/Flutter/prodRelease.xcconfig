@@ -1,0 +1,6 @@
+#include "Generated.xcconfig"
+
+FLUTTER_TARGET=lib/main_prod.dart
+ASSET_PREFIX=prod
+BUNDLE_NAME=prod riddle
+GOOGLE_INFO_URL=com.googleusercontent.apps.788794383607-qe3rs9ldelr9qg35nr54hjggqnppniip

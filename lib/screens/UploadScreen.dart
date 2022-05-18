@@ -12,7 +12,7 @@ import '../functions/Loading.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import '../functions/Firebase.dart';
-import 'package:Riddle/main.dart';
+import 'package:Riddle/MyApp.dart';
 
 class UploadScreen extends StatefulWidget {
   @override

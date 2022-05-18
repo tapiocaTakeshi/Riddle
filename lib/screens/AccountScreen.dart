@@ -1,5 +1,5 @@
 import 'package:Riddle/functions/Firebase.dart';
-import 'package:Riddle/main.dart';
+import 'package:Riddle/MyApp.dart';
 import 'package:Riddle/screens/SettingPage.dart';
 import 'package:animations/animations.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';

@@ -56,7 +56,45 @@ dependencies:
   flutter_email_sender: ^5.1.0
   shared_preferences: ^2.0.15
   showcaseview: ^1.1.5
-  
+  flutter_flavorizr: ^2.1.3
+  flappy_search_bar_ns: ^2.0.2
+  custom_radio_grouped_button: ^2.1.2
+
+flavorizr:
+  app:
+    android:
+      flavorDimensions: "flavor-type"
+    ios:
+
+  flavors:
+    dev:
+      app:
+        name: "dev riddle"
+
+      android:
+        applicationId: "com.higuchiyuya.riddle.dev"
+        firebase:
+          config: ".firebase/dev/google-services.json"
+
+      ios:
+        bundleId: "com.higuchiyuya.riddle.dev"
+        firebase:
+          config: ".firebase/dev/GoogleService-Info.plist"
+
+    prod:
+      app:
+        name: "prod riddle"
+
+      android:
+        applicationId: "com.higuchiyuya.riddle"
+        firebase:
+          config: ".firebase/prod/google-services.json"
+
+      ios:
+        bundleId: "com.higuchiyuya.riddle"
+        firebase:
+          config: ".firebase/prod/GoogleService-Info.plist"
+
 
 dev_dependencies:
   flutter_test:

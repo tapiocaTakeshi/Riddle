@@ -5,15 +5,53 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "riddle",
-            "request": "launch",
-            "type": "dart"
-        },
-        {
-            "name": "riddle (profile mode)",
+            "name": "debug-dev",
             "request": "launch",
             "type": "dart",
-            "flutterMode": "profile"
-        }
+            "program": "lib/main_dev.dart",
+            "args": [
+                "--debug",
+                "--flavor",
+                "dev",
+                "--dart-define=FLAVOR=dev",
+                
+            ],
+        },
+        {
+            "name": "release-dev",
+            "request": "launch",
+            "type": "dart",
+            "program": "lib/main_dev.dart",
+            "args": [
+                "--release",
+                "--flavor",
+                "dev",
+                "--dart-define=FLAVOR=dev",
+            ],
+        },
+        {
+            "name": "debug-prod",
+            "request": "launch",
+            "type": "dart",
+            "program": "lib/main_prod.dart",
+            "args": [
+                "--debug",
+                "--flavor",
+                "prod",
+                "--dart-define=FLAVOR=prod",
+            ],
+        },
+        {
+            "name": "release-prod",
+            "request": "launch",
+            "type": "dart",
+            "program": "lib/main_prod.dart",
+            "args": [
+                "--release",
+                "--flavor",
+                "prod",
+                "--dart-define=FLAVOR=prod",
+            ],
+        },
     ]
 }

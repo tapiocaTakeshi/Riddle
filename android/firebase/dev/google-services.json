@@ -1,0 +1,82 @@
+{
+  "project_info": {
+    "project_number": "788794383607",
+    "project_id": "riddle-b4b7b",
+    "storage_bucket": "riddle-b4b7b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:788794383607:android:0be84683d2006492a487f2",
+        "android_client_info": {
+          "package_name": "com.higuchiyuya.riddle"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "788794383607-pejk8ricjoq40pfr4oaotg15s518h19g.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAXUmI7ihzCkYzW03RU2BrmB57eitV-Ki8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "788794383607-pejk8ricjoq40pfr4oaotg15s518h19g.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "788794383607-h68s00965popobsn68popeckmb59b3if.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.riddle"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:788794383607:android:d889ec968653be2ca487f2",
+        "android_client_info": {
+          "package_name": "com.higuchiyuya.riddle.dev"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "788794383607-pejk8ricjoq40pfr4oaotg15s518h19g.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAXUmI7ihzCkYzW03RU2BrmB57eitV-Ki8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "788794383607-pejk8ricjoq40pfr4oaotg15s518h19g.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "788794383607-h68s00965popobsn68popeckmb59b3if.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.riddle"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:Riddle/functions/Firebase.dart';
 import 'package:Riddle/functions/Upload.dart';
-import 'package:Riddle/main.dart';
+import 'package:Riddle/MyApp.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';

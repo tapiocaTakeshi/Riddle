@@ -1,6 +1,6 @@
 import 'dart:io';
 import 'dart:typed_data';
-import 'package:Riddle/main.dart';
+import 'package:Riddle/MyApp.dart';
 import 'package:Riddle/models/SlideModel.dart';
 import 'package:Riddle/models/ThumbnailModel.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -143,7 +143,7 @@ class UploadScreen2State extends State<UploadScreen2> {
                           setState(() {
                             model.visible = true;
                           });
-                          print('a');
+
                           final snapshotRiddle = await FirebaseFirestore
                               .instance
                               .collection('Riddles')
